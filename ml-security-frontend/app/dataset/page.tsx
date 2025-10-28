@@ -1,12 +1,13 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function DatasetPage() {
   return (
     <motion.main
-      className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 p-8"
+      className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-8"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -15,7 +16,7 @@ export default function DatasetPage() {
         Odabir dataseta i hiperparametara
       </h1>
 
-      <div className="bg-white shadow-md rounded-2xl p-6 w-full max-w-xl">
+      <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-3xl p-10 w-full max-w-2xl border border-white/30">
         <p className="text-zinc-600 mb-4">
           Ovdje možeš odabrati dataset koji ćeš koristiti i postaviti osnovne hiperparametre mreže.
         </p>
@@ -54,10 +55,9 @@ export default function DatasetPage() {
               className="w-full border border-zinc-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-zinc-400"
             />
           </div>
-
-          <Button type="submit" className="mt-4">
-            Nastavi
-          </Button>
+          <Link href="/attack-defense">
+            <Button type="submit" className="mt-4">Nastavi</Button>
+          </Link>
         </form>
       </div>
     </motion.main>

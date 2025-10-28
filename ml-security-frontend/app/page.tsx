@@ -1,19 +1,64 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { motion } from "framer-motion"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Sparkles } from "lucide-react"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-zinc-50">
-      <h1 className="text-4xl font-bold mb-6 text-zinc-800">
-        ML Security Dashboard
-      </h1>
+    <motion.main
+      className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl rounded-3xl p-12 w-full max-w-4xl">
+        <div className="flex flex-col items-center gap-6">
+          <motion.h1
+            className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 bg-clip-text text-transparent drop-shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            Security of Machine Learning
+          </motion.h1>
 
-      <p className="text-zinc-600 mb-8 text-center max-w-lg">
-        Dobrodošli u naš ML Security Project!
-      </p>
-      <Link href="/dataset">
-        <Button>Pokreni sustav</Button>
-      </Link>
-    </main>
+          <motion.p
+            className="text-lg md:text-xl text-zinc-300 max-w-2xl leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+          </motion.p>
+
+          <motion.div
+            className="pt-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <Link href="/dataset">
+              <Button
+                size="lg"
+                className="px-8 py-6 text-lg font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)] hover:shadow-[0_0_30px_rgba(59,130,246,0.9)] transition-all duration-300"
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                Pokreni sustav
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+
+      <motion.p
+        className="mt-10 text-sm text-zinc-400"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.8 }}
+      >
+        Projekt: <span className="text-blue-400">ML Security Dashboard</span>
+      </motion.p>
+    </motion.main>
   )
 }
