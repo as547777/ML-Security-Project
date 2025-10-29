@@ -9,9 +9,9 @@ import { Home, Database, Shield, BarChart2, Award } from "lucide-react"
 const steps = [
   { name: "Home", path: "/", icon: Home },
   { name: "Dataset", path: "/dataset", icon: Database },
-  { name: "Napadi i Obrane", path: "/attack-defense", icon: Shield },
-  { name: "Grafovi", path: "/visualization", icon: BarChart2 },
-  { name: "Rezultati", path: "/results", icon: Award },
+  { name: "Attacks & Defenses", path: "/attack-defense", icon: Shield },
+  { name: "Overview", path: "/overview", icon: BarChart2 },
+  { name: "Results", path: "/results", icon: Award },
 ]
 
 export function ProgressNavbar() {

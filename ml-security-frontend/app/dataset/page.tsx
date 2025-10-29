@@ -1,65 +1,43 @@
 "use client"
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import MainContainer from "@/components/main-container"
+import { StepNavigation } from "@/components/step-navigation"
+import DatasetSelect from "@/components/dataset-select"
+import HyperparameterInputs from "@/components/hyperparameter-inputs"
+import DatasetInfoCard from "@/components/dataset-info-card"
 
 export default function DatasetPage() {
   return (
-    <motion.main
-      className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-8"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-    >
-      <h1 className="text-3xl font-bold text-zinc-800 mb-6">
-        Odabir dataseta i hiperparametara
+    <MainContainer>
+      <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
+        Datasets & Hyperparameters
       </h1>
 
-      <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-3xl p-10 w-full max-w-2xl border border-white/30">
-        <p className="text-zinc-600 mb-4">
-          Ovdje možeš odabrati dataset koji ćeš koristiti i postaviti osnovne hiperparametre mreže.
-        </p>
-
-        <form className="flex flex-col gap-4">
+      <div className="flex flex-col lg:flex-row items-start gap-6">
+        {/* Left Card */}
+        <div className="card-main w-full max-w-2xl flex-1 flex flex-col justify-between">
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Dataset
-            </label>
-            <select className="w-full border border-zinc-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-zinc-400">
-              <option>MNIST</option>
-              <option>CIFAR-10</option>
-              <option>Custom Dataset</option>
-            </select>
+            <p className="text-zinc-600 mb-4">
+              Here you can select the dataset you’ll use and set the basic network hyperparameters.
+            </p>
+
+            <div className="flex flex-col gap-4 text-zinc-700">
+              <DatasetSelect />
+              <HyperparameterInputs />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Learning Rate
-            </label>
-            <input
-              type="number"
-              step="0.001"
-              defaultValue="0.01"
-              className="w-full border border-zinc-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-zinc-400"
-            />
+          {/* Docked Navigation */}
+          <div className="mt-8">
+            <StepNavigation next="/attack-defense" />
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Broj epoha
-            </label>
-            <input
-              type="number"
-              defaultValue="10"
-              className="w-full border border-zinc-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-zinc-400"
-            />
-          </div>
-          <Link href="/attack-defense">
-            <Button type="submit" className="mt-4">Nastavi</Button>
-          </Link>
-        </form>
+        {/* Right Card */}
+        <div className="card-main w-md min-h-md">
+          <DatasetInfoCard />
+        </div>
       </div>
-    </motion.main>
+    </MainContainer>
   )
 }

@@ -11,15 +11,15 @@ export default function HomePage() {
       className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] px-6 text-center"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl rounded-3xl p-12 w-full max-w-4xl">
         <div className="flex flex-col items-center gap-6">
           <motion.h1
-            className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 bg-clip-text text-transparent drop-shadow-lg"
+            className="header-text text-5xl md:text-6xl p-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            transition={{ delay: 0.1, duration: 0.8 }}
           >
             Security of Machine Learning
           </motion.h1>
@@ -28,7 +28,7 @@ export default function HomePage() {
             className="text-lg md:text-xl text-zinc-300 max-w-2xl leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
           </motion.p>
 
@@ -36,7 +36,7 @@ export default function HomePage() {
             className="pt-4"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
           >
             <Link href="/dataset">
               <Button

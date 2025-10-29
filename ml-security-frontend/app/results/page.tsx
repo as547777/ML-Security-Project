@@ -1,22 +1,17 @@
 "use client"
 
-import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import MainContainer from "@/components/main-container";
 
 export default function ResultsPage() {
   return (
-    <motion.main
-      className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-8"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-    >
-      <h1 className="text-3xl font-bold text-zinc-800 mb-6">
-        Rezultati analize
+    <MainContainer>
+      <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
+        Test Results
       </h1>
 
-      <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-3xl p-10 w-full max-w-2xl border border-white/30">
+      <div className="card-main max-w-2xl">
         <p className="text-zinc-600 mb-4">
           Ovdje će se prikazivati konačni rezultati eksperimenta, uključujući metrike točnosti i robusnosti.
         </p>
@@ -31,6 +26,6 @@ export default function ResultsPage() {
           </Button>
         </Link>
       </div>
-    </motion.main>
+    </MainContainer>
   )
 }

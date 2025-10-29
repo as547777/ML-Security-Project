@@ -2,6 +2,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ProgressNavbar } from "@/components/ui/progress-navbar"
+import React, {ReactNode} from "react";
+import {DataProvider} from "@/context/DataContext";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -13,19 +15,21 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} relative min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white overflow-x-hidden`}>
+    <DataProvider>
+      <body className={`${inter.className} relative min-h-screen bg-gradient-to-br from-slate-600 via-blue-600 to-slate-500 text-white overflow-x-hidden`}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-blue-500/30 blur-[160px] animate-pulse"></div>
-          <div className="absolute bottom-0 right-0 w-[700px] h-[700px] rounded-full bg-purple-500/20 blur-[180px] animate-[spin_40s_linear_infinite]"></div>
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-blue-400/30 blur-[160px] animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-[700px] h-[700px] rounded-full bg-purple-400/25 blur-[180px] animate-[spin_40s_linear_infinite]"></div>
         </div>
 
         <ProgressNavbar />
         <main className="relative z-10">{children}</main>
       </body>
+    </DataProvider>
     </html>
   )
 }
