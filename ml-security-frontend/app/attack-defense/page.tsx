@@ -1,9 +1,9 @@
 "use client"
 
-import MainContainer from "@/components/main-container";
-import {StepNavigation} from "@/components/step-navigation";
-import AttackSelect from "@/components/attack-select";
-import DefenseSelect from "@/components/defense-select";
+import MainContainer from "@/components/main-container"
+import { StepNavigation } from "@/components/step-navigation"
+import AttackCard from "@/components/attack-card";
+import DefenseCard from "@/components/defense-card";
 
 export default function AttackDefensePage() {
   return (
@@ -12,12 +12,15 @@ export default function AttackDefensePage() {
         Attacks & Defenses
       </h1>
 
-      <div className="card-main w-full max-w-2xl">
-        <form className="flex flex-col gap-4 text-zinc-700">
-          <AttackSelect />
-          <DefenseSelect />
-          <StepNavigation prev={'/dataset'} next={'/overview'} />
-        </form>
+      {/* Container for the two cards */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        <AttackCard />
+        <DefenseCard />
+      </div>
+
+      {/* Step navigation under both cards */}
+      <div className="mt-8 flex justify-center w-full max-w-sm">
+        <StepNavigation prev="/dataset" next="/overview" />
       </div>
     </MainContainer>
   )

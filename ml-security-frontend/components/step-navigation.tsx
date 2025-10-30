@@ -17,7 +17,7 @@ export function StepNavigation({
                                  next = "/",
                                }: StepNavigationProps) {
   return (
-    <div className="flex justify-between mt-4">
+    <div className="flex justify-between mt-4 w-full">
       <Link href={prev}>
         <Button
           variant="outline"

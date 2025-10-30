@@ -8,6 +8,7 @@ export default function OverviewPage() {
   const { dataset, learningRate, epochs, attack, defense } = useData()
 
   return (
+    // TODO - ovo promjenit skroz
     <MainContainer>
       <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
         Overview
@@ -22,7 +23,7 @@ export default function OverviewPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
               <h3 className="text-sm font-medium text-zinc-500">Dataset</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{dataset || "Not selected"}</p>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{dataset?.name || "Not selected"}</p>
             </div>
 
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">

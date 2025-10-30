@@ -1,9 +1,10 @@
 "use client"
 import {createContext, PropsWithChildren, useContext, useState} from "react"
+import {DatasetInfo} from "@/types";
 
 interface DataType {
-  dataset: string
-  setDataset: (dataset: string) => void
+  dataset: DatasetInfo | null
+  setDataset: (dataset: DatasetInfo | null) => void
 
   learningRate: number
   setLearningRate: (learningRate: number) => void
@@ -22,7 +23,7 @@ const DataContext = createContext<DataType | null>(null)
 
 export function DataProvider({ children }: PropsWithChildren) {
   // Dataset
-  const [dataset, setDataset] = useState("")
+  const [dataset, setDataset] = useState<DatasetInfo | null>(null)
 
   // Hyperparameters
   const [learningRate, setLearningRate] = useState(0.01)
