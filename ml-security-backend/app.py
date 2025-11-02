@@ -11,14 +11,14 @@ from handler.MetricsHandler import MetricsHandler
 from handler.ModelHandler import ModelHandler
 
 import attack as attack_pkg
-import deffence as deffence_pkg
+import defence as defence_pkg
 import dataset as dataset_pkg
 import model as model_pkg
 import statistic as metric_pkg
 
 
 load_plugins(attack_pkg)
-load_plugins(deffence_pkg)
+load_plugins(defence_pkg)
 load_plugins(dataset_pkg)
 load_plugins(model_pkg)
 load_plugins(metric_pkg)

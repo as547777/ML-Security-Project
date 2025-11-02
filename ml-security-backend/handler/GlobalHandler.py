@@ -4,7 +4,7 @@ class GlobalHandler:
         if handlers is not None:
             self.handlers=handlers
         else:
-            handlers=[]
+            self.handlers=[]
     
     def register(self, handler):
         self.handlers.append(handler)
