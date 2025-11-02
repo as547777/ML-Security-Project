@@ -7,6 +7,24 @@ import { useData } from "@/context/DataContext"
 export default function OverviewPage() {
   const { dataset, learningRate, epochs, attack, defense } = useData()
 
+  const execute = async () => {
+    const response = await fetch('/api/dummy/response', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "learning_rate": learningRate,
+        "epochs": epochs,
+        "dataset": dataset?.name,
+        "attack": attack,
+        "defense": defense,
+      })
+    })
+    const data = await response.json()
+    alert(JSON.stringify(data))
+  }
+
   return (
     // TODO - ovo promjenit skroz
     <MainContainer>
@@ -51,7 +69,7 @@ export default function OverviewPage() {
         <StepNavigation
           prev="/attack-defense"
           isFinal={true}
-          onRun={() => console.log("Run started")}
+          onRun={execute}
         />
       </div>
     </MainContainer>
