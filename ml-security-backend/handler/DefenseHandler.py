@@ -6,8 +6,8 @@ class DefenseHandler:
 
     def handle(self, context):
         model=context["model"]
-        X=context["X"]
-        y=context["y"]
+        x_train = context["x_train"]
+        y_train = context["y_train"]
 
-        context["defense_result"]=self.defense.execute(model, X, y)
+        context["defense_result"]=self.defense.execute(model, (x_train, y_train))
         
