@@ -5,8 +5,15 @@ class AttackHandler:
         self.attack=attack
     
     def handle(self, context):
-        model = context["model"]
         x_train = context["x_train"]
         y_train = context["y_train"]
+        x_test = context["x_test"]
+        y_test = context["y_test"]
 
-        context["attack_result"] = self.attack.execute(model, (x_train, y_train))
+        (x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr) = self.attack.execute(None, (x_train, y_train, x_test, y_test))
+
+        context["x_train"] = x_poisoned_train
+        context["y_train"] = y_poisoned_train
+
+        context["x_test_asr"] = x_test_asr
+        context["y_test_asr"] = y_test_asr

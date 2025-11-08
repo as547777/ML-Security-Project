@@ -39,26 +39,30 @@ def run():
     payload=request.get_json()
 
     dataset = appContext.resolve_dataset(payload["dataset"])
-    #attack = appContext.resolve_attack(payload["attack"])
+    attack = appContext.resolve_attack(payload["attack"])
     model = appContext.resolve_model(payload["model"])
     # defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
-    #globalHandler.register(AttackHandler(attack))
+    globalHandler.register(AttackHandler(attack))
     globalHandler.register(ModelHandler(model))
     # globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
 
-    context = {}
-    # context={"learning_rate" : payload["learning_rate"],
-    #          "epochs": payload["epochs"]}
+    # context = {}
+    context={"learning_rate" : payload["learning_rate"],
+              "epochs": payload["epochs"],
+              "momentum": payload["momentum"]}
 
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
     # return jsonify(results)
-    return jsonify({"accuracy": results["acc"]})
+    return jsonify({
+        "accuracy": results["acc"],
+        "ASR - attack_success_rate": results["acc_asr"]
+    })
 
 @app.route("/dummy/response", methods=["POST"])
 def dummy_response():

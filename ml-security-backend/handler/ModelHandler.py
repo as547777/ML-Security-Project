@@ -7,9 +7,9 @@ class ModelHandler:
     def handle(self, context):
         x_train = context["x_train"]
         y_train = context["y_train"]
-        lr=0.05 #context["learning_rate"]
-        momentum = 0.9 #context["momentum"]
-        epochs=6 #context["epochs"]
+        lr = context["learning_rate"]
+        momentum = context["momentum"]
+        epochs = context["epochs"]
 
         self.model.train((x_train, y_train), lr, momentum, epochs)
         context["model"]=self.model
@@ -18,3 +18,8 @@ class ModelHandler:
         y_test = context["y_test"]
         _, acc = self.model.predict((x_test, y_test))
         context["acc"] = acc
+
+        x_test_asr = context["x_test_asr"]
+        y_test_asr = context["y_test_asr"]
+        _, acc_asr = self.model.predict((x_test_asr, y_test_asr))
+        context["acc_asr"] = acc_asr
