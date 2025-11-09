@@ -13,7 +13,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/:path*', // 👈 promijeni u URL svog backend servera
+        destination: 'http://localhost:5000/:path*',
       },
     ]
   },

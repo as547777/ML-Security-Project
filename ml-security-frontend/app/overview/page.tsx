@@ -3,26 +3,47 @@
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import { useData } from "@/context/DataContext"
+import {useState} from "react";
 
 export default function OverviewPage() {
-  const { dataset, learningRate, epochs, attack, defense } = useData()
+  const { dataset, momentum, learningRate, epochs, attack, sourceLabel, targetLabel, poisonRate, triggerSize } = useData()
+  const [isRunning, setIsRunning] = useState(false)
 
+  // TODO - provjerit zasto proxy ne ceka response neg faila
+  // TODO - prebacit u konkretnu next.js api datoteku
   const execute = async () => {
-    const response = await fetch('/api/dummy/response', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        "learning_rate": learningRate,
-        "epochs": epochs,
-        "dataset": dataset?.name,
-        "attack": attack,
-        "defense": defense,
+    setIsRunning(true);
+    try {
+      const response = await fetch('http://localhost:5000/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "dataset": dataset?.name,
+          "learning_rate": learningRate,
+          "epochs": epochs,
+          "momentum": momentum,
+          "attack": attack?.name,
+          "model": "ImageModel",
+          "source_label": sourceLabel,
+          "target_label": targetLabel,
+          "poison_rate": poisonRate,
+          "trigger_size": triggerSize,
+        })
       })
-    })
-    const data = await response.json()
-    alert(JSON.stringify(data))
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      const data = await response.json()
+      alert(JSON.stringify(data))
+    }
+    catch (error) {
+      alert(error)
+    }
+    finally {
+      setIsRunning(false);
+    }
   }
 
   return (
@@ -38,7 +59,7 @@ export default function OverviewPage() {
             Here’s a summary of your selected configuration:
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
               <h3 className="text-sm font-medium text-zinc-500">Dataset</h3>
               <p className="text-lg font-semibold text-zinc-800 mt-1">{dataset?.name || "Not selected"}</p>
@@ -55,13 +76,36 @@ export default function OverviewPage() {
             </div>
 
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
+              <h3 className="text-sm font-medium text-zinc-500">Momentum</h3>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{momentum}</p>
+            </div>
+
+            <div className={"block h-4"}></div>
+            <div className={"block"}></div>
+
+            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
               <h3 className="text-sm font-medium text-zinc-500">Attack</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{attack || "Not selected"}</p>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{attack?.name || "Not selected"}</p>
             </div>
 
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Defense</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{defense || "Not selected"}</p>
+              <h3 className="text-sm font-medium text-zinc-500">Source Label</h3>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{sourceLabel}</p>
+            </div>
+
+            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
+              <h3 className="text-sm font-medium text-zinc-500">Target Label</h3>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{targetLabel}</p>
+            </div>
+
+            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
+              <h3 className="text-sm font-medium text-zinc-500">Poison Rate</h3>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{poisonRate}</p>
+            </div>
+
+            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
+              <h3 className="text-sm font-medium text-zinc-500">Trigger Size</h3>
+              <p className="text-lg font-semibold text-zinc-800 mt-1">{triggerSize}</p>
             </div>
           </div>
         </div>
@@ -69,6 +113,7 @@ export default function OverviewPage() {
         <StepNavigation
           prev="/attack-defense"
           isFinal={true}
+          isRunning={isRunning}
           onRun={execute}
         />
       </div>

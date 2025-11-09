@@ -16,25 +16,11 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 const attacks = [
   {
-    name: "FGSM",
+    name: "BadNets",
     description:
-      "Fast Gradient Sign Method — generates adversarial examples by taking a single step in the direction of the gradient of the loss function.",
+      "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
     type: "White-box attack",
     complexity: "Low",
-  },
-  {
-    name: "PGD",
-    description:
-      "Projected Gradient Descent — an iterative variant of FGSM that applies multiple smaller perturbations to maximize adversarial effect.",
-    type: "White-box attack",
-    complexity: "Medium",
-  },
-  {
-    name: "DeepFool",
-    description:
-      "An iterative method that finds minimal perturbations to fool classifiers by approximating the decision boundary locally.",
-    type: "White-box attack",
-    complexity: "High",
   },
 ]
 
@@ -64,9 +50,20 @@ export default function AttackSelect() {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="w-full justify-baseline text-zinc-700 text-md py-5">
-            {attack || "Select an attack"}
-          </Button>
+          <div className="select-div">
+            {attack?.name ? (
+              <div>
+                <h1 className={'text-base mb-1'}>{attack.name}</h1>
+                <p className="text-sm text-zinc-500 mb-2">{attack.description}</p>
+                <div className="text-xs text-zinc-400 flex justify-between">
+                  <span>ovdje dodati nesto</span>
+                  <span>i tu</span>
+                </div>
+              </div>
+            ) : (
+              <span className={'text-base'}>Select an attack</span>
+            )}
+          </div>
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-900">
@@ -86,9 +83,9 @@ export default function AttackSelect() {
               {filtered.map((a) => (
                 <div
                   key={a.name}
-                  onClick={() => setSelected(a.name)}
+                  onClick={() => setSelected(a)}
                   className={`cursor-pointer rounded-lg border p-3 transition-colors ${
-                    selected === a.name
+                    selected === a
                       ? "border-blue-500 bg-blue-50"
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
@@ -96,7 +93,7 @@ export default function AttackSelect() {
                   <h3 className="font-semibold text-blue-700">{a.name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{a.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
-                    <span>{a.type}</span>
+                    <span>ovdje dodati nesto</span>
                     <span>Complexity: {a.complexity}</span>
                   </div>
                 </div>

@@ -6,4 +6,15 @@ export interface DatasetInfo {
   testCount: number
 }
 
-// TODO - napravit isto to samo za AttackInfo i DefenseInfo
+export interface AttackInfo {
+  name: string
+  description: string
+  type: string
+  // TODO - pitat piceka sta bi jos mogli dodat da opisemo napad
+  //
+  // parameters: {
+  //   [key: string]: string | number | boolean
+  // }
+}
+
+// TODO - napravit isto to samo za DefenseInfo

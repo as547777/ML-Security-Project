@@ -44,7 +44,7 @@ export default function HomePage() {
                 className="px-8 py-6 text-lg font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)] hover:shadow-[0_0_30px_rgba(59,130,246,0.9)] transition-all duration-300"
               >
                 <Sparkles className="mr-2 h-5 w-5" />
-                Pokreni sustav
+                Setup Environment
               </Button>
             </Link>
           </motion.div>
@@ -57,7 +57,7 @@ export default function HomePage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.8 }}
       >
-        Projekt: <span className="text-blue-400">ML Security Dashboard</span>
+        Project: <span className="text-blue-400">ML Security Framework</span>
       </motion.p>
     </motion.main>
   )

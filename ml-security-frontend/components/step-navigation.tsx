@@ -8,6 +8,7 @@ interface StepNavigationProps {
   onRun?: () => void
   prev?: string
   next?: string
+  isRunning?: boolean
 }
 
 export function StepNavigation({
@@ -15,6 +16,7 @@ export function StepNavigation({
                                  onRun,
                                  prev = "/",
                                  next = "/",
+                                 isRunning
                                }: StepNavigationProps) {
   return (
     <div className="flex justify-between mt-4 w-full">
@@ -31,11 +33,17 @@ export function StepNavigation({
       {isFinal ? (
         <Button
           onClick={onRun}
-          className="bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
+          disabled={isRunning}
+          className={`flex items-center gap-2 text-white ${
+            isRunning
+              ? "bg-green-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
           <Play className="w-4 h-4" />
-          Run Test
+          {isRunning ? "Running..." : "Run Test"}
         </Button>
+
       ) : (
         <Link href={next}>
           <Button className="bg-black text-white hover:bg-zinc-800">
