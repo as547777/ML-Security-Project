@@ -10,11 +10,17 @@ export interface AttackInfo {
   name: string
   description: string
   type: string
-  // TODO - pitat piceka sta bi jos mogli dodat da opisemo napad
-  //
-  // parameters: {
-  //   [key: string]: string | number | boolean
-  // }
+  params: AttackParams
 }
+
+export interface ParamField {
+  label: string;
+  tooltip: string;
+  type: "number" | "string";
+  step?: number;
+  value: number | string;
+}
+
+export type AttackParams = Record<string, ParamField>;
 
 // TODO - napravit isto to samo za DefenseInfo

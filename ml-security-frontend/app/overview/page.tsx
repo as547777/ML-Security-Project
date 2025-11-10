@@ -6,7 +6,7 @@ import { useData } from "@/context/DataContext"
 import {useState} from "react";
 
 export default function OverviewPage() {
-  const { dataset, momentum, learningRate, epochs, attack, sourceLabel, targetLabel, poisonRate, triggerSize } = useData()
+  const { dataset, momentum, learningRate, epochs, attack, attackParams } = useData()
   const [isRunning, setIsRunning] = useState(false)
 
   // TODO - provjerit zasto proxy ne ceka response neg faila
@@ -14,7 +14,14 @@ export default function OverviewPage() {
   const execute = async () => {
     setIsRunning(true);
     try {
-      const response = await fetch('http://localhost:5000/run', {
+      const attackParamsValues = attackParams
+        ? Object.entries(attackParams).reduce((acc, [key, param]) => {
+          acc[key] = param.value;
+          return acc;
+        }, {} as Record<string, number | string>)
+        : {};
+
+      const response = await fetch('http://localhost:3000/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,10 +33,7 @@ export default function OverviewPage() {
           "momentum": momentum,
           "attack": attack?.name,
           "model": "ImageModel",
-          "source_label": sourceLabel,
-          "target_label": targetLabel,
-          "poison_rate": poisonRate,
-          "trigger_size": triggerSize,
+          ...attackParamsValues
         })
       })
       if (!response.ok) {
@@ -86,26 +90,6 @@ export default function OverviewPage() {
             <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
               <h3 className="text-sm font-medium text-zinc-500">Attack</h3>
               <p className="text-lg font-semibold text-zinc-800 mt-1">{attack?.name || "Not selected"}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Source Label</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{sourceLabel}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Target Label</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{targetLabel}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Poison Rate</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{poisonRate}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Trigger Size</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{triggerSize}</p>
             </div>
           </div>
         </div>

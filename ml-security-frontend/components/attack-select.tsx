@@ -13,15 +13,81 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {AttackInfo} from "@/types";
 
-const attacks = [
+const attacks: AttackInfo[] = [
   {
     name: "BadNets",
     description:
       "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
     type: "White-box attack",
-    complexity: "Low",
+    params: {
+      source_label: {
+        label: "Source label",
+        tooltip: "Label of the class that will be poisoned (e.g., 1)",
+        type: "number",
+        step: 1,
+        value: 1
+      },
+      target_label: {
+        label: "Target label",
+        tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+        type: "number",
+        step: 1,
+        value: 7
+      },
+      poison_rate: {
+        label: "Poison rate",
+        tooltip: "Fraction of samples from the source class to poison (0–1)",
+        type: "number",
+        step: 0.01,
+        value: 0.2
+      },
+      trigger_size: {
+        label: "Trigger size",
+        tooltip: "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
+        type: "number",
+        step: 1,
+        value: 4
+      }
+    }
   },
+  {
+    name: "Blend",
+    description:
+      "Blending two images together to create a malicious input to misclassify the model.",
+    type: "White-box attack",
+    params: {
+      source_label: {
+        label: "Source label",
+        tooltip: "Label of the class that will be poisoned (e.g., 1)",
+        type: "number",
+        step: 1,
+        value: 1
+      },
+      target_label: {
+        label: "Target label",
+        tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+        type: "number",
+        step: 1,
+        value: 7
+      },
+      poison_rate: {
+        label: "Poison rate",
+        tooltip: "Fraction of samples from the source class to poison (0–1)",
+        type: "number",
+        step: 0.01,
+        value: 0.2
+      },
+      alpha: {
+        label: "Alpha",
+        tooltip: "Opacity of the overlay image.",
+        type: "number",
+        step: 0.01,
+        value: 0.2
+      }
+    }
+  }
 ]
 
 export default function AttackSelect() {
@@ -94,7 +160,7 @@ export default function AttackSelect() {
                   <p className="text-sm text-zinc-600 mb-2">{a.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
                     <span>ovdje dodati nesto</span>
-                    <span>Complexity: {a.complexity}</span>
+                    <span>i tu</span>
                   </div>
                 </div>
               ))}

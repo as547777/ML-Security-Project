@@ -2,16 +2,16 @@ import React from 'react';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {Info} from "lucide-react";
 
-interface FieldInputProps {
+interface FieldInputProps<T extends string | number> {
   label: string;
   tooltip: string;
   type: 'number' | 'string'
   step?: number;
-  value: number;
-  setValue: (value: number) => void;
+  value: T;
+  setValue: ((value: T) => void);
 }
 
-const FieldInput = (params : FieldInputProps) => {
+const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="param-container">
@@ -34,7 +34,13 @@ const FieldInput = (params : FieldInputProps) => {
           type={params.type}
           step={params.step}
           value={params.value}
-          onChange={(e) => params.setValue(parseFloat(e.target.value))}
+          onChange={(e) => {
+            const value =
+              params.type === "number"
+                ? (parseFloat(e.target.value) as T)
+                : (e.target.value as T);
+            params.setValue(value);
+          }}
           className="param-input"
         />
       </div>

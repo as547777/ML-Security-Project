@@ -1,6 +1,6 @@
 "use client"
-import {createContext, PropsWithChildren, useContext, useState} from "react"
-import {AttackInfo, DatasetInfo} from "@/types";
+import {createContext, PropsWithChildren, useContext, useEffect, useState} from "react"
+import {AttackInfo, AttackParams, DatasetInfo} from "@/types";
 
 interface DataType {
   dataset: DatasetInfo | null
@@ -15,22 +15,8 @@ interface DataType {
 
   attack: AttackInfo | null
   setAttack: (attack: AttackInfo | null) => void
-
-  // TODO - ovo tu je jako privremeno, hardkodirano je samo za badnets.
-  //  neka ideja je da za svaki napad imamo neke dinamicke parametre, jer tipa napadi na zvuk nece imat "trigger size" i slicno
-  //  bilo bi kul da kad sa beka povlacimo koji napad zelimo, da on vrati nekakav popis svih parametra pa po tome se dinamicki kreiraju
-  //  zbog toga treba nastojati napraviti FieldInputs komponentu koliko god dinamicka moze bit
-  //  (to podrazumijeva da treba istrazit kako funkcionira generiranje dinamickih stateova u reactu (yikes))
-  //  MALI NASTAVAK -> za badnets mozemo cak dodat "trigger position" i onda birat izmedu center, top left, bottom right...
-  //  ^^^ za ovo treba prilagoti FieldInputs heh
-  sourceLabel: number
-  setSourceLabel: (sourceLabel: number) => void
-  targetLabel: number
-  setTargetLabel: (targetLabel: number) => void
-  poisonRate: number
-  setPoisonRate: (poisonRate: number) => void
-  triggerSize: number
-  setTriggerSize: (triggerSize: number) => void
+  attackParams: AttackParams | undefined
+  updateAttackParams: (key: keyof AttackParams, value: number | string) => void
 
   defense: string
   setDefense: (defense: string) => void
@@ -50,15 +36,26 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   // Attack
   const [attack, setAttack] = useState<AttackInfo | null>(null)
-
-  // Poisoning attack params
-  const [sourceLabel, setSourceLabel] = useState(1)
-  const [targetLabel, setTargetLabel] = useState(7)
-  const [poisonRate, setPoisonRate] = useState(0.9)
-  const [triggerSize, setTriggerSize] = useState(4)
+  const [attackParams, setAttackParams] = useState<AttackParams | undefined>(attack?.params);
+  const updateAttackParams = (key: keyof AttackParams, value: number | string) => {
+    setAttackParams(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [key]: {
+          ...prev[key],
+          value,
+        },
+      };
+    });
+  };
 
   // Defense
   const [defense, setDefense] = useState("")
+
+  useEffect(() => {
+    setAttackParams(attack?.params);
+  }, [attack]);
 
   return (
     <DataContext.Provider
@@ -68,10 +65,7 @@ export function DataProvider({ children }: PropsWithChildren) {
         epochs, setEpochs,
         momentum, setMomentum,
         attack, setAttack,
-        sourceLabel, setSourceLabel,
-        targetLabel, setTargetLabel,
-        poisonRate, setPoisonRate,
-        triggerSize, setTriggerSize,
+        attackParams, updateAttackParams,
         defense, setDefense,
       }}
     >
@@ -87,3 +81,34 @@ export const useData = () => {
   }
   return context
 }
+
+// const params: AttackParams = {
+//   source_label: {
+//     label: "Source label",
+//     tooltip: "Label of the class that will be poisoned (e.g., 1)",
+//     type: "number",
+//     step: 1,
+//     value: 1
+//   },
+//   target_label: {
+//     label: "Target label",
+//     tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+//     type: "number",
+//     step: 1,
+//     value: 7
+//   },
+//   poison_rate: {
+//     label: "Poison rate",
+//     tooltip: "Fraction of samples from the source class to poison (0–1)",
+//     type: "number",
+//     step: 0.01,
+//     value: 0.2
+//   },
+//   trigger_size: {
+//     label: "Trigger size",
+//     tooltip: "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
+//     type: "number",
+//     step: 1,
+//     value: 4
+//   }
+// }
