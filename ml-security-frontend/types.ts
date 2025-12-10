@@ -16,8 +16,9 @@ export interface AttackInfo {
 export interface ParamField {
   label: string;
   tooltip: string;
-  type: "number" | "string";
+  type: "number" | "string" | "select";
   step?: number;
+  options?: string[];
   value: number | string;
 }
 

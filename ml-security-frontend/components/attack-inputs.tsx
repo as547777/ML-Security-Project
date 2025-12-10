@@ -22,6 +22,7 @@ const AttackInputs = () => {
           tooltip={param.tooltip}
           type={param.type as "number" | "string"}
           step={param.step}
+          options={param.options}
           value={param.value}
           setValue={(value) => {
             updateAttackParams(key, value)

@@ -54,6 +54,7 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [defense, setDefense] = useState("")
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAttackParams(attack?.params);
   }, [attack]);
 

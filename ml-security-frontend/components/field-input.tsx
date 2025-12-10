@@ -1,17 +1,67 @@
 import React from 'react';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {Info} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface FieldInputProps<T extends string | number> {
   label: string;
   tooltip: string;
-  type: 'number' | 'string'
+  type: 'number' | 'string' | 'select';
   step?: number;
+  options?: string[];
   value: T;
   setValue: ((value: T) => void);
 }
 
 const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
+  const field = () =>{
+    if (params.type === "number" || params.type === "string") {
+      return (
+        <input
+          type={params.type}
+          step={params.step}
+          value={params.value}
+          onChange={(e) => {
+            const value =
+              params.type === "number"
+                ? (parseFloat(e.target.value) as T)
+                : (e.target.value as T);
+            params.setValue(value);
+          }}
+          className="param-input"
+        />
+      )
+    } else if (params.type === "select") {
+      return (
+        <Select
+          defaultValue={params.value.toString()}
+          onValueChange={(e) => params.setValue(e as T)}
+        >
+          <SelectTrigger className="param-input">
+            <SelectValue placeholder="Select a fruit" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+                {params.options?.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      );
+    }
+  }
+
   return (
     <TooltipProvider delayDuration={150}>
       <div className="param-container">
@@ -30,19 +80,7 @@ const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
           </Tooltip>
         </div>
 
-        <input
-          type={params.type}
-          step={params.step}
-          value={params.value}
-          onChange={(e) => {
-            const value =
-              params.type === "number"
-                ? (parseFloat(e.target.value) as T)
-                : (e.target.value as T);
-            params.setValue(value);
-          }}
-          className="param-input"
-        />
+        {field()}
       </div>
     </TooltipProvider>
   );
