@@ -3,11 +3,18 @@ import React from "react"
 import { useData } from "@/context/DataContext"
 import FieldInput from "@/components/field-input";
 
-const HyperparameterInputs = () => {
+interface Props {
+  optimizers: {name: string, description: string}[],
+  lossFunctions: {name: string, description: string}[]
+}
+
+const HyperparameterInputs = ({optimizers, lossFunctions} : Props) => {
   const {
     learningRate, setLearningRate,
     epochs, setEpochs,
-    momentum, setMomentum
+    momentum, setMomentum,
+    optimizer, setOptimizer,
+    lossFunction, setLossFunction
   } = useData()
 
   return (
@@ -32,6 +39,20 @@ const HyperparameterInputs = () => {
         tooltip="Controls how quickly the model adapts to changes in the training data."
         step={0.01}
         value={momentum} setValue={setMomentum} />
+      
+      <FieldInput
+        label={"Loss function"}
+        tooltip={"Chooses how the model values loss per example"}
+        type={'select'}
+        options={lossFunctions.map(loss => loss.name)}
+        value={lossFunction} setValue={setLossFunction} />
+
+      <FieldInput
+        label={"Optimizer"}
+        tooltip={"Chooses how the model handles weight updates while training."}
+        type={"select"}
+        options={optimizers.map(opt => opt.name)}
+        value={optimizer} setValue={setOptimizer} />
     </div>
   )
 }

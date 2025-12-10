@@ -1,11 +1,9 @@
-"use client"
-
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import AttackCard from "@/components/attack-card";
 import DefenseCard from "@/components/defense-card";
 
-export default function AttackDefensePage() {
+export default async function AttackDefensePage() {
   return (
     <MainContainer>
       <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">

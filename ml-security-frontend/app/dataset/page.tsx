@@ -1,40 +1,19 @@
-"use client"
-
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import DatasetSelect from "@/components/dataset-select"
 import HyperparameterInputs from "@/components/hyperparameter-inputs"
 import DatasetInfoCard from "@/components/dataset-info-card"
+import {DatasetInfo} from "@/types";
 
-// TODO - ovo zamjenit sa fetchom na bek
-const datasetList = [
-  {
-    name: "MNIST",
-    description:
-      "The MNIST dataset contains 70,000 images of handwritten digits (0–9). Each image is 28×28 grayscale.",
-    type: "Image",
-    trainCount: 60000,
-    testCount: 10000,
-  },
-  {
-    name: "CIFAR-10",
-    description:
-      "CIFAR-10 consists of 60,000 32×32 color images in 10 classes, with 6,000 images per class.",
-    type: "Image",
-    trainCount: 50000,
-    testCount: 10000,
-  },
-  {
-    name: "Custom Dataset",
-    description:
-      "A user-provided dataset. Details and statistics will depend on your upload or configuration.",
-    type: "",
-    trainCount: 0,
-    testCount: 0,
-  },
-]
+export default async function DatasetPage() {
+  const dataset_data = await fetch('http://localhost:3004/datasets')
+  const optimizer_data = await fetch('http://localhost:3004/optimizers')
+  const loss_function_data = await fetch('http://localhost:3004/loss_functions')
 
-export default function DatasetPage() {
+  const datasets = await dataset_data.json() as DatasetInfo[]
+  const optimizers = await optimizer_data.json()
+  const lossFunctions = await loss_function_data.json()
+
   return (
     <MainContainer>
       <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
@@ -50,8 +29,8 @@ export default function DatasetPage() {
             </p>
 
             <div className="flex flex-col gap-4 text-zinc-700">
-              <DatasetSelect datasets={datasetList} />
-              <HyperparameterInputs />
+              <DatasetSelect datasets={datasets} />
+              <HyperparameterInputs optimizers={optimizers} lossFunctions={lossFunctions} />
             </div>
           </div>
 

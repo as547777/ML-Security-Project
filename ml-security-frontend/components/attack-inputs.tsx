@@ -1,3 +1,5 @@
+"use client"
+
 import React, {useEffect} from 'react';
 import FieldInput from "@/components/field-input";
 import {useData} from "@/context/DataContext";

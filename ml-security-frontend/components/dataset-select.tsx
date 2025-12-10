@@ -16,11 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import DatasetTypeIcon from "@/components/dataset-type-icon";
 import {DatasetInfo} from "@/types";
 
-interface Params {
-  datasets: DatasetInfo[]
-}
-
-export default function DatasetSelect({ datasets }: Params) {
+export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] }) {
   const { dataset, setDataset } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")

@@ -12,6 +12,12 @@ interface DataType {
   setEpochs: (epochs: number) => void
   momentum: number
   setMomentum: (momentum: number) => void
+  batchSize: number
+  setBatchSize: (batchSize: number) => void
+  lossFunction: string
+  setLossFunction: (lossFunction: string) => void
+  optimizer: string
+  setOptimizer: (optimizer: string) => void
 
   attack: AttackInfo | null
   setAttack: (attack: AttackInfo | null) => void
@@ -32,7 +38,11 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [learningRate, setLearningRate] = useState(0.01)
   const [epochs, setEpochs] = useState(10)
   const [momentum, setMomentum] = useState(0.9)
-  // mozda dodat batch size
+  const [batchSize, setBatchSize] = useState(32)
+
+  const [lossFunction, setLossFunction] = useState("CrossEntropyLoss")
+  const [optimizer, setOptimizer] = useState("SGD")
+  // TODO - picek veli da treba dodat parametre za optimizator, loss funkciju, izgled neuronske mreze
 
   // Attack
   const [attack, setAttack] = useState<AttackInfo | null>(null)
@@ -65,6 +75,9 @@ export function DataProvider({ children }: PropsWithChildren) {
         learningRate, setLearningRate,
         epochs, setEpochs,
         momentum, setMomentum,
+        batchSize, setBatchSize,
+        lossFunction, setLossFunction,
+        optimizer, setOptimizer,
         attack, setAttack,
         attackParams, updateAttackParams,
         defense, setDefense,

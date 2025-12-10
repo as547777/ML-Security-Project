@@ -1,0 +1,174 @@
+{
+  "attacks": [
+    {
+      "name": "BadNets",
+      "description": "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
+      "type": "White-box attack",
+      "params": {
+        "source_label": {
+          "label": "Source label",
+          "tooltip": "Label of the class that will be poisoned (e.g., 1)",
+          "type": "number",
+          "step": 1,
+          "value": 1
+        },
+        "target_label": {
+          "label": "Target label",
+          "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+          "type": "number",
+          "step": 1,
+          "value": 7
+        },
+        "poison_rate": {
+          "label": "Poison rate",
+          "tooltip": "Fraction of samples from the source class to poison (0–1)",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.2
+        },
+        "trigger_size": {
+          "label": "Trigger size",
+          "tooltip": "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
+          "type": "number",
+          "step": 1,
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Blend",
+      "description": "Blending two images together to create a malicious input to misclassify the model.",
+      "type": "White-box attack",
+      "params": {
+        "source_label": {
+          "label": "Source label",
+          "tooltip": "Label of the class that will be poisoned (e.g., 1)",
+          "type": "number",
+          "step": 1,
+          "value": 1
+        },
+        "target_label": {
+          "label": "Target label",
+          "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+          "type": "number",
+          "step": 1,
+          "value": 7
+        },
+        "poison_rate": {
+          "label": "Poison rate",
+          "tooltip": "Fraction of samples from the source class to poison (0–1)",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.2
+        },
+        "alpha": {
+          "label": "Alpha",
+          "tooltip": "Opacity of the overlay image.",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.2
+        }
+      }
+    },
+    {
+      "name": "Proba",
+      "description": "Probavam mmmmmmmmmmmm.",
+      "type": "White-box attack",
+      "params": {
+        "source_label": {
+          "label": "Source label",
+          "tooltip": "Label of the class that will be poisoned (e.g., 1)",
+          "type": "number",
+          "step": 1,
+          "value": 1
+        },
+        "target_label": {
+          "label": "Target label",
+          "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+          "type": "number",
+          "step": 1,
+          "value": 7
+        },
+        "poison_rate": {
+          "label": "Poison rate",
+          "tooltip": "Fraction of samples from the source class to poison (0–1)",
+          "type": "string",
+          "value": 0.2
+        },
+        "alpha": {
+          "label": "Alpha",
+          "tooltip": "Opacity of the overlay image.",
+          "type": "select",
+          "options": ["0.2", "0.4", "0.6", "0.8", "1.0"],
+          "value": 0.2
+        }
+      }
+    }
+  ],
+  "datasets": [
+    {
+      "name": "MNIST",
+      "description":
+      "The MNIST dataset contains 70,000 images of handwritten digits (0–9). Each image is 28×28 grayscale.",
+      "type": "Image",
+      "trainCount": 60000,
+      "testCount": 10000
+    },
+    {
+      "name": "CIFAR-10",
+      "description":
+      "CIFAR-10 consists of 60,000 32×32 color images in 10 classes, with 6,000 images per class.",
+      "type": "Image",
+      "trainCount": 50000,
+      "testCount": 10000
+    },
+    {
+      "name": "Custom Dataset",
+      "description":
+      "A user-provided dataset. Details and statistics will depend on your upload or configuration.",
+      "type": "",
+      "trainCount": 0,
+      "testCount": 0
+    }
+  ],
+  "optimizers": [
+    {"name": "SGD", "description": "Implements stochastic gradient descent (optionally with momentum)."},
+    {"name": "LBFGS", "description": "Implements L-BFGS algorithm."},
+    {"name": "Adadelta", "description": "Implements Adadelta algorithm."},
+    {"name": "Adafactor", "description": "Implements Adafactor algorithm."},
+    {"name": "Adagrad", "description": "Implements Adagrad algorithm."},
+    {"name": "Adam", "description": "Implements Adam algorithm."},
+    {"name": "AdamW", "description": "Implements AdamW algorithm, where weight decay does not accumulate in the momentum nor variance."},
+    {"name": "SparseAdam", "description": "SparseAdam implements a masked version of the Adam algorithm suitable for sparse gradients."},
+    {"name": "Adamax", "description": "Implements Adamax algorithm (a variant of Adam based on infinity norm)."},
+    {"name": "ASGD", "description": "Implements Averaged Stochastic Gradient Descent."},
+    {"name": "Muon", "description": "Implements Muon algorithm."},
+    {"name": "NAdam", "description": "Implements NAdam algorithm."},
+    {"name": "RAdam", "description": "Implements RAdam algorithm."},
+    {"name": "RMSprop", "description": "Implements RMSprop algorithm."},
+    {"name": "Rprop", "description": "Implements the resilient backpropagation algorithm."}
+  ],
+  "loss_functions": [
+    {"name": "L1Loss", "description": "Creates a criterion that measures the mean absolute error (MAE) between each element in the input and target."},
+    {"name": "MSELoss", "description": "Creates a criterion that measures the mean squared error (squared L2 norm) between each element in the input and target."},
+    {"name": "CrossEntropyLoss", "description": "This criterion computes the cross entropy loss between input logits and target."},
+    {"name": "CTCLoss", "description": "The Connectionist Temporal Classification loss."},
+    {"name": "NLLLoss", "description": "The negative log likelihood loss."},
+    {"name": "PoissonNLLLoss", "description": "Negative log likelihood loss with Poisson distribution of target."},
+    {"name": "GaussianNLLLoss", "description": "Gaussian negative log likelihood loss."},
+    {"name": "KLDivLoss", "description": "The Kullback-Leibler divergence loss."},
+    {"name": "BCELoss", "description": "Creates a criterion that measures the Binary Cross Entropy between the target and the input probabilities."},
+    {"name": "BCEWithLogitsLoss", "description": "This loss combines a Sigmoid layer and the BCELoss in one single class."},
+    {"name": "MarginRankingLoss", "description": "Creates a criterion that measures the loss given inputs x1, x2, two 1D mini-batch or 0D Tensors, and a label 1D mini-batch or 0D Tensor (containing 1 or -1)."},
+    {"name": "HingeEmbeddingLoss", "description": "Measures the loss given an input tensor and a labels tensor (containing 1 or -1)."},
+    {"name": "MultiLabelMarginLoss", "description": "Creates a criterion that optimizes a multi-class multi-classification hinge loss (margin-based loss) between input (a 2D mini-batch Tensor) and output (which is a 2D Tensor of target class indices)."},
+    {"name": "HuberLoss", "description": "Creates a criterion that uses a squared term if the absolute element-wise error falls below delta and a delta-scaled L1 term otherwise."},
+    {"name": "SmoothL1Loss", "description": "Creates a criterion that uses a squared term if the absolute element-wise error falls below beta and an L1 term otherwise."},
+    {"name": "SoftMarginLoss", "description": "Creates a criterion that optimizes a two-class classification logistic loss between input tensor and target tensor (containing 1 or -1)."},
+    {"name": "MultiLabelSoftMarginLoss", "description": "Creates a criterion that optimizes a multi-label one-versus-all loss based on max-entropy, between input and target."},
+    {"name": "CosineEmbeddingLoss", "description": "Creates a criterion that measures the loss given input tensors x1, x2 and a Tensor label with values 1 or -1."},
+    {"name": "MultiMarginLoss", "description": "Creates a criterion that optimizes a multi-class classification hinge loss (margin-based loss) between input (a 2D mini-batch Tensor) and output (which is a 1D tensor of target class indices)."},
+    {"name": "TripletMarginLoss", "description": "Creates a criterion that measures the triplet loss given an input tensors x1, x2, x3 and a margin with a value greater than 0."},
+    {"name": "TripletMarginWithDistanceLoss", "description": "Creates a criterion that measures the triplet loss given input tensors (representing anchor, positive, and negative examples), and a nonnegative, real-valued function used to compute the relationship between examples."}
+  ]
+}

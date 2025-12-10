@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { useData } from "@/context/DataContext"
@@ -15,118 +14,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {AttackInfo} from "@/types";
 
-const attacks: AttackInfo[] = [
-  {
-    name: "BadNets",
-    description:
-      "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
-    type: "White-box attack",
-    params: {
-      source_label: {
-        label: "Source label",
-        tooltip: "Label of the class that will be poisoned (e.g., 1)",
-        type: "number",
-        step: 1,
-        value: 1
-      },
-      target_label: {
-        label: "Target label",
-        tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
-        type: "number",
-        step: 1,
-        value: 7
-      },
-      poison_rate: {
-        label: "Poison rate",
-        tooltip: "Fraction of samples from the source class to poison (0–1)",
-        type: "number",
-        step: 0.01,
-        value: 0.2
-      },
-      trigger_size: {
-        label: "Trigger size",
-        tooltip: "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
-        type: "number",
-        step: 1,
-        value: 4
-      }
-    }
-  },
-  {
-    name: "Blend",
-    description:
-      "Blending two images together to create a malicious input to misclassify the model.",
-    type: "White-box attack",
-    params: {
-      source_label: {
-        label: "Source label",
-        tooltip: "Label of the class that will be poisoned (e.g., 1)",
-        type: "number",
-        step: 1,
-        value: 1
-      },
-      target_label: {
-        label: "Target label",
-        tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
-        type: "number",
-        step: 1,
-        value: 7
-      },
-      poison_rate: {
-        label: "Poison rate",
-        tooltip: "Fraction of samples from the source class to poison (0–1)",
-        type: "number",
-        step: 0.01,
-        value: 0.2
-      },
-      alpha: {
-        label: "Alpha",
-        tooltip: "Opacity of the overlay image.",
-        type: "number",
-        step: 0.01,
-        value: 0.2
-      }
-    }
-  },
-  {
-    name: "Proba",
-    description:
-      "Probavam mmmmmmmmmmmm.",
-    type: "White-box attack",
-    params: {
-      source_label: {
-        label: "Source label",
-        tooltip: "Label of the class that will be poisoned (e.g., 1)",
-        type: "number",
-        step: 1,
-        value: 1
-      },
-      target_label: {
-        label: "Target label",
-        tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
-        type: "number",
-        step: 1,
-        value: 7
-      },
-      poison_rate: {
-        label: "Poison rate",
-        tooltip: "Fraction of samples from the source class to poison (0–1)",
-        type: "string",
-        value: 0.2
-      },
-      alpha: {
-        label: "Alpha",
-        tooltip: "Opacity of the overlay image.",
-        type: "select",
-        options: ["0.2", "0.4", "0.6", "0.8", "1.0"],
-        step: 0.01,
-        value: 0.2
-      }
-    }
-  }
-]
-
-export default function AttackSelect() {
+export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
   const { attack, setAttack } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")

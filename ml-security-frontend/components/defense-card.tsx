@@ -1,7 +1,7 @@
 import React from 'react';
 import DefenseSelect from "@/components/defense-select";
 
-const DefenseCard = () => {
+const DefenseCard = async () => {
   return (
     <div className="card-main flex-1 w-full max-w-2xl">
       <h2 className="text-xl font-semibold text-purple-700 mb-3">

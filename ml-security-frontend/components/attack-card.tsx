@@ -1,10 +1,11 @@
 import React from 'react';
 import AttackSelect from "@/components/attack-select";
 import AttackInputs from "@/components/attack-inputs";
-import {useData} from "@/context/DataContext";
+import {AttackInfo} from "@/types";
 
-const AttackCard = () => {
-  const {attack} = useData();
+const AttackCard = async () => {
+  const data = await fetch('http://localhost:3004/attacks')
+  const attacks = await data.json() as AttackInfo[]
 
   return (
     <div className="card-main flex-1 w-full max-w-2xl">
@@ -15,9 +16,9 @@ const AttackCard = () => {
         Choose an adversarial attack method to test your model’s robustness.
       </p>
       <div className="flex flex-col gap-4 text-zinc-700 ">
-        <AttackSelect />
+        <AttackSelect attacks={attacks} />
         {/* temp */}
-        {attack && <AttackInputs />}
+        <AttackInputs />
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
           onValueChange={(e) => params.setValue(e as T)}
         >
           <SelectTrigger className="param-input">
-            <SelectValue placeholder="Select a fruit" />
+            <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
