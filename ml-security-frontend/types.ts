@@ -1,18 +1,9 @@
-
-
 export interface DatasetInfo {
   name: string
   description: string
   type: string
   trainCount: number
   testCount: number
-}
-
-export interface AttackInfo {
-  name: string
-  description: string
-  type: string
-  params: AttackParams
 }
 
 export interface ParamField {
@@ -24,6 +15,19 @@ export interface ParamField {
   value: number | string;
 }
 
-export type AttackParams = Record<string, ParamField>;
+export type ParamsType = Record<string, ParamField>;
 
-// TODO - napravit isto to samo za DefenseInfo
+export interface AttackInfo {
+  name: string
+  description: string
+  type: string
+  params: ParamsType
+}
+
+export interface DefenseInfo {
+  name: string
+  description: string
+  type: string
+  params: ParamsType
+}
+

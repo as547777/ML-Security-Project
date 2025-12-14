@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { useData } from "@/context/DataContext"
@@ -13,62 +12,62 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import DatasetTypeIcon from "@/components/dataset-type-icon";
-import {DatasetInfo} from "@/types";
+import {DefenseInfo} from "@/types";
 
-export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] }) {
-  const { dataset, setDataset } = useData()
+export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
+  const { defense, setDefense } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
-  const [filtered, setFiltered] = useState(datasets)
-  const [selected, setSelected] = useState(dataset)
+  const [filtered, setFiltered] = useState(defenses)
+  const [selected, setSelected] = useState(defense)
 
-  // Debounced search
   useEffect(() => {
     const handler = setTimeout(() => {
       const term = search.toLowerCase()
-      setFiltered(
-        datasets.filter((d) => d.name.toLowerCase().includes(term))
-      )
+      setFiltered(defenses.filter((d) => d.name.toLowerCase().includes(term)))
     }, 200)
     return () => clearTimeout(handler)
-  }, [datasets, search])
+  }, [search])
 
   const handleConfirm = () => {
-    setDataset(selected)
+    setDefense(selected)
     setOpen(false)
   }
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1 text-zinc-500">Dataset</label>
+      <label className="block text-sm font-medium mb-1 text-zinc-500">Defense</label>
 
-      {/* Trigger button */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full justify-baseline text-zinc-700 text-md py-5"
-          >
-            <DatasetTypeIcon type={dataset?.type} />
-            {dataset?.name || "Select a dataset"}
-          </Button>
+          <div className="select-div">
+            {defense?.name ? (
+              <div>
+                <h1 className={'text-base mb-1'}>{defense.name}</h1>
+                <p className="text-sm text-zinc-500 mb-2">{defense.description}</p>
+                <div className="text-xs text-zinc-400 flex justify-between">
+                  <span>ovdje dodati nesto</span>
+                  <span>i tu</span>
+                </div>
+              </div>
+            ) : (
+              <span className={'text-base'}>Select a defense</span>
+            )}
+          </div>
         </DialogTrigger>
 
-        <DialogContent className="max-w-lg text-zinc-700">
+        <DialogContent className="max-w-lg text-zinc-900">
           <DialogHeader>
-            <DialogTitle>Select a Dataset</DialogTitle>
+            <DialogTitle>Select a Defense</DialogTitle>
           </DialogHeader>
 
-          {/* Search input */}
           <input
-            placeholder="Search datasets..."
+            placeholder="Search defenses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="mb-3"
           />
 
-          {/* Scrollable dataset list */}
           <ScrollArea className="h-116 pr-2">
             <div className="space-y-3">
               {filtered.map((d) => (
@@ -82,24 +81,22 @@ export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] })
                   }`}
                 >
                   <h3 className="font-semibold text-blue-700">{d.name}</h3>
-                  <p className="text-sm text-zinc-600">{d.description}</p>
-                  <div className="mt-2 text-xs text-zinc-500">
-                    <p>Type: {d.type}</p>
-                    <p>Train examples: {d.trainCount.toLocaleString()}</p>
-                    <p>Test examples: {d.testCount.toLocaleString()}</p>
+                  <p className="text-sm text-zinc-600 mb-2">{d.description}</p>
+                  <div className="text-xs text-zinc-500 flex justify-between">
+                    <span>{d.type}</span>
+                    <span>teski mrnjau</span>
                   </div>
                 </div>
               ))}
 
               {filtered.length === 0 && (
                 <p className="text-sm text-zinc-500 text-center py-6">
-                  No datasets found.
+                  No defenses found.
                 </p>
               )}
             </div>
           </ScrollArea>
 
-          {/* Footer buttons */}
           <DialogFooter className="mt-4 flex justify-between">
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancel

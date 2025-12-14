@@ -1,23 +1,20 @@
-"use client"
-
-import React, {useEffect} from 'react';
+import React from 'react';
+import {ParamsType} from "@/types";
 import FieldInput from "@/components/field-input";
-import {useData} from "@/context/DataContext";
 
-const AttackInputs = () => {
-  const {attackParams, updateAttackParams} = useData()
+interface Props {
+  params: ParamsType | undefined
+  updateParams: (key: keyof ParamsType, value: number | string) => void
+}
 
-  useEffect(() => {
-    console.log(attackParams)
-  }, [attackParams])
-
-  if (!attackParams) {
+const ParamInputs = ({params, updateParams} : Props) => {
+  if (!params) {
     return null;
   }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-      {Object.entries(attackParams).map(([key, param]) => (
+      {Object.entries(params).map(([key, param]) => (
         <FieldInput
           key={key}
           label={param.label}
@@ -27,7 +24,7 @@ const AttackInputs = () => {
           options={param.options}
           value={param.value}
           setValue={(value) => {
-            updateAttackParams(key, value)
+            updateParams(key, value)
           }}
         />
       ))}
@@ -35,4 +32,4 @@ const AttackInputs = () => {
   );
 };
 
-export default AttackInputs;
+export default ParamInputs;

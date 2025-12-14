@@ -1,7 +1,7 @@
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
-import AttackCard from "@/components/attack-card";
-import DefenseCard from "@/components/defense-card";
+import AttackCard from "@/components/attack/attack-card";
+import DefenseCard from "@/components/defense/defense-card";
 
 export default async function AttackDefensePage() {
   return (

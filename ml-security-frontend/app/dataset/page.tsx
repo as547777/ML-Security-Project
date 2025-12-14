@@ -1,8 +1,8 @@
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
-import DatasetSelect from "@/components/dataset-select"
+import DatasetSelect from "@/components/dataset/dataset-select"
 import HyperparameterInputs from "@/components/hyperparameter-inputs"
-import DatasetInfoCard from "@/components/dataset-info-card"
+import DatasetInfoCard from "@/components/dataset/dataset-info-card"
 import {DatasetInfo} from "@/types";
 
 export default async function DatasetPage() {

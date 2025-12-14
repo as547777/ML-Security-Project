@@ -1,6 +1,6 @@
 import React from 'react';
-import AttackSelect from "@/components/attack-select";
-import AttackInputs from "@/components/attack-inputs";
+import AttackSelect from "@/components/attack/attack-select";
+import AttackInputs from "@/components/attack/attack-inputs";
 import {AttackInfo} from "@/types";
 
 const AttackCard = async () => {
@@ -17,7 +17,6 @@ const AttackCard = async () => {
       </p>
       <div className="flex flex-col gap-4 text-zinc-700 ">
         <AttackSelect attacks={attacks} />
-        {/* temp */}
         <AttackInputs />
       </div>
     </div>

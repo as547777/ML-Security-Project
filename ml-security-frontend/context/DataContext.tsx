@@ -1,6 +1,6 @@
 "use client"
-import {createContext, PropsWithChildren, useContext, useEffect, useState} from "react"
-import {AttackInfo, AttackParams, DatasetInfo} from "@/types";
+import {createContext, PropsWithChildren, useContext, useState} from "react"
+import {AttackInfo, ParamsType, DatasetInfo, DefenseInfo} from "@/types";
 
 interface DataType {
   dataset: DatasetInfo | null
@@ -21,11 +21,13 @@ interface DataType {
 
   attack: AttackInfo | null
   setAttack: (attack: AttackInfo | null) => void
-  attackParams: AttackParams | undefined
-  updateAttackParams: (key: keyof AttackParams, value: number | string) => void
+  attackParams: ParamsType | undefined
+  updateAttackParams: (key: keyof ParamsType, value: number | string) => void
 
-  defense: string
-  setDefense: (defense: string) => void
+  defense: DefenseInfo | null
+  setDefense: (defense: DefenseInfo | null) => void
+  defenseParams: ParamsType | undefined
+  updateDefenseParams: (key: keyof ParamsType, value: number | string) => void
 }
 
 const DataContext = createContext<DataType | null>(null)
@@ -42,12 +44,12 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   const [lossFunction, setLossFunction] = useState("CrossEntropyLoss")
   const [optimizer, setOptimizer] = useState("SGD")
-  // TODO - picek veli da treba dodat parametre za optimizator, loss funkciju, izgled neuronske mreze
+  // TODO - picek veli da treba dodat izgled neuronske mreze
 
   // Attack
-  const [attack, setAttack] = useState<AttackInfo | null>(null)
-  const [attackParams, setAttackParams] = useState<AttackParams | undefined>(attack?.params);
-  const updateAttackParams = (key: keyof AttackParams, value: number | string) => {
+  const [attack, setAttackInfo] = useState<AttackInfo | null>(null)
+  const [attackParams, setAttackParams] = useState<ParamsType | undefined>(attack?.params);
+  const updateAttackParams = (key: keyof ParamsType, value: number | string) => {
     setAttackParams(prev => {
       if (!prev) return prev;
       return {
@@ -59,14 +61,30 @@ export function DataProvider({ children }: PropsWithChildren) {
       };
     });
   };
+  const setAttack = (attack: AttackInfo | null) => {
+    setAttackInfo(attack);
+    setAttackParams(attack?.params)
+  }
 
   // Defense
-  const [defense, setDefense] = useState("")
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setAttackParams(attack?.params);
-  }, [attack]);
+  const [defense, setDefenseInfo] = useState<DefenseInfo | null>(null)
+  const [defenseParams, setDefenseParams] = useState<ParamsType | undefined>(defense?.params);
+  const updateDefenseParams = (key: keyof ParamsType, value: number | string) => {
+    setDefenseParams(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [key]: {
+          ...prev[key],
+          value,
+        },
+      };
+    });
+  }
+  const setDefense = (defense: DefenseInfo | null) => {
+    setDefenseInfo(defense);
+    setDefenseParams(defense?.params)
+  }
 
   return (
     <DataContext.Provider
@@ -81,6 +99,7 @@ export function DataProvider({ children }: PropsWithChildren) {
         attack, setAttack,
         attackParams, updateAttackParams,
         defense, setDefense,
+        defenseParams, updateDefenseParams
       }}
     >
       {children}
@@ -95,34 +114,3 @@ export const useData = () => {
   }
   return context
 }
-
-// const params: AttackParams = {
-//   source_label: {
-//     label: "Source label",
-//     tooltip: "Label of the class that will be poisoned (e.g., 1)",
-//     type: "number",
-//     step: 1,
-//     value: 1
-//   },
-//   target_label: {
-//     label: "Target label",
-//     tooltip: "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
-//     type: "number",
-//     step: 1,
-//     value: 7
-//   },
-//   poison_rate: {
-//     label: "Poison rate",
-//     tooltip: "Fraction of samples from the source class to poison (0–1)",
-//     type: "number",
-//     step: 0.01,
-//     value: 0.2
-//   },
-//   trigger_size: {
-//     label: "Trigger size",
-//     tooltip: "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
-//     type: "number",
-//     step: 1,
-//     value: 4
-//   }
-// }

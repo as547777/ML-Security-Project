@@ -4,22 +4,28 @@ import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import { useData } from "@/context/DataContext"
 import {useState} from "react";
+import {ParamsType, ParamsType} from "@/types";
 
 export default function OverviewPage() {
-  const { dataset, momentum, learningRate, epochs, attack, attackParams } = useData()
+  const { dataset, momentum, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
   const [isRunning, setIsRunning] = useState(false)
+
+  const extractParamValues = (params?: ParamsType | ParamsType) => {
+    if (!params) return {};
+
+    return Object.entries(params).reduce((acc, [key, param]) => {
+      acc[key] = param.value;
+      return acc;
+    }, {} as Record<string, number | string>);
+  };
 
   // TODO - provjerit zasto proxy ne ceka response neg faila
   // TODO - prebacit u konkretnu next.js api datoteku
   const execute = async () => {
     setIsRunning(true);
     try {
-      const attackParamsValues = attackParams
-        ? Object.entries(attackParams).reduce((acc, [key, param]) => {
-          acc[key] = param.value;
-          return acc;
-        }, {} as Record<string, number | string>)
-        : {};
+      const attackParamsValues = extractParamValues(attackParams);
+      const defenseParamsValues = extractParamValues(defenseParams);
 
       const response = await fetch('http://localhost:3000/run', {
         method: 'POST',
@@ -33,7 +39,9 @@ export default function OverviewPage() {
           "momentum": momentum,
           "attack": attack?.name,
           "model": "ImageModel",
-          ...attackParamsValues
+          "defense": defense?.name,
+          "attack_params": attackParamsValues,
+          "defense_params": defenseParamsValues
         })
       })
       if (!response.ok) {

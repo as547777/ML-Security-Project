@@ -105,6 +105,113 @@
       }
     }
   ],
+  "defenses": [
+    {
+      "name": "Spectral Signatures",
+      "description": "Detects poisoned samples by identifying anomalous directions in the feature space using spectral analysis.",
+      "type": "Training-time defense",
+      "params": {
+        "feature_layer": {
+          "label": "Feature layer",
+          "tooltip": "Layer from which feature representations are extracted",
+          "type": "select",
+          "options": ["input", "penultimate", "logits"],
+          "value": "penultimate"
+        },
+        "num_components": {
+          "label": "Top components",
+          "tooltip": "Number of top singular vectors used for detection",
+          "type": "number",
+          "step": 1,
+          "value": 1
+        },
+        "remove_fraction": {
+          "label": "Removal fraction",
+          "tooltip": "Fraction of most suspicious samples to remove (0–1)",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.1
+        },
+        "normalize_features": {
+          "label": "Normalize features",
+          "tooltip": "Normalize feature vectors before spectral analysis",
+          "type": "select",
+          "options": ["true", "false"],
+          "value": "true"
+        }
+      }
+    },
+    {
+      "name": "NAD",
+      "description": "Mitigates backdoors by distilling clean attention maps from a teacher model.",
+      "type": "Training-time defense",
+      "params": {
+        "attention_layer": {
+          "label": "Attention layer",
+          "tooltip": "Layer used to extract attention maps",
+          "type": "select",
+          "options": ["conv1", "conv2", "conv3"],
+          "value": "conv3"
+        },
+        "loss_type": {
+          "label": "Attention loss",
+          "tooltip": "Loss function used to align attention maps",
+          "type": "select",
+          "options": ["L1", "L2", "cosine"],
+          "value": "L2"
+        },
+        "attention_weight": {
+          "label": "Attention weight",
+          "tooltip": "Weight of the attention distillation loss",
+          "type": "number",
+          "step": 0.1,
+          "value": 1.0
+        },
+        "fine_tune_epochs": {
+          "label": "Fine-tuning epochs",
+          "tooltip": "Number of epochs for attention-based fine-tuning",
+          "type": "number",
+          "step": 1,
+          "value": 10
+        }
+      }
+    },
+    {
+      "name": "ABL",
+      "description": "Identifies and suppresses backdoor samples by isolating suspicious data during training.",
+      "type": "Training-time defense",
+      "params": {
+        "isolation_strategy": {
+          "label": "Isolation strategy",
+          "tooltip": "Method used to detect suspicious samples",
+          "type": "select",
+          "options": ["loss-based", "confidence-based"],
+          "value": "loss-based"
+        },
+        "clean_ratio": {
+          "label": "Estimated clean ratio",
+          "tooltip": "Estimated fraction of clean samples in the dataset",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.8
+        },
+        "confidence_threshold": {
+          "label": "Confidence threshold",
+          "tooltip": "Prediction confidence threshold for sample isolation",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.9
+        },
+        "retrain_mode": {
+          "label": "Retraining mode",
+          "tooltip": "How the model is retrained after isolation",
+          "type": "select",
+          "options": ["full", "partial", "none"],
+          "value": "full"
+        }
+      }
+    }
+  ],
   "datasets": [
     {
       "name": "MNIST",
@@ -132,43 +239,55 @@
     }
   ],
   "optimizers": [
-    {"name": "SGD", "description": "Implements stochastic gradient descent (optionally with momentum)."},
-    {"name": "LBFGS", "description": "Implements L-BFGS algorithm."},
-    {"name": "Adadelta", "description": "Implements Adadelta algorithm."},
-    {"name": "Adafactor", "description": "Implements Adafactor algorithm."},
-    {"name": "Adagrad", "description": "Implements Adagrad algorithm."},
-    {"name": "Adam", "description": "Implements Adam algorithm."},
-    {"name": "AdamW", "description": "Implements AdamW algorithm, where weight decay does not accumulate in the momentum nor variance."},
-    {"name": "SparseAdam", "description": "SparseAdam implements a masked version of the Adam algorithm suitable for sparse gradients."},
-    {"name": "Adamax", "description": "Implements Adamax algorithm (a variant of Adam based on infinity norm)."},
-    {"name": "ASGD", "description": "Implements Averaged Stochastic Gradient Descent."},
-    {"name": "Muon", "description": "Implements Muon algorithm."},
-    {"name": "NAdam", "description": "Implements NAdam algorithm."},
-    {"name": "RAdam", "description": "Implements RAdam algorithm."},
-    {"name": "RMSprop", "description": "Implements RMSprop algorithm."},
-    {"name": "Rprop", "description": "Implements the resilient backpropagation algorithm."}
+    {
+      "name": "SGD",
+      "description": "Stochastic Gradient Descent, optionally with momentum."
+    },
+    {
+      "name": "Adam",
+      "description": "Adaptive Moment Estimation optimizer, widely used and robust."
+    },
+    {
+      "name": "AdamW",
+      "description": "Adam optimizer with decoupled weight decay."
+    },
+    {
+      "name": "RMSprop",
+      "description": "Optimizer that maintains a moving average of squared gradients."
+    },
+    {
+      "name": "Adagrad",
+      "description": "Adaptive learning rate optimizer well-suited for sparse data."
+    },
+    {
+      "name": "LBFGS",
+      "description": "Quasi-Newton optimizer, mainly used for small models or fine-tuning."
+    }
   ],
   "loss_functions": [
-    {"name": "L1Loss", "description": "Creates a criterion that measures the mean absolute error (MAE) between each element in the input and target."},
-    {"name": "MSELoss", "description": "Creates a criterion that measures the mean squared error (squared L2 norm) between each element in the input and target."},
-    {"name": "CrossEntropyLoss", "description": "This criterion computes the cross entropy loss between input logits and target."},
-    {"name": "CTCLoss", "description": "The Connectionist Temporal Classification loss."},
-    {"name": "NLLLoss", "description": "The negative log likelihood loss."},
-    {"name": "PoissonNLLLoss", "description": "Negative log likelihood loss with Poisson distribution of target."},
-    {"name": "GaussianNLLLoss", "description": "Gaussian negative log likelihood loss."},
-    {"name": "KLDivLoss", "description": "The Kullback-Leibler divergence loss."},
-    {"name": "BCELoss", "description": "Creates a criterion that measures the Binary Cross Entropy between the target and the input probabilities."},
-    {"name": "BCEWithLogitsLoss", "description": "This loss combines a Sigmoid layer and the BCELoss in one single class."},
-    {"name": "MarginRankingLoss", "description": "Creates a criterion that measures the loss given inputs x1, x2, two 1D mini-batch or 0D Tensors, and a label 1D mini-batch or 0D Tensor (containing 1 or -1)."},
-    {"name": "HingeEmbeddingLoss", "description": "Measures the loss given an input tensor and a labels tensor (containing 1 or -1)."},
-    {"name": "MultiLabelMarginLoss", "description": "Creates a criterion that optimizes a multi-class multi-classification hinge loss (margin-based loss) between input (a 2D mini-batch Tensor) and output (which is a 2D Tensor of target class indices)."},
-    {"name": "HuberLoss", "description": "Creates a criterion that uses a squared term if the absolute element-wise error falls below delta and a delta-scaled L1 term otherwise."},
-    {"name": "SmoothL1Loss", "description": "Creates a criterion that uses a squared term if the absolute element-wise error falls below beta and an L1 term otherwise."},
-    {"name": "SoftMarginLoss", "description": "Creates a criterion that optimizes a two-class classification logistic loss between input tensor and target tensor (containing 1 or -1)."},
-    {"name": "MultiLabelSoftMarginLoss", "description": "Creates a criterion that optimizes a multi-label one-versus-all loss based on max-entropy, between input and target."},
-    {"name": "CosineEmbeddingLoss", "description": "Creates a criterion that measures the loss given input tensors x1, x2 and a Tensor label with values 1 or -1."},
-    {"name": "MultiMarginLoss", "description": "Creates a criterion that optimizes a multi-class classification hinge loss (margin-based loss) between input (a 2D mini-batch Tensor) and output (which is a 1D tensor of target class indices)."},
-    {"name": "TripletMarginLoss", "description": "Creates a criterion that measures the triplet loss given an input tensors x1, x2, x3 and a margin with a value greater than 0."},
-    {"name": "TripletMarginWithDistanceLoss", "description": "Creates a criterion that measures the triplet loss given input tensors (representing anchor, positive, and negative examples), and a nonnegative, real-valued function used to compute the relationship between examples."}
+    {
+      "name": "CrossEntropyLoss",
+      "description": "Standard loss for multi-class classification tasks."
+    },
+    {
+      "name": "BCEWithLogitsLoss",
+      "description": "Binary cross entropy loss with logits, used for binary and multi-label classification."
+    },
+    {
+      "name": "MSELoss",
+      "description": "Mean Squared Error loss, commonly used for regression tasks."
+    },
+    {
+      "name": "L1Loss",
+      "description": "Mean Absolute Error loss, more robust to outliers than MSE."
+    },
+    {
+      "name": "HuberLoss",
+      "description": "Combination of L1 and L2 loss, robust to outliers."
+    },
+    {
+      "name": "TripletMarginLoss",
+      "description": "Metric learning loss that enforces distance margins between samples."
+    }
   ]
 }
