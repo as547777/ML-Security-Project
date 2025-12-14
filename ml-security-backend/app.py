@@ -41,14 +41,14 @@ def run():
     dataset = appContext.resolve_dataset(payload["dataset"])
     attack = appContext.resolve_attack(payload["attack"])
     model = appContext.resolve_model(payload["model"])
-    # defense = appContext.resolve_defense(payload["defense"])
+    defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
     globalHandler.register(AttackHandler(attack))
     globalHandler.register(ModelHandler(model))
-    # globalHandler.register(DefenseHandler(defense))
+    globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
 
     # context = {}
@@ -59,10 +59,27 @@ def run():
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
     # return jsonify(results)
-    return jsonify({
+    response={
         "accuracy": results["acc"],
         "ASR - attack_success_rate": results["acc_asr"]
-    })
+    }
+
+    if "ban_results" in results:
+        ban_results = results["ban_results"]
+        response["ban_detection"] = {
+            "backdoor_detected": ban_results["backdoor_detected"],
+            "original_accuracy": ban_results.get("original_accuracy", 0),
+            "perturbed_accuracy": ban_results.get("perturbed_accuracy", 0),
+            "accuracy_drop": ban_results.get("original_accuracy", 0) - ban_results.get("perturbed_accuracy", 0),
+            "detection_time": ban_results.get("detection_time", 0),
+            "positive_loss": ban_results.get("positive_loss", 0),
+            "negative_loss": ban_results.get("negative_loss", 0),
+            "fine_tuned": ban_results.get("fine_tuned", False),
+            "fine_tuned_accuracy": ban_results.get("fine_tuned_accuracy", None),
+            "error": ban_results.get("error", None)
+        }
+    return jsonify(response)
+
 
 @app.route("/dummy/response", methods=["POST"])
 def dummy_response():

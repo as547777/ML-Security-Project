@@ -5,9 +5,5 @@ class DefenseHandler:
         self.defense=defense
 
     def handle(self, context):
-        model=context["model"]
-        x_train = context["x_train"]
-        y_train = context["y_train"]
-
-        context["defense_result"]=self.defense.execute(model, (x_train, y_train))
+        self.defense.execute(context)
         

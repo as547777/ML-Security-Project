@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from defence.NoisyBatchNorm2d import NoisyBatchNorm2d
 
 class ImageModel(AbstractModel):
     class Net(nn.Module):
@@ -12,8 +13,10 @@ class ImageModel(AbstractModel):
             #  (pa ovaj pretvori u GrayscaleImageModel) ili napravi dinamicko sa samo jednim modelom
             #self.conv1 = nn.Conv2d(3, 6, 5)
             self.conv1 = nn.Conv2d(1, 6, 5)
+            self.bn1 = NoisyBatchNorm2d(6)
             self.pool = nn.MaxPool2d(2, 2)
             self.conv2 = nn.Conv2d(6, 16, 5)
+            self.bn2=NoisyBatchNorm2d(16)
 
             # TODO - ovo radi samo za 28x28 slike, isto napravi dinamicko za sve rez
             self.fc1 = nn.Linear(16 * 4 * 4, 120)
@@ -22,13 +25,34 @@ class ImageModel(AbstractModel):
             self.fc3 = nn.Linear(84, 10)
 
         def forward(self, x):
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = torch.flatten(x, 1)  # flatten all dimensions except batch
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
+            x = self.conv1(x)
+            x = self.bn1(x)
+            x = self.pool(torch.relu(x))
+            x = self.conv2(x)
+            x = self.bn2(x)
+            x = self.pool(torch.relu(x))
+            x = torch.flatten(x, 1)
+            x = torch.relu(self.fc1(x))
+            x = torch.relu(self.fc2(x))
             x = self.fc3(x)
             return x
+        
+        def from_input_to_features(self, x, layer_index=0):
+                x = self.conv1(x)
+                x = self.bn1(x)
+                x = self.pool(torch.relu(x))
+                x = self.conv2(x)
+                x = self.bn2(x)
+                x = torch.relu(x) 
+                return x
+        
+        def from_features_to_output(self, features, layer_index=0):
+                x = self.pool(features)
+                x = torch.flatten(x, 1)
+                x = torch.relu(self.fc1(x))
+                x = torch.relu(self.fc2(x))
+                x = self.fc3(x)
+                return x
 
     def __init__(self):
         self.model = self.Net()
