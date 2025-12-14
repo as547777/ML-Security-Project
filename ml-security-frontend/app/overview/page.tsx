@@ -3,14 +3,17 @@
 import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import { useData } from "@/context/DataContext"
-import {useState} from "react";
-import {ParamsType, ParamsType} from "@/types";
+import React, {useState} from "react";
+import {ParamsType} from "@/types";
+import DatasetTypeIcon from "@/components/dataset/dataset-type-icon";
+import Section from "@/components/section";
+import ParamCard from "@/components/param-card";
 
 export default function OverviewPage() {
-  const { dataset, momentum, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
+  const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
   const [isRunning, setIsRunning] = useState(false)
 
-  const extractParamValues = (params?: ParamsType | ParamsType) => {
+  const extractParamValues = (params?: ParamsType) => {
     if (!params) return {};
 
     return Object.entries(params).reduce((acc, [key, param]) => {
@@ -18,6 +21,22 @@ export default function OverviewPage() {
       return acc;
     }, {} as Record<string, number | string>);
   };
+
+  const renderParams = (params?: ParamsType) => {
+    if (!params || Object.keys(params).length === 0) return null
+
+    return (
+      <div className="grid grid-cols-2 gap-2 mt-3">
+        {Object.entries(params).map(([key, param]) => (
+          <ParamCard
+            key={key}
+            label={param.label}
+            value={param.type === 'number' ? Number(param.value).toFixed(4) : param.value}
+          />
+        ))}
+      </div>
+    )
+  }
 
   // TODO - provjerit zasto proxy ne ceka response neg faila
   // TODO - prebacit u konkretnu next.js api datoteku
@@ -71,35 +90,55 @@ export default function OverviewPage() {
             Here’s a summary of your selected configuration:
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Dataset</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{dataset?.name || "Not selected"}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Learning Rate</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{learningRate}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Epochs</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{epochs}</p>
-            </div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Momentum</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{momentum}</p>
-            </div>
-
-            <div className={"block h-4"}></div>
-            <div className={"block"}></div>
-
-            <div className="rounded-2xl bg-white/80 backdrop-blur-md p-4 shadow-sm border border-white/30">
-              <h3 className="text-sm font-medium text-zinc-500">Attack</h3>
-              <p className="text-lg font-semibold text-zinc-800 mt-1">{attack?.name || "Not selected"}</p>
+          <div className="rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 p-5 text-white shadow-lg">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="text-xs font-medium text-purple-100 mb-1">Dataset</div>
+                <h2 className="text-2xl font-bold mb-2">{dataset?.name || "Not selected"}</h2>
+                <p className="text-sm text-purple-100 mb-3">{dataset?.description}</p>
+                <div className="flex gap-4 text-sm">
+                  <div>
+                    <span className="text-purple-200">Train:</span>{" "}
+                    <span className="font-semibold">{dataset?.trainCount?.toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className="text-purple-200">Test:</span>{" "}
+                    <span className="font-semibold">{dataset?.testCount?.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-5xl opacity-20">
+                <DatasetTypeIcon type={dataset?.type} size={10} color={'text-white'} />
+              </div>
             </div>
           </div>
+
+          <Section title={'Training Configuration'}>
+            <div className="grid grid-cols-2 gap-2">
+              <ParamCard label="Learning Rate" value={learningRate} highlight />
+              <ParamCard label="Epochs" value={epochs} highlight />
+              <ParamCard label="Batch Size" value={batchSize} highlight />
+              <ParamCard label="Momentum" value={momentum} />
+              <ParamCard label="Optimizer" value={optimizer} />
+              <ParamCard label="Loss Function" value={lossFunction} />
+            </div>
+          </Section>
+
+          <Section title="Attack Configuration">
+            <ParamCard label="Attack Method" value={attack?.name} highlight />
+            {attack?.description && (
+              <p className="text-xs text-zinc-600 mt-2 mb-1">{attack.description}</p>
+            )}
+            {renderParams(attackParams)}
+          </Section>
+
+          <Section title="Defense Configuration">
+            <ParamCard label="Defense Method" value={defense?.name} highlight />
+            {defense?.description && (
+              <p className="text-xs text-zinc-600 mt-2 mb-1">{defense.description}</p>
+            )}
+            {renderParams(defenseParams)}
+          </Section>
         </div>
 
         <StepNavigation

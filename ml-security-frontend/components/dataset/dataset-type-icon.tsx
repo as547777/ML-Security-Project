@@ -8,26 +8,37 @@ import {
   FileQuestion,
 } from "lucide-react"
 
-const DatasetTypeIcon = ({ type }: { type: string | undefined }) => {
+interface Props {
+  type: string | undefined
+  size?: number
+  color?: string
+}
+
+const DatasetTypeIcon = ({ type, size = 5, color }: Props) => {
+  const iconSize = `w-${size} h-${size}`
+
+  const withColor = (defaultColor: string) =>
+    `${iconSize} ${color ?? defaultColor}`
+
   const getIcon = () => {
     switch (type?.toLowerCase()) {
       case "image":
       case "image (grayscale)":
       case "image (rgb)":
-        return <ImageIcon className="w-5 h-5 text-blue-600" />
+        return <ImageIcon className={withColor("text-blue-600")} />
 
       case "text":
       case "tabular":
-        return <Table2 className="w-5 h-5 text-emerald-600" />
+        return <Table2 className={withColor("text-emerald-600")} />
 
       case "audio":
-        return <Music className="w-5 h-5 text-purple-600" />
+        return <Music className={withColor("text-purple-600")} />
 
       case "video":
-        return <Video className="w-5 h-5 text-rose-600" />
+        return <Video className={withColor("text-rose-600")} />
 
       default:
-        return <FileQuestion className="w-5 h-5 text-zinc-500" />
+        return <FileQuestion className={withColor("text-zinc-500")} />
     }
   }
 
