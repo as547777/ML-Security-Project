@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from context.plugin_loader import load_plugins
 from context.AppContext import AppContext
@@ -27,6 +28,7 @@ appContext= AppContext()
 
 
 app=Flask(__name__)
+CORS(app)
 
 @app.route("/test", methods=["GET"])
 def testPolymorphism():
@@ -39,22 +41,24 @@ def run():
     payload=request.get_json()
 
     dataset = appContext.resolve_dataset(payload["dataset"])
-    attack = appContext.resolve_attack(payload["attack"])
+    # attack = appContext.resolve_attack(payload["attack"])
     model = appContext.resolve_model(payload["model"])
-    defense = appContext.resolve_defense(payload["defense"])
+    # defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
-    globalHandler.register(AttackHandler(attack))
+    # globalHandler.register(AttackHandler(attack))
     globalHandler.register(ModelHandler(model))
-    globalHandler.register(DefenseHandler(defense))
+    # globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
 
     # context = {}
     context={"learning_rate" : payload["learning_rate"],
-              "epochs": payload["epochs"],
-              "momentum": payload["momentum"]}
+             "epochs": payload["epochs"],
+             "momentum": payload["momentum"],
+             "attack_params": payload["attack_params"],
+             "defeat_params": payload["defeat_params"],}
 
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
