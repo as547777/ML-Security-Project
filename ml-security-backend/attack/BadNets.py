@@ -3,8 +3,44 @@ import random
 
 from interfaces.AbstractAttack import AbstractAttack
 
+desc = {
+    "name": "BadNets",
+    "description": "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
+    "type": "White-box attack",
+    "params": {
+        "source_label": {
+          "label": "Source label",
+          "tooltip": "Label of the class that will be poisoned (e.g., 1)",
+          "type": "select",
+          "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "value": 1
+        },
+        "target_label": {
+          "label": "Target label",
+          "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+          "type": "select",
+          "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "value": 7
+        },
+        "poison_rate": {
+          "label": "Poison rate",
+          "tooltip": "Fraction of samples from the source class to poison (0–1)",
+          "type": "number",
+          "step": 0.01,
+          "value": 0.2
+        },
+        "trigger_size": {
+          "label": "Trigger size",
+          "tooltip": "Size of the injected trigger patch (e.g., 4 for a 4×4 pixel square)",
+          "type": "number",
+          "step": 1,
+          "value": 4
+        }
+    }
+}
+
 class BadNets(AbstractAttack):
-    def __init__(self, source_label=1, target_label=7, poison_rate=0.9, trigger_size=4):
+    def __init__(self, source_label=1, target_label=7, poison_rate=0.01, trigger_size=4):
         """
         :param source_label: Klasa koju napadamo (npr. znamenka '1').
         :param target_label: Klasa u koju želimo pretvoriti 'source_label' (npr. '7').
@@ -47,7 +83,7 @@ class BadNets(AbstractAttack):
             x_poisoned_train[idx] = self.apply_trigger(x_poisoned_train[idx])
             y_poisoned_train[idx] = self.target_label
 
-        return (x_poisoned_train, y_poisoned_train)
+        return x_poisoned_train, y_poisoned_train
 
     def prepare_for_attack_success_rate(self, data_test):
         """
@@ -64,12 +100,17 @@ class BadNets(AbstractAttack):
             x_asr[idx] = self.apply_trigger(x_asr[idx])
             y_asr[idx] = self.target_label
 
-        return (x_asr[source_indices], y_asr[source_indices])
+        return x_asr[source_indices], y_asr[source_indices]
 
-    def execute(self, model, data):
+    def execute(self, model, data, params):
+        self.source_label = params["source_label"]
+        self.target_label = params["target_label"]
+        self.poison_rate = params["poison_rate"]
+        self.trigger_size = params["trigger_size"]
+
         x_train, y_train, x_test, y_test = data
         data_train = (x_train, y_train)
         data_test = (x_test, y_test)
         x_poisoned_train, y_poisoned_train = self.poison_train_data(data_train)
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
-        return (x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr)
+        return x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr

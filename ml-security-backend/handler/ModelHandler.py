@@ -5,6 +5,14 @@ class ModelHandler:
         self.model=model
 
     def handle(self, context):
+        w_res = context['w_res']
+        h_res = context['h_res']
+        color_channels = context['color_channels']
+        classes = context['classes']
+
+        self.model.init(w_res, h_res, color_channels, classes)
+
+
         x_train = context["x_train"]
         y_train = context["y_train"]
         lr = context["learning_rate"]

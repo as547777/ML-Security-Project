@@ -9,8 +9,9 @@ class AttackHandler:
         y_train = context["y_train"]
         x_test = context["x_test"]
         y_test = context["y_test"]
+        params = context["attack_params"]
 
-        (x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr) = self.attack.execute(None, (x_train, y_train, x_test, y_test))
+        (x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr) = self.attack.execute(None, (x_train, y_train, x_test, y_test), params)
 
         context["x_train"] = x_poisoned_train
         context["y_train"] = y_poisoned_train

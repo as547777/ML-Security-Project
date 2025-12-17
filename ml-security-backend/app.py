@@ -17,7 +17,6 @@ import dataset as dataset_pkg
 import model as model_pkg
 import statistic as metric_pkg
 
-
 load_plugins(attack_pkg)
 load_plugins(defence_pkg)
 load_plugins(dataset_pkg)
@@ -25,8 +24,6 @@ load_plugins(model_pkg)
 load_plugins(metric_pkg)
 
 appContext= AppContext()
-
-
 app=Flask(__name__)
 CORS(app)
 
@@ -35,20 +32,31 @@ def testPolymorphism():
     response = appContext.resolve_attack("ConcreteAttack")
     return response.execute("123", "123")
 
+@app.route("/attacks", methods=["GET"])
+def attacks():
+    print('getAttacks')
+
+@app.route("/defenses", methods=["GET"])
+def defenses():
+    print('getDefenses')
+
+@app.route("/datasets", methods=["GET"])
+def datasets():
+    print('getDatasets')
 
 @app.route("/run", methods=["POST"])
 def run():
     payload=request.get_json()
 
     dataset = appContext.resolve_dataset(payload["dataset"])
-    # attack = appContext.resolve_attack(payload["attack"])
+    attack = appContext.resolve_attack(payload["attack"])
     model = appContext.resolve_model(payload["model"])
     # defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
-    # globalHandler.register(AttackHandler(attack))
+    globalHandler.register(AttackHandler(attack))
     globalHandler.register(ModelHandler(model))
     # globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
@@ -58,7 +66,7 @@ def run():
              "epochs": payload["epochs"],
              "momentum": payload["momentum"],
              "attack_params": payload["attack_params"],
-             "defeat_params": payload["defeat_params"],}
+             "defense_params": payload["defense_params"],}
 
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
@@ -84,7 +92,6 @@ def run():
         }
     return jsonify(response)
 
-
 @app.route("/dummy/response", methods=["POST"])
 def dummy_response():
     payload=request.get_json()
@@ -97,7 +104,6 @@ def dummy_response():
             "defense": payload["defense"]
             }
     return jsonify(result)
-
 
 if __name__=="__main__":
     app.run(debug=True)

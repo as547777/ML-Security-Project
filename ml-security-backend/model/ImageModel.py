@@ -7,22 +7,25 @@ from defence.NoisyBatchNorm2d import NoisyBatchNorm2d
 
 class ImageModel(AbstractModel):
     class Net(nn.Module):
-        def __init__(self):
+        def __init__(self, w_res, h_res, color_channels, classes):
             super().__init__()
-            # TODO - ovo radi samo za grayscale slike, napravi ILI RGBImageModel
-            #  (pa ovaj pretvori u GrayscaleImageModel) ili napravi dinamicko sa samo jednim modelom
-            #self.conv1 = nn.Conv2d(3, 6, 5)
-            self.conv1 = nn.Conv2d(1, 6, 5)
+
+            self.conv1 = nn.Conv2d(color_channels, 6, 5, padding=2)
             self.bn1 = NoisyBatchNorm2d(6)
             self.pool = nn.MaxPool2d(2, 2)
-            self.conv2 = nn.Conv2d(6, 16, 5)
-            self.bn2=NoisyBatchNorm2d(16)
+            self.conv2 = nn.Conv2d(6, 16, 5, padding=2)
+            self.bn2 = NoisyBatchNorm2d(16)
 
-            # TODO - ovo radi samo za 28x28 slike, isto napravi dinamicko za sve rez
-            self.fc1 = nn.Linear(16 * 4 * 4, 120)
-            #self.fc1 = nn.Linear(16 * 5 * 5, 120)
+            # Feature count calculation
+            with torch.no_grad():
+                dummy_input = torch.zeros(1, color_channels, h_res, w_res)
+                x = self.pool(torch.relu(self.bn1(self.conv1(dummy_input))))
+                x = self.pool(torch.relu(self.bn2(self.conv2(x))))
+                n_features = x.view(1, -1).shape[1]
+
+            self.fc1 = nn.Linear(n_features, 120)
             self.fc2 = nn.Linear(120, 84)
-            self.fc3 = nn.Linear(84, 10)
+            self.fc3 = nn.Linear(84, classes)
 
         def forward(self, x):
             x = self.conv1(x)
@@ -55,12 +58,17 @@ class ImageModel(AbstractModel):
                 return x
 
     def __init__(self):
-        self.model = self.Net()
+        self.model = None
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.criterion = None
+        self.optimizer_class = None
+        pass
+
+    def init(self, w_res, h_res, color_channels, classes):
+        self.model = self.Net(w_res, h_res, color_channels, classes)
         self.model.to(self.device)
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer_class = optim.SGD
-        pass
 
     def train(self, data_train, lr, momentum, epochs):
         x_train, y_train = data_train

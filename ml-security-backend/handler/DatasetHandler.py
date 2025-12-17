@@ -5,7 +5,7 @@ class DatasetHandler:
         self.dataset=dataset
     
     def handle(self, context):
-        (x_train, y_train), (x_test, y_test), (w_res, h_res), color_channels = self.dataset.load()
+        (x_train, y_train), (x_test, y_test), (w_res, h_res), color_channels, classes = self.dataset.load()
         context["x_train"] = x_train
         context["y_train"] = y_train
         context["x_test"] = x_test
@@ -13,3 +13,4 @@ class DatasetHandler:
         context["w_res"] = w_res
         context["h_res"] = h_res
         context["color_channels"] = color_channels
+        context["classes"] = classes
