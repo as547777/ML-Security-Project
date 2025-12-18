@@ -12,16 +12,18 @@ class BadNets(AbstractAttack):
             "source_label": {
                 "label": "Source label",
                 "tooltip": "Label of the class that will be poisoned (e.g., 1)",
-                "type": "select",
-                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                "value": 1
+                "type": "select_class",
+                # "type": "select",
+                # "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                # "value": 1
             },
             "target_label": {
                 "label": "Target label",
                 "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
-                "type": "select",
-                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                "value": 7
+                "type": "select_class",
+                # "type": "select",
+                # "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                # "value": 7
             },
             "poison_rate": {
                 "label": "Poison rate",

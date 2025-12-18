@@ -12,14 +12,18 @@ class AppContext:
     
     def resolve_defense(self, name):
         return self.registry.DEFENSE_MAP[name]()
+
+    def fetch_defenses(self):
+        return self.registry.DEFENSE_MAP
     
     def resolve_dataset(self,name):
         return self.registry.DATASET_MAP[name]()
+
+    def fetch_datasets(self):
+        return self.registry.DATASET_MAP
     
     def resolve_model(self, name):
         return self.registry.MODEL_MAP[name]()
     
     def resolve_metric(self, name):
         return self.registry.METRIC_MAP[name]()
-    
-    

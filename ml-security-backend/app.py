@@ -16,6 +16,7 @@ import defence as defence_pkg
 import dataset as dataset_pkg
 import model as model_pkg
 import statistic as metric_pkg
+from utils.dict_to_list import dict_to_list
 
 load_plugins(attack_pkg)
 load_plugins(defence_pkg)
@@ -27,29 +28,17 @@ appContext= AppContext()
 app=Flask(__name__)
 CORS(app)
 
-@app.route("/test", methods=["GET"])
-def testPolymorphism():
-    response = appContext.resolve_attack("ConcreteAttack")
-    return response.execute("123", "123")
-
-
 @app.route("/attacks", methods=["GET"])
 def attacks():
-    attacks_all = appContext.fetch_attacks()
-    attacks_list = [
-        cls.__desc__
-        for name, cls in attacks_all.items()
-        if hasattr(cls, '__desc__')
-    ]
-    return jsonify(attacks_list)
+    return jsonify(dict_to_list(appContext.fetch_attacks()))
 
 @app.route("/defenses", methods=["GET"])
 def defenses():
-    print('getDefenses')
+    return jsonify(dict_to_list(appContext.fetch_defenses()))
 
 @app.route("/datasets", methods=["GET"])
 def datasets():
-    print('getDatasets')
+    return jsonify(dict_to_list(appContext.fetch_datasets()))
 
 @app.route("/run", methods=["POST"])
 def run():

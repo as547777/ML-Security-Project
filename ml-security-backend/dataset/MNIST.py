@@ -1,16 +1,17 @@
 from interfaces.AbstractDataset import AbstractDataset
 from utils.art_dataset_loader import load_art_dataset
 
-desc = {
-    "name": "MNIST",
-    "description":
-    "The MNIST dataset contains 70,000 images of handwritten digits (0–9). Each image is 28×28 grayscale.",
-    "type": "Image",
-    "trainCount": 60000,
-    "testCount": 10000
-}
-
 class MNIST(AbstractDataset):
+    __desc__ = {
+        "name": "MNIST",
+        "description":
+            "The MNIST dataset contains 70,000 images of handwritten digits (0–9). Each image is 28×28 grayscale.",
+        "type": "Image",
+        "trainCount": 60000,
+        "testCount": 10000,
+        "classes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    }
+
     def load(self):
         (x_train, y_train), (x_test, y_test) = load_art_dataset("mnist")
 
