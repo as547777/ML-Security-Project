@@ -32,9 +32,16 @@ def testPolymorphism():
     response = appContext.resolve_attack("ConcreteAttack")
     return response.execute("123", "123")
 
+
 @app.route("/attacks", methods=["GET"])
 def attacks():
-    print('getAttacks')
+    attacks_all = appContext.fetch_attacks()
+    attacks_list = [
+        cls.__desc__
+        for name, cls in attacks_all.items()
+        if hasattr(cls, '__desc__')
+    ]
+    return jsonify(attacks_list)
 
 @app.route("/defenses", methods=["GET"])
 def defenses():

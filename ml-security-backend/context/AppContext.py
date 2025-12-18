@@ -6,6 +6,9 @@ class AppContext:
 
     def resolve_attack(self,name):
         return self.registry.ATTACK_MAP[name]()
+
+    def fetch_attacks(self):
+        return self.registry.ATTACK_MAP
     
     def resolve_defense(self, name):
         return self.registry.DEFENSE_MAP[name]()
