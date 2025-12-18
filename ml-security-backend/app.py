@@ -51,14 +51,14 @@ def run():
     dataset = appContext.resolve_dataset(payload["dataset"])
     attack = appContext.resolve_attack(payload["attack"])
     model = appContext.resolve_model(payload["model"])
-    # defense = appContext.resolve_defense(payload["defense"])
+    defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
     globalHandler.register(AttackHandler(attack))
     globalHandler.register(ModelHandler(model))
-    # globalHandler.register(DefenseHandler(defense))
+    globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
 
     # context = {}
@@ -66,14 +66,30 @@ def run():
              "epochs": payload["epochs"],
              "momentum": payload["momentum"],
              "attack_params": payload["attack_params"],
-             "defense_params": payload["defense_params"],}
+             "defense_params": payload["defense_params"],
+    }
 
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
     # return jsonify(results)
-    response={
-        "accuracy": results["acc"],
-        "ASR - attack_success_rate": results["acc_asr"]
+
+    response = {
+        "attack_phase": {
+            "accuracy": context["acc"],
+            "asr": context["acc_asr"]
+        },
+        "defense_phase": {
+            "acc_pruned": context["acc_clean_pruned"],
+            "asr_pruned": context["acc_asr_pruned"],
+            "accuracy": context["final_accuracy"],
+            "asr": context["final_asr"]
+        },
+        "improvement": {
+            # Koliko smo smanjili uspješnost napada (što veće to bolje)
+            "asr_reduction": context["acc_asr"] - context["final_asr"],
+            # Koliko smo izgubili na točnosti (što bliže 0 to bolje)
+            "acc_drop": context["acc"] - context["final_accuracy"]
+        }
     }
 
     if "ban_results" in results:

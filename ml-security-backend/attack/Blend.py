@@ -72,7 +72,7 @@ class Blend(AbstractAttack):
 
         return (x_asr[source_indices], y_asr[source_indices])
 
-    def execute(self, model, data):
+    def execute(self, model, data, params):
         x_train, y_train, x_test, y_test = data
         data_train = (x_train, y_train)
         data_test = (x_test, y_test)
