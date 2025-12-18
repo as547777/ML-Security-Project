@@ -4,7 +4,7 @@ import {DefenseInfo} from "@/types";
 import DefenseInputs from "@/components/defense/defense-inputs";
 
 const DefenseCard = async () => {
-  const data = await fetch('http://localhost:3004/defenses')
+  const data = await fetch('http://localhost:5000/defenses')
   const defenses = await data.json() as DefenseInfo[]
 
   return (

@@ -19,7 +19,7 @@ const ParamInputs = ({params, updateParams} : Props) => {
           key={key}
           label={param.label}
           tooltip={param.tooltip}
-          type={param.type as "number" | "string"}
+          type={param.type}
           step={param.step}
           options={param.options}
           value={param.value}

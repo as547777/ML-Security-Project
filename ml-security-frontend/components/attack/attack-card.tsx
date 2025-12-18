@@ -4,7 +4,7 @@ import AttackInputs from "@/components/attack/attack-inputs";
 import {AttackInfo} from "@/types";
 
 const AttackCard = async () => {
-  const data = await fetch('http://localhost:3004/attacks')
+  const data = await fetch('http://localhost:5000/attacks')
   const attacks = await data.json() as AttackInfo[]
 
   return (

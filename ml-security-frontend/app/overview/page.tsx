@@ -46,7 +46,7 @@ export default function OverviewPage() {
       const attackParamsValues = extractParamValues(attackParams);
       const defenseParamsValues = extractParamValues(defenseParams);
 
-      const response = await fetch('http://localhost:3000/run', {
+      const response = await fetch('http://localhost:5000/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

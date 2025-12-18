@@ -4,12 +4,13 @@ export interface DatasetInfo {
   type: string
   trainCount: number
   testCount: number
+  classes: string[]
 }
 
 export interface ParamField {
   label: string;
   tooltip: string;
-  type: "number" | "string" | "select";
+  type: "number" | "string" | "select" | "select_class";
   step?: number;
   options?: string[];
   value: number | string;

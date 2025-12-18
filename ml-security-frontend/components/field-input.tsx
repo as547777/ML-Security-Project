@@ -6,15 +6,15 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {useData} from "@/context/DataContext";
 
 interface FieldInputProps<T extends string | number> {
   label: string;
   tooltip: string;
-  type: 'number' | 'string' | 'select';
+  type: 'number' | 'string' | 'select' | 'select_class';
   step?: number;
   options?: string[];
   value: T;
@@ -22,6 +22,12 @@ interface FieldInputProps<T extends string | number> {
 }
 
 const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
+  const { dataset } = useData()
+
+  const options = params.type === 'select_class'
+    ? dataset?.classes
+    : params.options;
+
   const field = () =>{
     if (params.type === "number" || params.type === "string") {
       return (
@@ -39,7 +45,7 @@ const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
           className="param-input"
         />
       )
-    } else if (params.type === "select") {
+    } else if (params.type === "select" || params.type === "select_class") {
       return (
         <Select
           defaultValue={params.value.toString()}
@@ -50,7 +56,7 @@ const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-                {params.options?.map((option) => (
+                {options?.map((option) => (
                   <SelectItem key={option} value={option}>
                     {option}
                   </SelectItem>

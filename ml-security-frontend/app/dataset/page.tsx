@@ -6,7 +6,7 @@ import DatasetInfoCard from "@/components/dataset/dataset-info-card"
 import {DatasetInfo} from "@/types";
 
 export default async function DatasetPage() {
-  const dataset_data = await fetch('http://localhost:3004/datasets')
+  const dataset_data = await fetch('http://localhost:5000/datasets')
   const optimizer_data = await fetch('http://localhost:3004/optimizers')
   const loss_function_data = await fetch('http://localhost:3004/loss_functions')
 
