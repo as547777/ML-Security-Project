@@ -13,6 +13,35 @@ Obrana funckionira na način da ima dva koraka:
 kako bismo popravili točnost -> backdoor ostaje uništen 
 '''
 
+desc = {
+    "name": "Fine-Pruning",
+    "description": "A defense mechanism that removes (prunes) dormant neurons which likely encode the backdoor, and then fine-tunes the model to restore accuracy on clean data.",
+    "type": "Defense",
+    "params": {
+        "prune_rate": {
+            "label": "Prune Rate",
+            "tooltip": "The fraction of filters/neurons to prune (remove) based on the lowest activation/weight. Range: 0.0 - 1.0.",
+            "type": "number",
+            "step": 0.05,
+            "value": 0.20
+        },
+        "fine_tune_epochs": {
+            "label": "Fine-tune Epochs",
+            "tooltip": "Number of epochs to retrain the model after pruning to recover clean accuracy.",
+            "type": "number",
+            "step": 1,
+            "value": 5
+        },
+        "learning_rate": {
+            "label": "Learning Rate",
+            "tooltip": "Learning rate used during the fine-tuning phase. Usually smaller than initial training rate.",
+            "type": "number",
+            "step": 0.001,
+            "value": 0.01
+        }
+    }
+}
+
 class FinePruning(AbstractDefense):
     def __init__(self, target_layer_name = 'conv2'):
         self.target_layer_name = target_layer_name #sloj nad kojim ćemo obaviti pruning
