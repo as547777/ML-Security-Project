@@ -7,6 +7,48 @@ import numpy as np
 from interfaces.AbstractAttack import AbstractAttack
 
 class Blend(AbstractAttack):
+    __desc__ = {
+        "name": "Blend",
+        "description": "Poisoning attack that blends a trigger pattern (e.g., an image) with training samples, causing the model to misclassify inputs containing the blended trigger.",
+        "type": "White-box attack",
+        "params": {
+            "source_label": {
+                "label": "Source label",
+                "tooltip": "Label of the class that will be poisoned (e.g., 1)",
+                "type": "select",
+                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "value": 1
+            },
+            "target_label": {
+                "label": "Target label",
+                "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7)",
+                "type": "select",
+                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "value": 7
+            },
+            "poison_rate": {
+                "label": "Poison rate",
+                "tooltip": "Fraction of samples from the source class to poison (0–1)",
+                "type": "number",
+                "step": 0.01,
+                "value": 0.9
+            },
+            "alpha": {
+                "label": "Alpha (blend ratio)",
+                "tooltip": "Blending coefficient determining trigger visibility (0–1). Higher values make the trigger more visible.",
+                "type": "number",
+                "step": 0.01,
+                "value": 0.2
+            },
+            "trigger_image_path": {
+                "label": "Trigger image path",
+                "tooltip": "Path to the trigger image file (e.g., 'attack/triggers/blend_trigger.jpg')",
+                "type": "text",
+                "value": "attack/triggers/blend_trigger.jpg"
+            }
+        }
+    }
+
     def __init__(self, source_label=1, target_label=7, poison_rate=0.9, alpha=0.2, trigger_image_path="attack/triggers/blend_trigger.jpg"):
         self.source_label = source_label
         self.target_label = target_label
