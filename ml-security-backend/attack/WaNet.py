@@ -4,50 +4,50 @@ import torch.nn.functional as F
 import random
 from interfaces.AbstractAttack import AbstractAttack
 
-__desc__ = {
-    "name": "WaNet",
-    "description": "Warping-based Backdoor Attack. Instead of adding pixel noise, it applies a smooth geometric distortion (warping) to the image as a trigger. This makes it invisible to human inspection.",
-    "type": "White-box attack",
-    "params": {
-        "source_label": {
-            "label": "Source label",
-            "tooltip": "Label of the class that will be poisoned (e.g., 3 for 'cat' in CIFAR-10)",
-            "type": "select",
-            "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            "value": 1
-        },
-        "target_label": {
-            "label": "Target label",
-            "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7 for 'horse')",
-            "type": "select",
-            "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            "value": 7
-        },
-        "poison_rate": {
-            "label": "Poison rate",
-            "tooltip": "Fraction of samples from the source class to poison (0–1)",
-            "type": "number",
-            "step": 0.01,
-            "value": 0.1
-        },
-        "s": {
-            "label": "Distortion Strength (s)",
-            "tooltip": "How strong the warping effect is. Recommended: 0.5 - 1.0.",
-            "type": "number",
-            "step": 0.1,
-            "value": 0.5
-        },
-        "k": {
-            "label": "Grid Frequency (k)",
-            "tooltip": "Number of waves in the distortion grid. Recommended: 4 or 8.",
-            "type": "number",
-            "step": 1,
-            "value": 4
+class WaNet(AbstractAttack):
+    __desc__ = {
+        "name": "WaNet",
+        "description": "Warping-based Backdoor Attack. Instead of adding pixel noise, it applies a smooth geometric distortion (warping) to the image as a trigger. This makes it invisible to human inspection.",
+        "type": "White-box attack",
+        "params": {
+            "source_label": {
+                "label": "Source label",
+                "tooltip": "Label of the class that will be poisoned (e.g., 3 for 'cat' in CIFAR-10)",
+                "type": "select",
+                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "value": 1
+            },
+            "target_label": {
+                "label": "Target label",
+                "tooltip": "Label of the class that poisoned samples should be misclassified as (e.g., 7 for 'horse')",
+                "type": "select",
+                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "value": 7
+            },
+            "poison_rate": {
+                "label": "Poison rate",
+                "tooltip": "Fraction of samples from the source class to poison (0–1)",
+                "type": "number",
+                "step": 0.01,
+                "value": 0.1
+            },
+            "s": {
+                "label": "Distortion Strength (s)",
+                "tooltip": "How strong the warping effect is. Recommended: 0.5 - 1.0.",
+                "type": "number",
+                "step": 0.1,
+                "value": 0.5
+            },
+            "k": {
+                "label": "Grid Frequency (k)",
+                "tooltip": "Number of waves in the distortion grid. Recommended: 4 or 8.",
+                "type": "number",
+                "step": 1,
+                "value": 4
+            }
         }
     }
-}
 
-class WaNet(AbstractAttack):
     def __init__(self, source_label=1, target_label=7, poison_rate=0.1, k=4, s=0.5, image_size=28):
         self.source_label = source_label
         self.target_label = target_label
