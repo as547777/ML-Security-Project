@@ -58,14 +58,18 @@ class BadNets(AbstractAttack):
         return "badnets"
 
     def apply_trigger(self, image_tensor):
-        """
-        Pomoćna funkcija koja dodaje bijeli kvadrat u donji desni kut.
-        Slika je PyTorch tensor (C, H, W).
-        """
-        img_height = image_tensor.shape[1]
-        img_width = image_tensor.shape[2]
+        img_height = image_tensor.shape[-2]
+        img_width = image_tensor.shape[-1]
 
-        image_tensor[0, img_height - self.trigger_size:, img_width - self.trigger_size:] = 1.0 #svim pikselima ([24-27 * 24-27] - 4*4 - postavlja vrijednost 1) -> potpuno bijelo
+        offset = 2
+
+        start_y = img_height - offset - self.trigger_size
+        end_y = img_height - offset
+        
+        start_x = img_width - offset - self.trigger_size
+        end_x = img_width - offset
+
+        image_tensor[..., start_y:end_y, start_x:end_x] = 1.0
         return image_tensor
     
     def poison_train_data(self, data_train):

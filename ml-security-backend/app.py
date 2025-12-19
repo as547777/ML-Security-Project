@@ -10,6 +10,7 @@ from handler.DefenseHandler import DefenseHandler
 from handler.GlobalHandler import GlobalHandler
 from handler.MetricsHandler import MetricsHandler
 from handler.ModelHandler import ModelHandler
+from handler.VisualizationHandler import VisualizationHandler
 
 import attack as attack_pkg
 import defence as defence_pkg
@@ -56,6 +57,7 @@ def run():
     globalHandler.register(ModelHandler(model))
     globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
+    globalHandler.register(VisualizationHandler(num_samples=5))
 
     # context = {}
     context={"learning_rate" : payload["learning_rate"],
@@ -63,12 +65,14 @@ def run():
              "momentum": payload["momentum"],
              "attack_params": payload["attack_params"],
              "defense_params": payload["defense_params"],
+             "model": model,
+             "attack_instance": attack
     }
 
     # TODO - ovdje umjesto cijelog contexta vratiti samo metrics dio
     results=globalHandler.handle(context)
     # return jsonify(results)
-
+    
     response = {
         "attack_phase": {
             "accuracy": context["acc"],
@@ -85,7 +89,8 @@ def run():
             "asr_reduction": context["acc_asr"] - context["final_asr"],
             # Koliko smo izgubili na točnosti (što bliže 0 to bolje)
             "acc_drop": context["acc"] - context["final_accuracy"]
-        }
+        },
+        "visualizations": context.get("visualizations", [])
     }
 
     if "ban_results" in results:
