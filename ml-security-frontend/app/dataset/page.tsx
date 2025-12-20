@@ -7,12 +7,13 @@ import {DatasetInfo} from "@/types";
 
 export default async function DatasetPage() {
   const dataset_data = await fetch('http://localhost:5000/datasets')
-  const optimizer_data = await fetch('http://localhost:3004/optimizers')
-  const loss_function_data = await fetch('http://localhost:3004/loss_functions')
+  // TODO - add optimizer and loss function to backend
+  // const optimizer_data = await fetch('http://localhost:3004/optimizers')
+  // const loss_function_data = await fetch('http://localhost:3004/loss_functions')
 
   const datasets = await dataset_data.json() as DatasetInfo[]
-  const optimizers = await optimizer_data.json()
-  const lossFunctions = await loss_function_data.json()
+  // const optimizers = await optimizer_data.json()
+  // const lossFunctions = await loss_function_data.json()
 
   return (
     <MainContainer>
@@ -30,7 +31,7 @@ export default async function DatasetPage() {
 
             <div className="flex flex-col gap-4 text-zinc-700">
               <DatasetSelect datasets={datasets} />
-              <HyperparameterInputs optimizers={optimizers} lossFunctions={lossFunctions} />
+              {/*<HyperparameterInputs optimizers={optimizers} lossFunctions={lossFunctions} />*/}
             </div>
           </div>
 
