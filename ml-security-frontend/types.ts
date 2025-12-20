@@ -32,3 +32,27 @@ export interface DefenseInfo {
   params: ParamsType
 }
 
+export interface ResultInfo {
+  attack_phase: {
+    accuracy: number
+    asr: number
+  }
+  defense_phase: {
+    acc_pruned: number
+    asr_pruned: number
+    accuracy: number
+    asr: number
+  }
+  improvement: {
+    asr_reduction: number
+    acc_drop: number
+  }
+  visualizations: {
+    original_image: string
+    poisoned_image: string
+    original_label: number
+    prediction_clean: number
+    prediction_poisoned: number
+    target_label: number
+  }[]
+}

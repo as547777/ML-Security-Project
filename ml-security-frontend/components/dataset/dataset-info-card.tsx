@@ -6,7 +6,7 @@ const DatasetInfoCard = () => {
   const { dataset } = useData();
 
   if (!dataset) {
-    return <p>Select a dataset to see details.</p>
+    return <p className="text-zinc-600">Select a dataset to see details.</p>
   }
 
   return (

@@ -8,10 +8,13 @@ import {ParamsType} from "@/types";
 import DatasetTypeIcon from "@/components/dataset/dataset-type-icon";
 import Section from "@/components/section";
 import ParamCard from "@/components/param-card";
+import { useRouter } from 'next/navigation'
 
 export default function OverviewPage() {
   const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
   const [isRunning, setIsRunning] = useState(false)
+
+  const router = useRouter();
 
   const extractParamValues = (params?: ParamsType) => {
     if (!params) return {};
@@ -67,7 +70,8 @@ export default function OverviewPage() {
         throw new Error('Network response was not ok')
       }
       const data = await response.json()
-      alert(JSON.stringify(data))
+      sessionStorage.setItem('experimentResults', JSON.stringify(data));
+      router.push('/results');
     }
     catch (error) {
       alert(error)

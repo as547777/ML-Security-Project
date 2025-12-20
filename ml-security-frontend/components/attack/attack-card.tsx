@@ -2,13 +2,14 @@ import React from 'react';
 import AttackSelect from "@/components/attack/attack-select";
 import AttackInputs from "@/components/attack/attack-inputs";
 import {AttackInfo} from "@/types";
+import Card from "@/components/card";
 
 const AttackCard = async () => {
   const data = await fetch('http://localhost:5000/attacks')
   const attacks = await data.json() as AttackInfo[]
 
   return (
-    <div className="card-main flex-1 w-full max-w-2xl">
+    <Card>
       <h2 className="text-xl font-semibold text-blue-700 mb-3">
         Attack Configuration
       </h2>
@@ -19,7 +20,7 @@ const AttackCard = async () => {
         <AttackSelect attacks={attacks} />
         <AttackInputs />
       </div>
-    </div>
+    </Card>
   );
 };
 
