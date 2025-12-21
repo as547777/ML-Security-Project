@@ -8,7 +8,8 @@ interface Props {
   lossFunctions: {name: string, description: string}[]
 }
 
-const HyperparameterInputs = ({optimizers, lossFunctions} : Props) => {
+// const HyperparameterInputs = ({optimizers, lossFunctions} : Props) => {
+const HyperparameterInputs = () => {
   const {
     learningRate, setLearningRate,
     epochs, setEpochs,
@@ -40,19 +41,19 @@ const HyperparameterInputs = ({optimizers, lossFunctions} : Props) => {
         step={0.01}
         value={momentum} setValue={setMomentum} />
       
-      <FieldInput
-        label={"Loss function"}
-        tooltip={"Chooses how the model values loss per example"}
-        type={'select'}
-        options={lossFunctions.map(loss => loss.name)}
-        value={lossFunction} setValue={setLossFunction} />
+      {/*<FieldInput*/}
+      {/*  label={"Loss function"}*/}
+      {/*  tooltip={"Chooses how the model values loss per example"}*/}
+      {/*  type={'select'}*/}
+      {/*  options={lossFunctions.map(loss => loss.name)}*/}
+      {/*  value={lossFunction} setValue={setLossFunction} />*/}
 
-      <FieldInput
-        label={"Optimizer"}
-        tooltip={"Chooses how the model handles weight updates while training."}
-        type={"select"}
-        options={optimizers.map(opt => opt.name)}
-        value={optimizer} setValue={setOptimizer} />
+      {/*<FieldInput*/}
+      {/*  label={"Optimizer"}*/}
+      {/*  tooltip={"Chooses how the model handles weight updates while training."}*/}
+      {/*  type={"select"}*/}
+      {/*  options={optimizers.map(opt => opt.name)}*/}
+      {/*  value={optimizer} setValue={setOptimizer} />*/}
     </div>
   )
 }

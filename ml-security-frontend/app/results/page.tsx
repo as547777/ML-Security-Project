@@ -62,8 +62,8 @@ export default function ResultsPage() {
             title={"Defense Phase"}
             description={"Information on the second phase of the experiment, where the model is trained without poisoned data."}>
             <div className={"grid grid-cols-2 gap-2"}>
-              <ParamCard label={"Pruned Accuracy"} value={resultsData.defense_phase.acc_pruned} />
-              <ParamCard label={"Pruned Attack Success Ratio"} value={resultsData.defense_phase.asr_pruned} />
+              {/*<ParamCard label={"Pruned Accuracy"} value={resultsData.defense_phase.acc_pruned} />*/}
+              {/*<ParamCard label={"Pruned Attack Success Ratio"} value={resultsData.defense_phase.asr_pruned} />*/}
               <ParamCard label={"Accuracy"} value={resultsData.defense_phase.accuracy} />
               <ParamCard label={"Attack Success Ratio"} value={resultsData.defense_phase.asr} />
             </div>

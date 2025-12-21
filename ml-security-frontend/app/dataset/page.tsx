@@ -31,6 +31,7 @@ export default async function DatasetPage() {
 
             <div className="flex flex-col gap-4 text-zinc-700">
               <DatasetSelect datasets={datasets} />
+              <HyperparameterInputs />
               {/*<HyperparameterInputs optimizers={optimizers} lossFunctions={lossFunctions} />*/}
             </div>
           </div>
