@@ -26,12 +26,12 @@ class DefenseHandler:
         defense_params["learning_rate"] = context.get("learning_rate", 0.01)
 
         # Izvrši obranu
-        results = self.defense.execute(model, (x_train, y_train, x_test, y_test), defense_params)
+        results = self.defense.execute(model, (x_train, y_train, x_test, y_test), defense_params,context)
 
         context["defense_results"] = results
 
-        context["acc_clean_pruned"] = results["pruned_accuracy"]
-        context["acc_asr_pruned"] = results["pruned_asr"]
+        context["acc_clean_pruned"] = results.get("pruned_accuracy","")
+        context["acc_asr_pruned"] = results.get("pruned_asr","")
 
         context["final_accuracy"] = results["final_accuracy"]
         context["final_asr"] = results["final_asr"]

@@ -9,7 +9,9 @@ class AttackHandler:
         y_train = context["y_train"]
         x_test = context["x_test"]
         y_test = context["y_test"]
-        params = context["attack_params"]
+        context["x_train_clean"]=x_train
+        context["y_train_clean"]=y_train
+        params = context.get("attack_params",{})
 
         context["attack_instance"]=self.attack
 

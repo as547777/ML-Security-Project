@@ -63,7 +63,7 @@ def run():
     context={"learning_rate" : payload["learning_rate"],
              "epochs": payload["epochs"],
              "momentum": payload["momentum"],
-             "attack_params": payload["attack_params"],
+             "attack_params": payload.get("attack_params",{}),
              "defense_params": payload["defense_params"],
              "model": model,
              "attack_instance": attack
@@ -79,8 +79,8 @@ def run():
             "asr": context["acc_asr"]
         },
         "defense_phase": {
-            "acc_pruned": context["acc_clean_pruned"],
-            "asr_pruned": context["acc_asr_pruned"],
+            "acc_pruned": context.get("acc_clean_pruned",""),
+            "asr_pruned": context.get("acc_asr_pruned",""),
             "accuracy": context["final_accuracy"],
             "asr": context["final_asr"]
         },

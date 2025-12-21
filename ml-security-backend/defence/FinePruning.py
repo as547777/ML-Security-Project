@@ -79,7 +79,7 @@ class FinePruning(AbstractDefense):
         _, acc_asr = model.predict(data_poison)
         return acc_clean, acc_asr
     
-    def execute(self, model, data, params):
+    def execute(self, model, data, params,context):
         x_train, y_train, x_test, y_test = data
 
         x_test_asr = params.get("x_test_asr")
