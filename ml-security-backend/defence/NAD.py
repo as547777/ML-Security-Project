@@ -24,7 +24,7 @@ class AT(nn.Module):
 
 class NAD(AbstractDefense):
     __desc__ = {
-        "name": "Neural Attention Distillation",
+        "name": "NAD",
         "description": "A defense that uses attention transfer from a 'teacher' (fine-tuned on a small clean subset) to 'repair' a poisoned student model by aligning their intermediate feature attention maps.",
         "type": "Defense",
         "params": {
@@ -66,7 +66,7 @@ class NAD(AbstractDefense):
             "beta": {
                 "label": "Attention Loss Weight (Beta)",
                 "tooltip": "Weight for the attention transfer loss. Higher values force stronger alignment. Can be a single number or list for multiple layers.",
-                "type": "text",
+                "type": "string",
                 "value": "1000"
             },
             "power": {
@@ -79,7 +79,7 @@ class NAD(AbstractDefense):
             "target_layers": {
                 "label": "Target Layers",
                 "tooltip": "Comma-separated names of model layers to apply attention transfer",
-                "type": "text",
+                "type": "string",
                 "value": "conv1,conv2"
             }
         }
