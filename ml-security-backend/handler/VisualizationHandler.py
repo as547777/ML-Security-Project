@@ -41,9 +41,9 @@ class VisualizationHandler:
             # Pokaži samo one gdje je napad zapravo promijenio predikciju u ciljanu
             if pred_poisoned == attack_instance.target_label and pred_clean != pred_poisoned:
                 visualizations.append({
-                    "original_image": Visualizer.tensor_to_base64(original_img[0]),
+                    "source_image": Visualizer.tensor_to_base64(original_img[0]),
                     "poisoned_image": Visualizer.tensor_to_base64(poisoned_img[0]),
-                    "original_label": int(original_label),
+                    "source_label": int(original_label),
                     "prediction_clean": int(pred_clean),
                     "prediction_poisoned": int(pred_poisoned),
                     "target_label": attack_instance.target_label
