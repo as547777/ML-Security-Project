@@ -187,4 +187,5 @@ class Grond(AbstractAttack):
 
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
 
+        # TODO - missing neuron pruning while training, implement after model overhaul
         return x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr
