@@ -11,6 +11,7 @@ class VisualizationHandler:
         y_test = context.get("y_test")
         model_wrapper = context.get("model")
         attack_instance = context.get("attack_instance")
+        dataset_name = context.get("dataset", "cifar10")
         
         if x_test is None or model_wrapper is None:
             return
@@ -32,7 +33,20 @@ class VisualizationHandler:
             original_img = x_test[idx].unsqueeze(0).to(device)
             original_label = y_test[idx].item()
 
-            poisoned_img = attack_instance.apply_trigger(original_img.cpu().clone()).to(device)
+            # Check if attack has apply_trigger method
+            if hasattr(attack_instance, 'apply_trigger'):
+                # For BadNets, Blend, WaNet
+                poisoned_img = attack_instance.apply_trigger(original_img.cpu().clone()).to(device)
+            elif hasattr(attack_instance, 'apply_quantization'):
+                # For BPPAttack
+                poisoned_img = attack_instance.apply_quantization(
+                    original_img.cpu().clone(), 
+                    dataset_name
+                ).to(device)
+            else:
+                # Fallback: skip visualization for this attack
+                print(f"Warning: Attack {type(attack_instance).__name__} doesn't support visualization")
+                continue
 
             with torch.no_grad():
                 pred_clean = model(original_img).argmax(dim=1).item()
