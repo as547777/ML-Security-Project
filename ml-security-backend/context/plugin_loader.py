@@ -5,7 +5,7 @@ from interfaces.AbstractAttack import AbstractAttack
 from interfaces.AbstractDataset import AbstractDataset
 from interfaces.AbstractDeffense import AbstractDefense
 from interfaces.AbstractMetric import AbstractMetric
-from interfaces.Model import Model
+from interfaces.AbstractModel import AbstractModel
 from context import registry
 
 def load_plugins(package):
@@ -20,7 +20,7 @@ def load_plugins(package):
                 registry.register_dataset(module_name,obj)
             elif issubclass(obj,AbstractDefense):
                 registry.register_defense(module_name,obj)
-            elif issubclass(obj, Model):
+            elif issubclass(obj, AbstractModel):
                 registry.register_model(module_name,obj)
             elif issubclass(obj, AbstractMetric):
                 registry.register_metric(module_name, obj)

@@ -2,5 +2,5 @@ from abc import ABC, abstractmethod
 
 class AbstractDefense(ABC):
     @abstractmethod
-    def execute(self, model, data):
+    def execute(self,context):
         pass
