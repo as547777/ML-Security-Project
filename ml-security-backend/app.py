@@ -61,6 +61,7 @@ def run():
 
     # context = {}
     context={"learning_rate" : payload["learning_rate"],
+             "dataset": payload["dataset"],
              "epochs": payload["epochs"],
              "momentum": payload["momentum"],
              "attack_params": payload.get("attack_params",{}),

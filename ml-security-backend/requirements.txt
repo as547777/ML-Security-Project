@@ -5,3 +5,4 @@ adversarial-robustness-toolbox
 pillow
 packaging
 torchvision
+numba
