@@ -72,7 +72,8 @@ class Grond(AbstractAttack):
         self.batch_size = batch_size
         self.delta = None  # init to none
 
-    def apply_trigger(self, image_tensor):
+    def apply_trigger(self, tensor):
+        image_tensor = tensor
         return torch.clamp(image_tensor + self.delta, 0, 1)
 
     def generate_upgd(self, model, x_train):

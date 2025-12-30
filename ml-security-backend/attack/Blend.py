@@ -72,7 +72,8 @@ class Blend(AbstractAttack):
 
         return trigger_tensor
 
-    def apply_trigger(self, image_tensor):
+    def apply_trigger(self, tensor):
+        image_tensor = tensor
         trigger = self.trigger_pattern.to(image_tensor.device, dtype=image_tensor.dtype) #osiguranje da je okidač istog tipa kao i slika i na istom uređaju
         triggered_image = (1 - self.alpha) * image_tensor + self.alpha * trigger
         return triggered_image

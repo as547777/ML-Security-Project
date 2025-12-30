@@ -67,7 +67,8 @@ class WaNet(AbstractAttack):
         grid = np.stack((x_warped, y_warped), axis=-1)
         return torch.tensor(grid, dtype=torch.float32).unsqueeze(0)
     
-    def apply_trigger(self, x_batch):
+    def apply_trigger(self, tensor):
+        x_batch = tensor
         batch_grid = self.grid.repeat(x_batch.size(0), 1, 1, 1).to(x_batch.device)
         return F.grid_sample(x_batch, batch_grid, mode='bilinear', 
                              padding_mode='border', align_corners=False)

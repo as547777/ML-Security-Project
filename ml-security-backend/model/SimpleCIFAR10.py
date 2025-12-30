@@ -63,12 +63,10 @@ class SimpleCIFAR10(AbstractModel):
         self.model = self.Net()
         self.model.to(self.device)
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer_class = optim.Adam
     
     def train(self, data_train, lr, momentum, epochs):
         x_train, y_train = data_train
-        optimizer = self.optimizer_class(self.model.parameters(), lr=0.001, weight_decay=1e-4)
-        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
+        optimizer = optim.SGD(self.model.parameters(), lr=lr, momentum=momentum)
         
         train_loader = torch.utils.data.DataLoader(
             torch.utils.data.TensorDataset(x_train, y_train),
@@ -100,9 +98,7 @@ class SimpleCIFAR10(AbstractModel):
             acc = 100. * correct / total
             avg_loss = running_loss / len(train_loader)
             print(f"Epoch [{epoch + 1}/{epochs}] Loss: {avg_loss:.4f}, Acc: {acc:.2f}%")
-            
-            scheduler.step()
-    
+                
     def predict(self, data_test):
         x_test, y_test = data_test
         

@@ -126,6 +126,7 @@ class BPP(AbstractAttack):
         self.neg_rate = neg_rate
         self.attack_mode = attack_mode
         self.residual_list = []
+        self.dataset_name = "cifar10"
         
     def _get_normalization_params(self, dataset_name):
         """Get normalization parameters based on dataset"""
@@ -168,7 +169,7 @@ class BPP(AbstractAttack):
         
         return inputs_clone
     
-    def apply_quantization(self, images, dataset_name):
+    def apply_trigger(self, tensor):
         """
         Apply bit-depth reduction (quantization) to images
         
@@ -179,21 +180,21 @@ class BPP(AbstractAttack):
         Returns:
             Quantized images in normalized space
         """
-        images_255 = self.back_to_np_4d(images, dataset_name)
+        images_255 = self.back_to_np_4d(tensor, self.dataset_name)
         
         if self.dithering:
             quantized = torch.zeros_like(images_255)
             for i in range(images_255.shape[0]):
                 img_np = images_255[i].detach().cpu().numpy()
                 dithered = floydDitherspeed(img_np, float(self.squeeze_num))
-                quantized[i] = torch.from_numpy(dithered).to(images.device)
+                quantized[i] = torch.from_numpy(dithered).to(tensor.device)
             quantized = torch.round(quantized)
         else:
             quantized = torch.round(
                 images_255 / 255.0 * (self.squeeze_num - 1)
             ) / (self.squeeze_num - 1) * 255
         
-        return self.np_4d_to_tensor(quantized, dataset_name)
+        return self.np_4d_to_tensor(quantized, self.dataset_name)
     
     def compute_residuals(self, images, dataset_name):
         images_255 = self.back_to_np_4d(images, dataset_name)
@@ -254,8 +255,8 @@ class BPP(AbstractAttack):
         perm = torch.randperm(len(eligible_indices))
         poison_indices = eligible_indices[perm[:num_poison]]
         
-        x_poisoned[poison_indices] = self.apply_quantization(
-            x_train[poison_indices], dataset_name
+        x_poisoned[poison_indices] = self.apply_trigger(
+            x_train[poison_indices]
         )
         
         if self.attack_mode == "all2one":
@@ -282,7 +283,7 @@ class BPP(AbstractAttack):
         
         return x_poisoned, y_poisoned
     
-    def prepare_for_attack_success_rate(self, data_test, dataset_name):
+    def prepare_for_attack_success_rate(self, data_test):
         x_test, y_test = data_test
         
         if self.source_label == -1:
@@ -295,7 +296,7 @@ class BPP(AbstractAttack):
             return x_test[:0], y_test[:0]
         
         x_test_triggered = x_test[test_indices].clone()
-        x_test_triggered = self.apply_quantization(x_test_triggered, dataset_name)
+        x_test_triggered = self.apply_trigger(x_test_triggered)
         
         if self.attack_mode == "all2one":
             y_test_target = torch.full(
@@ -320,12 +321,12 @@ class BPP(AbstractAttack):
             self.attack_mode = params.get("attack_mode", self.attack_mode)
         
         x_train, y_train, x_test, y_test = data
-        dataset_name = params.get("dataset", "cifar10")
+        self.dataset_name = params.get("dataset", "cifar10")
         
         data_train = (x_train, y_train)
-        x_poisoned_train, y_poisoned_train = self.poison_train_data(data_train, dataset_name)
+        x_poisoned_train, y_poisoned_train = self.poison_train_data(data_train, self.dataset_name)
         
         data_test = (x_test, y_test)
-        x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test, dataset_name)
+        x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
         
         return x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr   

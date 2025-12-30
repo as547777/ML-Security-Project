@@ -55,7 +55,8 @@ class BadNets(AbstractAttack):
     def __repr__(self):
         return "badnets"
 
-    def apply_trigger(self, image_tensor):
+    def apply_trigger(self, tensor):
+        image_tensor = tensor
         img_height = image_tensor.shape[-2]
         img_width = image_tensor.shape[-1]
 

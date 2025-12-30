@@ -99,9 +99,9 @@ class AdvDoor(AbstractAttack):
         self.inner_steps = inner_steps
         self.tuap = None
 
-    def apply_trigger(self, image_tensor):
+    def apply_trigger(self, tensor):
         """Apply TUAP trigger to an image."""
-        return torch.clamp(image_tensor + self.tuap, 0, 1)
+        return torch.clamp(tensor + self.tuap, 0, 1)
 
     def _generate_input_specific_perturbation(self, model, x, target, device):
         """

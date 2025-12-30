@@ -80,15 +80,11 @@ def run():
             "asr": context["acc_asr"]
         },
         "defense_phase": {
-            "acc_pruned": context.get("acc_clean_pruned",""),
-            "asr_pruned": context.get("acc_asr_pruned",""),
             "accuracy": context["final_accuracy"],
             "asr": context["final_asr"]
         },
         "improvement": {
-            # Koliko smo smanjili uspješnost napada (što veće to bolje)
             "asr_reduction": context["acc_asr"] - context["final_asr"],
-            # Koliko smo izgubili na točnosti (što bliže 0 to bolje)
             "acc_drop": context["acc"] - context["final_accuracy"]
         },
         "visualizations": context.get("visualizations", [])
