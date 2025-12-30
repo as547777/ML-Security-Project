@@ -12,7 +12,6 @@ class AbstractAttack(ABC):
         
         Args:
             data_test: Tuple of (x_test, y_test).
-            **kwargs: Additional parameters like dataset_name
         """
         pass
 
@@ -23,6 +22,5 @@ class AbstractAttack(ABC):
 
         Args:
             tensor: The input tensor to be modified.
-            **kwargs: Specific parameters (e.g., mask, grid, alpha).
         """
         raise NotImplementedError("Each attack must implement apply_trigger for visualization.")
