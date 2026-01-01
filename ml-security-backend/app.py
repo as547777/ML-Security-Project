@@ -41,6 +41,11 @@ def defenses():
 def datasets():
     return jsonify(dict_to_list(appContext.fetch_datasets()))
 
+@app.route("/models",methods=["GET"])
+def models():
+    model_map=appContext.get_models()
+    return jsonify(model_map)
+
 @app.route("/run", methods=["POST"])
 def run():
     payload=request.get_json()
@@ -89,35 +94,7 @@ def run():
         },
         "visualizations": context.get("visualizations", [])
     }
-
-    if "ban_results" in results:
-        ban_results = results["ban_results"]
-        response["ban_detection"] = {
-            "backdoor_detected": ban_results["backdoor_detected"],
-            "original_accuracy": ban_results.get("original_accuracy", 0),
-            "perturbed_accuracy": ban_results.get("perturbed_accuracy", 0),
-            "accuracy_drop": ban_results.get("original_accuracy", 0) - ban_results.get("perturbed_accuracy", 0),
-            "detection_time": ban_results.get("detection_time", 0),
-            "positive_loss": ban_results.get("positive_loss", 0),
-            "negative_loss": ban_results.get("negative_loss", 0),
-            "fine_tuned": ban_results.get("fine_tuned", False),
-            "fine_tuned_accuracy": ban_results.get("fine_tuned_accuracy", None),
-            "error": ban_results.get("error", None)
-        }
     return jsonify(response)
-
-@app.route("/dummy/response", methods=["POST"])
-def dummy_response():
-    payload=request.get_json()
-    
-    result={"response_message": "Hello from backend!",
-        "learning_rate": payload["learning_rate"],
-            "epochs": payload["epochs"],
-            "dataset": payload["dataset"],
-            "attack": payload["attack"],
-            "defense": payload["defense"]
-            }
-    return jsonify(result)
 
 if __name__=="__main__":
     app.run(debug=True)

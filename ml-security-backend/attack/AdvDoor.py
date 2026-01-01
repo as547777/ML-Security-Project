@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import random
 from interfaces.AbstractAttack import AbstractAttack
-from model.ImageModel import ImageModel
+from model.image.ImageModel import ImageModel
 
 class AdvDoor(AbstractAttack):
     __desc__ = {

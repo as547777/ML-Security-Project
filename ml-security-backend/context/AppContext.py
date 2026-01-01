@@ -25,5 +25,28 @@ class AppContext:
     def resolve_model(self, name):
         return self.registry.MODEL_MAP[name]()
     
+    def fetch_models(self):
+        return self.registry.MODEL_MAP
+  
     def resolve_metric(self, name):
         return self.registry.METRIC_MAP[name]()
+    
+    def get_models(self):
+        model_families = {}
+
+        for name, cls in self.registry.MODEL_MAP.items():
+            for base in cls.__mro__:
+                if hasattr(base, "desc") and "name" in base.desc:
+                    family_name = base.desc["name"]
+
+                    if family_name not in model_families:
+                        model_families[family_name] = dict(base.desc)
+                        model_families[family_name]["models"] = []
+
+                    model_families[family_name]["models"].append(name)
+                    break
+
+        return list(model_families.values())
+
+
+        
