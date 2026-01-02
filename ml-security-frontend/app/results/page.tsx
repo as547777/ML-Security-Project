@@ -41,7 +41,7 @@ export default function ResultsPage() {
               <Section title={"Class poison visualization"}>
                 <div className={'flex items-center justify-between mb-2 px-15'}>
                   <Image
-                    src={`data:image/png;base64,${resultsData.visualizations[0].original_image}`}
+                    src={`data:image/png;base64,${resultsData.visualizations[0].source_image}`}
                     alt={"Original Image"}
                     width={100}
                     height={100}

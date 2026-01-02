@@ -48,9 +48,9 @@ export interface ResultInfo {
     acc_drop: number
   }
   visualizations: {
-    original_image: string
+    source_image: string
     poisoned_image: string
-    original_label: number
+    source_label: number
     prediction_clean: number
     prediction_poisoned: number
     target_label: number

@@ -5,10 +5,11 @@ import { StepNavigation } from "@/components/step-navigation"
 import { useData } from "@/context/DataContext"
 import React, {useState} from "react";
 import {ParamsType} from "@/types";
-import DatasetTypeIcon from "@/components/dataset/dataset-type-icon";
 import Section from "@/components/section";
 import ParamCard from "@/components/param-card";
 import { useRouter } from 'next/navigation'
+import DatasetDetails from "@/components/dataset/dataset-details";
+import Card from "@/components/card";
 
 export default function OverviewPage() {
   const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
@@ -82,40 +83,18 @@ export default function OverviewPage() {
   }
 
   return (
-    // TODO - ovo promjenit skroz
     <MainContainer>
       <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
         Overview
       </h1>
 
-      <div className="card-main w-full max-w-2xl text-zinc-700">
+      <Card>
         <div className="space-y-6">
           <p className="text-zinc-600">
             Here’s a summary of your selected configuration:
           </p>
 
-          <div className="rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 p-5 text-white shadow-lg">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-xs font-medium text-purple-100 mb-1">Dataset</div>
-                <h2 className="text-2xl font-bold mb-2">{dataset?.name || "Not selected"}</h2>
-                <p className="text-sm text-purple-100 mb-3">{dataset?.description}</p>
-                <div className="flex gap-4 text-sm">
-                  <div>
-                    <span className="text-purple-200">Train:</span>{" "}
-                    <span className="font-semibold">{dataset?.trainCount?.toLocaleString()}</span>
-                  </div>
-                  <div>
-                    <span className="text-purple-200">Test:</span>{" "}
-                    <span className="font-semibold">{dataset?.testCount?.toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-5xl opacity-20">
-                <DatasetTypeIcon type={dataset?.type} size={10} color={'text-white'} />
-              </div>
-            </div>
-          </div>
+          <DatasetDetails />
 
           <Section title={'Training Configuration'}>
             <div className="grid grid-cols-2 gap-2">
@@ -151,7 +130,7 @@ export default function OverviewPage() {
           isRunning={isRunning}
           onRun={execute}
         />
-      </div>
+      </Card>
     </MainContainer>
   )
 }

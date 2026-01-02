@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import DatasetTypeIcon from "@/components/dataset/dataset-type-icon";
 import {DatasetInfo} from "@/types";
+import DatasetDetails from "@/components/dataset/dataset-details";
 
 export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] }) {
   const { dataset, setDataset } = useData()
@@ -41,18 +41,10 @@ export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] })
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1 text-zinc-500">Dataset</label>
-
       {/* Trigger button */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full justify-baseline text-zinc-700 text-md py-5"
-          >
-            <DatasetTypeIcon type={dataset?.type} />
-            {dataset?.name || "Select a dataset"}
-          </Button>
+        <DialogTrigger className={'text-left w-full'}>
+          <DatasetDetails clickable />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-700">
