@@ -9,8 +9,8 @@ class ModelHandler:
         h_res = context['h_res']
         color_channels = context['color_channels']
         classes = context['classes']
-
-        self.model.init(w_res, h_res, color_channels, classes)
+        init_params={"w_res":w_res,"h_res":h_res,"color_channels":color_channels,"classes":classes}
+        self.model.init(init_params)
 
 
         x_train = context["x_train"]

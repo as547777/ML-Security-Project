@@ -5,6 +5,13 @@ import torch.optim as optim
 from interfaces.AbstractModel import AbstractModel
 
 class SimpleCIFAR10(AbstractModel):
+    desc = {
+        "name": "SimpleCIFAR10",
+        "description": "Simple model for CIFAR10",
+        "use_case": "testing",
+        "category": "image",
+        "models": ["SimpleCIFAR10"]
+    }
     class Net(nn.Module):
         def __init__(self):
             super().__init__()
