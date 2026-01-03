@@ -129,17 +129,25 @@ function generateReport() {
                     </div>
                     <div class="img-box">
                         <div class="sample">
-                            <span class="label-tag tag-blue">Originalna Slika (Label: ${vis.source_label})</span><br><br>
+                            <span class="label-tag tag-blue">Original (Label: ${vis.source_label})</span><br><br>
                             <img src="data:image/png;base64,${vis.source_image}">
-                            <div style="margin-top:10px;">Predikcija: <strong>${vis.prediction_clean}</strong></div>
+                            <div style="margin-top:10px;">Pred: <strong>${vis.prediction_clean}</strong></div>
+                        </div>
+
+                        <div class="arrow">+</div>
+
+                        <div class="sample">
+                            <span class="label-tag" style="background: #f3e5f5; color: #7b1fa2;">Trigger (Residual)</span><br><br>
+                            <img src="data:image/png;base64,${vis.residual_image}" style="filter: invert(0);">
+                            <div style="margin-top:10px; color: #7f8c8d; font-size: 0.8rem;">(Pojačani prikaz razlike)</div>
                         </div>
 
                         <div class="arrow">➔</div>
 
                         <div class="sample">
-                            <span class="label-tag tag-red">Otrovana Slika (Target: ${vis.target_label})</span><br><br>
+                            <span class="label-tag tag-red">Poisoned (Target: ${vis.target_label})</span><br><br>
                             <img src="data:image/png;base64,${vis.poisoned_image}">
-                            <div style="margin-top:10px;">Predikcija: <span class="${isSuccess ? 'tag-green' : 'tag-red'}" style="padding: 2px 5px; border-radius:3px;">${vis.prediction_poisoned}</span></div>
+                            <div style="margin-top:10px;">Pred: <span class="${isSuccess ? 'tag-green' : 'tag-red'}" style="padding: 2px 5px; border-radius:3px;">${vis.prediction_poisoned}</span></div>
                         </div>
                     </div>
                 </div>

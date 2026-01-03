@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import random
 from interfaces.AbstractAttack import AbstractAttack
-from model.ImageModel import ImageModel
+from model.image.ImageModel import ImageModel
 
 class LabelConsistent(AbstractAttack):    
     __desc__ = {

@@ -45,10 +45,21 @@ class VisualizationHandler:
                 pred_clean = model(original_img).argmax(dim=1).item()
                 pred_poisoned = model(poisoned_img).argmax(dim=1).item()
 
+            residual = torch.abs(original_img[0] - poisoned_img[0])
+
+            if residual.max() > 0:
+                residual = residual / residual.max()
+
+            #diff = torch.abs(original_img[0] - poisoned_img[0])
+            #mask = diff.sum(dim=0) > 0
+            #residual = torch.zeros_like(original_img[0])
+            #residual[:, mask] = poisoned_img[0][:, mask]
+
             if pred_poisoned == attack_instance.target_label and pred_clean != pred_poisoned:
                 visualizations.append({
                     "source_image": Visualizer.tensor_to_base64(original_img[0]),
                     "poisoned_image": Visualizer.tensor_to_base64(poisoned_img[0]),
+                    "residual_image": Visualizer.tensor_to_base64(residual),
                     "source_label": int(original_label),
                     "prediction_clean": int(pred_clean),
                     "prediction_poisoned": int(pred_poisoned),
