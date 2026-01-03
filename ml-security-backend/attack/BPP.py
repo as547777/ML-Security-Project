@@ -49,7 +49,7 @@ class BPP(AbstractAttack):
     """
     
     __desc__ = {
-        "name": "BPP (Bit-Plane Poisoning)",
+        "name": "BPP",
         "description": "Backdoor attack using bit-depth reduction (quantization) as trigger. Can use Floyd-Steinberg dithering for smoother results. Supports negative samples for improved stealthiness.",
         "type": "White-box attack",
         "params": {
