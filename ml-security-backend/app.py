@@ -11,6 +11,7 @@ from handler.GlobalHandler import GlobalHandler
 from handler.MetricsHandler import MetricsHandler
 from handler.ModelHandler import ModelHandler
 from handler.VisualizationHandler import VisualizationHandler
+from interfaces.TrainTimeDefense import TrainTimeDefense
 
 import attack as attack_pkg
 import defence as defence_pkg
@@ -59,7 +60,8 @@ def run():
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
     globalHandler.register(AttackHandler(attack))
-    globalHandler.register(ModelHandler(model))
+    if(not isinstance(defense, TrainTimeDefense)):
+        globalHandler.register(ModelHandler(model))
     globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
     globalHandler.register(VisualizationHandler(num_samples=5))

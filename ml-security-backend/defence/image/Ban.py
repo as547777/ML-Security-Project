@@ -21,41 +21,41 @@ class Ban(AbstractDefense):
                 "tooltip": "Batch size for training and evaluation.",
                 "type": "number",
                 "step": 16,
-                "default": 128
+                "value": 128
             },
             "eps": {
                 "label": "Perturbation Epsilon",
                 "tooltip": "Maximum perturbation magnitude for neuron noise.",
                 "type": "number",
                 "step": 0.05,
-                "default": 0.3
+                "value": 0.3
             },
             "steps": {
                 "label": "Perturbation Steps",
                 "tooltip": "Number of steps for generating adversarial neuron perturbations.",
                 "type": "number",
                 "step": 1,
-                "default": 1
+                "value": 1
             },
             "rob_lambda": {
                 "label": "Robustness Lambda",
                 "tooltip": "Weight for the adversarial neuron loss component.",
                 "type": "number",
                 "step": 0.05,
-                "default": 0.5
+                "value": 0.5
             },
             "epochs": {
                 "label": "Training Epochs",
                 "tooltip": "Number of epochs to train the defense.",
                 "type": "number",
                 "step": 1,
-                "default": 10
+                "value": 10
             },
             "schedule": {
                 "label": "Learning Rate Schedule",
                 "tooltip": "Epoch milestones for learning rate decay.",
                 "type": "list",
-                "default": [50, 75]
+                "value": [50, 75]
             }
         }
     }
