@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ParamCard = ({ label, value, highlight = false }: { label: string; value: string | number | undefined | null; highlight?: boolean }) => (
-  <div className={`rounded-xl p-3 border transition-all ${
+const ParamCard = ({ className, label, value, highlight = false }: { className?: string; label: string; value: string | number | undefined | null; highlight?: boolean }) => (
+  <div className={`${className} rounded-xl p-3 border transition-all ${
     highlight
       ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'
       : 'bg-white/60 backdrop-blur-sm border-zinc-200/50'

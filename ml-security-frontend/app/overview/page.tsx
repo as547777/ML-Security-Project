@@ -10,9 +10,12 @@ import ParamCard from "@/components/param-card";
 import { useRouter } from 'next/navigation'
 import DatasetDetails from "@/components/dataset/dataset-details";
 import Card from "@/components/card";
+import ModelDetails from "@/components/model/model-details";
+import AttackDetails from "@/components/attack/attack-details";
+import DefenseDetails from "@/components/defense/defense-details";
 
 export default function OverviewPage() {
-  const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams } = useData()
+  const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams, model } = useData()
   const [isRunning, setIsRunning] = useState(false)
 
   const router = useRouter();
@@ -30,7 +33,8 @@ export default function OverviewPage() {
     if (!params || Object.keys(params).length === 0) return null
 
     return (
-      <div className="grid grid-cols-2 gap-2 mt-3">
+      // <div className="grid grid-cols-2 gap-2 mt-3">
+      <>
         {Object.entries(params).map(([key, param]) => (
           <ParamCard
             key={key}
@@ -38,7 +42,7 @@ export default function OverviewPage() {
             value={param.type === 'number' ? Number(param.value).toFixed(4) : param.value}
           />
         ))}
-      </div>
+      </>
     )
   }
 
@@ -61,7 +65,7 @@ export default function OverviewPage() {
           "epochs": epochs,
           "momentum": momentum,
           "attack": attack?.name,
-          "model": "ImageModel",
+          "model": model,
           "defense": defense?.name,
           "attack_params": attackParamsValues,
           "defense_params": defenseParamsValues
@@ -88,40 +92,59 @@ export default function OverviewPage() {
         Overview
       </h1>
 
-      <Card>
+      <Card fullWidth>
         <div className="space-y-6">
           <p className="text-zinc-600">
             Here’s a summary of your selected configuration:
           </p>
 
-          <DatasetDetails />
+          <div className={'space-y-6'}>
+            <Section title="Training Configuration">
+              <div className="grid lg:grid-cols-2 gap-4 items-start">
+                <div className="space-y-4">
+                  <DatasetDetails />
+                  <ModelDetails />
+                </div>
 
-          <Section title={'Training Configuration'}>
-            <div className="grid grid-cols-2 gap-2">
-              <ParamCard label="Learning Rate" value={learningRate} highlight />
-              <ParamCard label="Epochs" value={epochs} highlight />
-              <ParamCard label="Batch Size" value={batchSize} highlight />
-              <ParamCard label="Momentum" value={momentum} />
-              <ParamCard label="Optimizer" value={optimizer} />
-              <ParamCard label="Loss Function" value={lossFunction} />
-            </div>
-          </Section>
+                <div className="grid grid-cols-2 gap-2">
+                  <ParamCard label={"Model"} value={model} highlight className={'col-span-2'} />
+                  <ParamCard label="Learning Rate" value={learningRate} />
+                  <ParamCard label="Epochs" value={epochs} />
+                  <ParamCard label="Batch Size" value={batchSize} />
+                  <ParamCard label="Momentum" value={momentum} />
+                  <ParamCard label="Optimizer" value={optimizer} />
+                  <ParamCard label="Loss Function" value={lossFunction} />
+                </div>
+              </div>
+            </Section>
 
-          <Section title="Attack Configuration">
-            <ParamCard label="Attack Method" value={attack?.name} highlight />
-            {attack?.description && (
-              <p className="text-xs text-zinc-600 mt-2 mb-1">{attack.description}</p>
-            )}
-            {renderParams(attackParams)}
-          </Section>
 
-          <Section title="Defense Configuration">
-            <ParamCard label="Defense Method" value={defense?.name} highlight />
-            {defense?.description && (
-              <p className="text-xs text-zinc-600 mt-2 mb-1">{defense.description}</p>
-            )}
-            {renderParams(defenseParams)}
-          </Section>
+            <Section title="Attack Configuration">
+              <div className="grid lg:grid-cols-2 gap-4 items-start">
+                <div className="space-y-4">
+                  <AttackDetails />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {renderParams(attackParams)}
+                </div>
+              </div>
+            </Section>
+
+
+            <Section title="Defense Configuration">
+              <div className="grid lg:grid-cols-2 gap-4 items-start">
+                <div className="space-y-4">
+                  <DefenseDetails />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 items-start">
+                  {renderParams(defenseParams)}
+                </div>
+              </div>
+            </Section>
+
+          </div>
         </div>
 
         <StepNavigation

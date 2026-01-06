@@ -1,11 +1,15 @@
 "use client"
 import {createContext, PropsWithChildren, useContext, useState} from "react"
-import {AttackInfo, ParamsType, DatasetInfo, DefenseInfo} from "@/types";
+import {AttackInfo, ParamsType, DatasetInfo, DefenseInfo, ModelInfo} from "@/types";
 
 interface DataType {
   dataset: DatasetInfo | null
   setDataset: (dataset: DatasetInfo | null) => void
 
+  modelFamily: ModelInfo | null
+  setModelFamily: (modelFamily: ModelInfo | null) => void
+  model: string
+  setModel: (model: string) => void
   learningRate: number
   setLearningRate: (learningRate: number) => void
   epochs: number
@@ -37,6 +41,8 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [dataset, setDataset] = useState<DatasetInfo | null>(null)
 
   // Hyperparameters
+  const [modelFamily, setModelFamily] = useState<ModelInfo | null>(null)
+  const [model, setModel] = useState<string>('')
   const [learningRate, setLearningRate] = useState(0.01)
   const [epochs, setEpochs] = useState(10)
   const [momentum, setMomentum] = useState(0.9)
@@ -90,6 +96,8 @@ export function DataProvider({ children }: PropsWithChildren) {
     <DataContext.Provider
       value={{
         dataset, setDataset,
+        modelFamily, setModelFamily,
+        model, setModel,
         learningRate, setLearningRate,
         epochs, setEpochs,
         momentum, setMomentum,

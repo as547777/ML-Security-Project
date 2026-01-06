@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {AttackInfo} from "@/types";
+import AttackDetails from "@/components/attack/attack-details";
 
 export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
   const { attack, setAttack } = useData()
@@ -36,24 +37,9 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1 text-zinc-500">Attack</label>
-
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <div className="select-div">
-            {attack?.name ? (
-              <div>
-                <h1 className={'text-base mb-1'}>{attack.name}</h1>
-                <p className="text-sm text-zinc-500 mb-2">{attack.description}</p>
-                <div className="text-xs text-zinc-400 flex justify-between">
-                  <span>ovdje dodati nesto</span>
-                  <span>i tu</span>
-                </div>
-              </div>
-            ) : (
-              <span className={'text-base'}>Select an attack</span>
-            )}
-          </div>
+        <DialogTrigger className={'text-left w-full'}>
+          <AttackDetails clickable />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-900">

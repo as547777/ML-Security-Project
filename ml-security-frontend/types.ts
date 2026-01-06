@@ -1,12 +1,3 @@
-export interface DatasetInfo {
-  name: string
-  description: string
-  type: string
-  trainCount: number
-  testCount: number
-  classes: string[]
-}
-
 export interface ParamField {
   label: string;
   tooltip: string;
@@ -17,6 +8,23 @@ export interface ParamField {
 }
 
 export type ParamsType = Record<string, ParamField>;
+
+export interface DatasetInfo {
+  name: string
+  description: string
+  type: string
+  trainCount: number
+  testCount: number
+  classes: string[]
+}
+
+export interface ModelInfo {
+  name: string
+  description: string
+  category: string
+  use_case: string
+  models: string[]
+}
 
 export interface AttackInfo {
   name: string

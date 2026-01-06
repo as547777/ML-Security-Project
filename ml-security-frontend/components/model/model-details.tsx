@@ -1,6 +1,8 @@
 import React from 'react';
+import {useData} from "@/context/DataContext";
 
 const ModelDetails = ({clickable} : {clickable?: boolean}) => {
+  const { modelFamily } = useData()
 
   return (
     <div className={`rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-600 p-5 text-white shadow-sm transition
@@ -12,22 +14,22 @@ const ModelDetails = ({clickable} : {clickable?: boolean}) => {
           </div>
 
           <h2 className="text-2xl font-bold mb-2">
-            ResNet
+            {modelFamily?.name || "Not selected"}
           </h2>
 
           <p className="text-sm text-purple-100 mb-3">
-            Residual neural network architecture for deep image recognition tasks.
+            {modelFamily?.description || ''}
           </p>
 
           <div className="flex gap-4 text-sm">
             <div>
               <span className="text-purple-200">Category:</span>{" "}
-              <span className="font-semibold">CNN</span>
+              <span className="font-semibold">{modelFamily?.category || ''}</span>
             </div>
 
             <div>
               <span className="text-purple-200">Use case:</span>{" "}
-              <span className="font-semibold">Computer Vision</span>
+              <span className="font-semibold">{modelFamily?.use_case || ''}</span>
             </div>
           </div>
         </div>
