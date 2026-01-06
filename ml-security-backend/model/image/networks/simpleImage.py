@@ -25,8 +25,22 @@ class SimpleImageNet(nn.Module):
             self.fc1 = nn.Linear(n_features, 120)
             self.fc2 = nn.Linear(120, 84)
             self.fc3 = nn.Linear(84, classes)
+
+            with torch.no_grad():
+                dummy_input = torch.zeros(1, color_channels, h_res, w_res)
+                x = self.pool(torch.relu(self.bn1(self.conv1(dummy_input))))
+                x = self.pool(torch.relu(self.bn2(self.conv2(x))))
+                self.feature_shape = x.shape[1:]
+                
+                features_flat = self.get_representations(dummy_input)
+                self.nChannels = features_flat.shape[1]
         
-        def forward(self, x):
+        def forward(self, x,return_hidden=False):
+            if return_hidden:
+                hidden = self.get_representations(x)
+                logits = self.fc3(hidden) 
+                return logits, hidden
+            
             x = self.conv1(x)
             x = self.bn1(x)
             x = self.pool(torch.relu(x))
