@@ -73,7 +73,7 @@ export default function DatasetSelect({ datasets }: { datasets: DatasetInfo[] })
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <h3 className="font-semibold text-blue-700">{d.name}</h3>
+                  <h3 className="font-semibold text-blue-700">{d.display_name}</h3>
                   <p className="text-sm text-zinc-600">{d.description}</p>
                   <div className="mt-2 text-xs text-zinc-500">
                     <p>Type: {d.type}</p>

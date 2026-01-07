@@ -14,7 +14,7 @@ const AttackDetails = ({clickable} : {clickable?: boolean}) => {
           </div>
 
           <h2 className="text-2xl font-bold mb-2">
-            {attack?.name || "Not selected"}
+            {attack?.display_name || "Not selected"}
           </h2>
 
           <p className="text-sm text-purple-100 mb-3">
@@ -28,8 +28,8 @@ const AttackDetails = ({clickable} : {clickable?: boolean}) => {
             </div>
 
             <div>
-              <span className="text-purple-200">jel all to one i one to one:</span>{" "}
-              <span className="font-semibold">{''}</span>
+              <span className="text-purple-200">Time:</span>{" "}
+              <span className="font-semibold">{'Test ili Train time'}</span>
             </div>
           </div>
         </div>

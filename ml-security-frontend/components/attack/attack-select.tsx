@@ -66,7 +66,7 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <h3 className="font-semibold text-blue-700">{a.name}</h3>
+                  <h3 className="font-semibold text-blue-700">{a.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{a.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
                     <span>ovdje dodati nesto</span>

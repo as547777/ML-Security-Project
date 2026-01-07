@@ -14,7 +14,7 @@ const DefenseDetails = ({clickable} : {clickable?: boolean}) => {
           </div>
 
           <h2 className="text-2xl font-bold mb-2">
-            {defense?.name || "Not selected"}
+            {defense?.display_name || "Not selected"}
           </h2>
 
           <p className="text-sm text-purple-100 mb-3">

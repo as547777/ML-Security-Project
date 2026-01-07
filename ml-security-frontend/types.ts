@@ -11,6 +11,7 @@ export type ParamsType = Record<string, ParamField>;
 
 export interface DatasetInfo {
   name: string
+  display_name: string
   description: string
   type: string
   trainCount: number
@@ -28,6 +29,7 @@ export interface ModelInfo {
 
 export interface AttackInfo {
   name: string
+  display_name: string
   description: string
   type: string
   params: ParamsType
@@ -35,6 +37,7 @@ export interface AttackInfo {
 
 export interface DefenseInfo {
   name: string
+  display_name: string
   description: string
   type: string
   params: ParamsType
@@ -58,6 +61,7 @@ export interface ResultInfo {
   visualizations: {
     source_image: string
     poisoned_image: string
+    residual_image: string
     source_label: number
     prediction_clean: number
     prediction_poisoned: number

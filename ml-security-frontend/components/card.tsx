@@ -13,7 +13,9 @@ const Card = ({className, title, description, fullWidth, children}: PropsWithChi
       {title && <h2 className="text-xl font-semibold text-blue-700 mb-3">{title}</h2>}
       {description && <p className="text-zinc-600 mb-4">{description}</p>}
 
-      {children}
+      <div className={`${className}`}>
+        {children}
+      </div>
     </div>
   );
 };

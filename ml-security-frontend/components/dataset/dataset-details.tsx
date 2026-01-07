@@ -11,7 +11,7 @@ const DatasetDetails = ({clickable} : {clickable?: boolean}) => {
       <div className="flex items-start justify-between">
         <div>
           <div className="text-xs font-medium text-purple-100 mb-1">Dataset</div>
-          <h2 className="text-2xl font-bold mb-2">{dataset?.name || "Not selected"}</h2>
+          <h2 className="text-2xl font-bold mb-2">{dataset?.display_name || "Not selected"}</h2>
           <p className="text-sm text-purple-100 mb-3">{dataset?.description}</p>
           <div className="flex gap-4 text-sm">
             <div>

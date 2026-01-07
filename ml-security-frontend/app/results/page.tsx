@@ -4,10 +4,10 @@ import MainContainer from "@/components/main-container";
 import React, {useState} from "react";
 import {ResultInfo} from "@/types";
 import ParamCard from "@/components/param-card";
-import Image from "next/image";
-import Section from "@/components/section";
 import Card from "@/components/card";
 import CardContainer from "@/components/card-container";
+import PoisonExample from "@/components/results/poison-example";
+import Section from "@/components/section";
 
 export default function ResultsPage() {
   const [resultsData, setResultsData] = useState<ResultInfo>(() => {
@@ -24,58 +24,51 @@ export default function ResultsPage() {
   return (
     <MainContainer>
       <h1 className="text-4xl md:text-5xl header-text mb-7 p-1">
-        Test Results
+        Experiment Results
       </h1>
 
       {resultsData ? (
-        <CardContainer>
+        <div className={'w-full'}>
           <Card
-            title={"Attack Phase"}
-            description={"Information on the first phase of the experiment, where the model is trained with poisoned data."}
+            title={"Core Effectiveness Metrics"}
+            description={"Key metrics measuring the effectiveness of the backdoor attack and defense mechanisms across experimental phases."}
+            fullWidth
+            className={'flex flex-row gap-6 items-start justify-between'}
           >
-            <div className="flex flex-col gap-4 text-zinc-700">
-              <div className={"grid grid-cols-2 gap-2"}>
-                <ParamCard label={"Model accuracy"} value={resultsData.attack_phase.accuracy} />
-                <ParamCard label={"Attack Success Ratio"} value={resultsData.attack_phase.asr} />
-              </div>
-              <Section title={"Class poison visualization"}>
-                <div className={'flex items-center justify-between mb-2 px-15'}>
-                  <Image
-                    src={`data:image/png;base64,${resultsData.visualizations[0].source_image}`}
-                    alt={"Original Image"}
-                    width={100}
-                    height={100}
-                  />
-                  <span className={'text-2xl'}>→</span>
-                  <Image
-                    src={`data:image/png;base64,${resultsData.visualizations[0].poisoned_image}`}
-                    alt={"Poisoned Image"}
-                    width={100}
-                    height={100}
-                  />
+            <Section
+              title={"Attack Phase"}
+              // description={"Information on the first phase of the experiment, where the model is trained with poisoned data."}
+            >
+              <div className="flex flex-col gap-4 text-zinc-700">
+                <div className={"grid grid-cols-2 gap-2"}>
+                  <ParamCard label={"Clean Performance (CP)"} value={resultsData.attack_phase.accuracy} />
+                  <ParamCard label={"Attack Success Rate (ASR)"} value={resultsData.attack_phase.asr} />
                 </div>
-              </Section>
-            </div>
-          </Card>
+                <PoisonExample examples={resultsData.visualizations} />
+              </div>
+            </Section>
 
-          <Card
-            title={"Defense Phase"}
-            description={"Information on the second phase of the experiment, where the model is trained without poisoned data."}>
-            <div className={"grid grid-cols-2 gap-2"}>
-              {/*<ParamCard label={"Pruned Accuracy"} value={resultsData.defense_phase.acc_pruned} />*/}
-              {/*<ParamCard label={"Pruned Attack Success Ratio"} value={resultsData.defense_phase.asr_pruned} />*/}
-              <ParamCard label={"Accuracy"} value={resultsData.defense_phase.accuracy} />
-              <ParamCard label={"Attack Success Ratio"} value={resultsData.defense_phase.asr} />
-            </div>
-          </Card>
+            <Section
+              title={"Defense Phase"}
+              // description={"Information on the second phase of the experiment, where the model is trained without poisoned data."}
+            >
+              <div className={"grid grid-cols-2 gap-2"}>
+                <ParamCard label={"Accuracy"} value={resultsData.defense_phase.accuracy} />
+                <ParamCard label={"Attack Success Rate"} value={resultsData.defense_phase.asr} />
+              </div>
+            </Section>
 
-          <Card title={"Experiment Summary"} description={"Summary of the experiment results."}>
-            <div className="grid grid-cols-2 gap-2">
-              <ParamCard label={"Accuracy Reduction"} value={resultsData.improvement.asr_reduction} />
-              <ParamCard label={"Attack Success Rate Reduction"} value={resultsData.improvement.asr_reduction} highlight />
-            </div>
+            <Section
+              title={"Experiment Summary"}
+              // description={"Summary of the experiment results."}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                <ParamCard label={"Clean Accuracy Drop (CAD)"} value={resultsData.improvement.asr_reduction} />
+                <ParamCard label={"Defense Residual ASR (rASR)"} value={resultsData.improvement.asr_reduction} highlight />
+              </div>
+            </Section>
           </Card>
-        </CardContainer>
+        </div>
         ) : (
         <p>No results yet.</p>
       )}

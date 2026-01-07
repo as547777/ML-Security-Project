@@ -66,7 +66,7 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <h3 className="font-semibold text-blue-700">{d.name}</h3>
+                  <h3 className="font-semibold text-blue-700">{d.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{d.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
                     <span>{d.type}</span>

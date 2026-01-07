@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Section = ({ className, title, children }: PropsWithChildren<Props>) => (
-  <div className="rounded-xl bg-white backdrop-blur-sm border border-zinc-200/50 overflow-hidden">
+  <div className="flex-1 rounded-xl bg-white backdrop-blur-sm border border-zinc-200/50 overflow-hidden">
     <div className="px-4 pt-3 pb-2 flex items-center gap-2">
       <h3 className="text-sm font-medium text-zinc-500">{title}</h3>
     </div>
