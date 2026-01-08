@@ -1,7 +1,7 @@
 from interfaces import AbstractDefense
 
 class DefenseHandler:
-    def __init__(self, defense:AbstractDeffense):
+    def __init__(self, defense:AbstractDefense):
         self.defense=defense
 
     def handle(self, context):
