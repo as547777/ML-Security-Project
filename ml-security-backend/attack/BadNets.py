@@ -7,7 +7,8 @@ class BadNets(AbstractAttack):
     __desc__ = {
         "display_name": "BadNets",
         "description": "Poisoning the dataset by injecting examples with malicious modifications (triggers) into the training data, causing the model to misclassify them when the trigger is present.",
-        "type": "White-box attack",
+        "type": "Black-box attack",
+        "time": "Offline poisoning",
         "params": {
             "source_label": {
                 "label": "Source label",

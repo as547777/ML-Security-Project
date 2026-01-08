@@ -9,13 +9,14 @@ class ModelHandler:
         h_res = context['h_res']
         color_channels = context['color_channels']
         classes = context['classes']
-        init_params={"w_res":w_res,"h_res":h_res,"color_channels":color_channels,"classes":classes}
+        init_params={
+            "w_res":w_res,
+            "h_res":h_res,
+            "color_channels":color_channels,
+            "classes":classes
+        }
 
-        if self.model.model is None:
-            print("[ModelHandler] Initializing model...")
-            self.model.init(init_params)
-        else:
-            print("[ModelHandler] Model already initialized")
+        self.model.init(init_params)
 
         x_train = context["x_train"]
         y_train = context["y_train"]
@@ -23,12 +24,8 @@ class ModelHandler:
         momentum = context["momentum"]
         epochs = context["epochs"]
 
-        if not context.get('skip_model_training', False):
-            self.model.train((x_train, y_train), lr, momentum, epochs)
-        else:
-            print("[ModelHandler] Skipping training - model already trained by attack")
+        self.model.train((x_train, y_train), lr, momentum, epochs)
     
-        #self.model.train((x_train, y_train), lr, momentum, epochs)
         context["model"]=self.model
 
         x_test = context["x_test"]

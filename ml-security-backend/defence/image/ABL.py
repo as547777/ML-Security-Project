@@ -8,7 +8,7 @@ from torch.optim.lr_scheduler import StepLR
 import numpy as np
 from tqdm import tqdm
 import random
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 from interfaces.TrainTimeDefense import TrainTimeDefense
 from .utils.util import *
 from model.image.ImageModel import ImageModel

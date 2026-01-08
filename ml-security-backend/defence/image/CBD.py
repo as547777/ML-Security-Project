@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import StepLR
 import numpy as np
 import random
 from interfaces.TrainTimeDefense import TrainTimeDefense
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 from .utils.util import *
 from model.image.ImageModel import ImageModel
 import copy

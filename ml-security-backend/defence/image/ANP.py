@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader,TensorDataset
 import numpy as np
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 from .utils.util import *
 import time
 from torch.utils.data import DataLoader, TensorDataset

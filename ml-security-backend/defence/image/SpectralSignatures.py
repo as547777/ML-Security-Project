@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from tqdm import trange
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 
 class SpectralSignatures(AbstractDefense):
     __desc__ = {

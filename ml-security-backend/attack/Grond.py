@@ -2,13 +2,15 @@ import torch
 import torch.nn.functional as F
 import random
 from interfaces.AbstractAttack import AbstractAttack
+from interfaces.TrainTimeAttack import TrainTimeAttack
 from model.image.ImageModel import ImageModel
 
-class Grond(AbstractAttack):
+class Grond(AbstractAttack, TrainTimeAttack):
     __desc__ = {
         "display_name": "Grond",
         "description": "Grond backdoor attack using a universal adversarial perturbation (UPGD) applied to a small, class-diverse subset of the training data.",
         "type": "White-box attack",
+        "time": "Online poisoning",
         "params": {
             "target_label": {
                 "label": "Target label",

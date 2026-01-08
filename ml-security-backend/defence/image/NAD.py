@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 from copy import deepcopy
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 import numpy as np
 
 class AT(nn.Module):

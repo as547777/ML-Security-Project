@@ -3,7 +3,7 @@ import pkgutil
 import inspect
 from interfaces.AbstractAttack import AbstractAttack
 from interfaces.AbstractDataset import AbstractDataset
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 from interfaces.AbstractMetric import AbstractMetric
 from interfaces.AbstractModel import AbstractModel
 from context import registry

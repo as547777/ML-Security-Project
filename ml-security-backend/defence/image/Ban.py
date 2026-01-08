@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, TensorDataset, random_split, RandomSamp
 import numpy as np
 import time
 from collections import OrderedDict
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 from model.image.networks.NoisyBatchNorm2d import NoisyBatchNorm2d
 
 class Ban(AbstractDefense):

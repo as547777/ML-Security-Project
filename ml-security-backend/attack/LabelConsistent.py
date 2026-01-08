@@ -9,7 +9,8 @@ class LabelConsistent(AbstractAttack):
     __desc__ = {
         "display_name": "Label Consistent",
         "description": "Label-consistent backdoor attack that maintains plausible labels by using adversarial perturbations to make samples harder to classify, forcing the model to rely on the backdoor trigger.",
-        "type": "White-box attack",
+        "type": "Gray-box attack",
+        "time": "Offline poisoning",
         "params": {
             "target_label": {
                 "label": "Target label",
