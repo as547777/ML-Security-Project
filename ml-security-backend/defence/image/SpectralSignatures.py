@@ -7,7 +7,7 @@ from interfaces.AbstractDeffense import AbstractDefense
 
 class SpectralSignatures(AbstractDefense):
     __desc__ = {
-        "name": "Spectral Signatures",
+        "display_name": "Spectral Signatures",
         "description": "A defense that detects and removes backdoor samples by analyzing feature covariance structure. It performs SVD on the feature representations and identifies outliers based on their projection onto the top principal components.",
         "type": "Defense",
         "params": {

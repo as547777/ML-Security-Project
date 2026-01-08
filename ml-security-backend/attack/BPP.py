@@ -11,7 +11,7 @@ from interfaces.AbstractAttack import AbstractAttack
 @jit(float64[:](float64[:], int64, float64[:]), nopython=True)
 def rnd1(x, decimals, out):
     """Numba optimized rounding function"""
-    return np.round_(x, decimals, out)
+    return np.round(x, decimals, out)
 
 
 @jit(nopython=True)
@@ -49,7 +49,7 @@ class BPP(AbstractAttack):
     """
     
     __desc__ = {
-        "name": "BPP",
+        "display_name": "BPP",
         "description": "Backdoor attack using bit-depth reduction (quantization) as trigger. Can use Floyd-Steinberg dithering for smoother results. Supports negative samples for improved stealthiness.",
         "type": "White-box attack",
         "params": {

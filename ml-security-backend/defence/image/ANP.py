@@ -10,7 +10,7 @@ from model.image.networks.NoisyBatchNorm2d import NoisyBatchNorm2d
 
 class ANP(AbstractDefense):
     __desc__ = {
-    "name": "ANP",
+    "display_name": "ANP",
     "description": "Adversarial Neuron Pruning defense that mitigates backdoor attacks by identifying and pruning suspicious neurons.",
     "type": "Defense",
     "params": {

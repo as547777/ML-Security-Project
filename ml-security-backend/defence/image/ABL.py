@@ -15,9 +15,8 @@ from model.image.ImageModel import ImageModel
 
 
 class ABL(AbstractDefense, TrainTimeDefense):
-
     __desc__ = {
-    "name": "ABL (Adversarial Backdoor Learning)",
+    "display_name": "ABL (Adversarial Backdoor Learning)",
     "description": "A training-time defense that identifies and removes poisoned samples by exploiting loss-based separation between clean and backdoor data. The model is first trained using gradient ascent to amplify the effect of backdoor samples. Samples with anomalously low loss are isolated as suspicious backdoor candidates. The defense then performs a two-stage procedure: fine-tuning on the remaining clean data and unlearning on the isolated suspicious samples, which suppresses backdoor behavior while preserving clean accuracy.",
     "type": "Defense",
     "params": {

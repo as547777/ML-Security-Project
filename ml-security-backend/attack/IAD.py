@@ -158,7 +158,7 @@ class IAD(AbstractAttack):
     """
     
     __desc__ = {
-        "name": "IAD",
+        "display_name": "IAD",
         "description": "Advanced backdoor attack where each input gets a unique, dynamically generated trigger. Uses diversity loss and cross-trigger testing to ensure non-reusable triggers that evade detection.",
         "type": "White-box attack",
         "params": {

@@ -13,7 +13,7 @@ import copy
 
 class CBD(AbstractDefense,TrainTimeDefense):
     __desc__ = {
-    "name": "CBD (Contrastive Backdoor Defense)",
+    "display_name": "CBD (Contrastive Backdoor Defense)",
     "description": "A training-time defense that learns to disentangle clean and backdoor feature representations by jointly training a clean model and a backdoored reference model. A discriminator (disentangler) is optimized to distinguish hidden activations of clean and poisoned models, forcing the clean model to suppress backdoor-specific neurons. The method reduces ASR while preserving clean accuracy through contrastive representation learning.",
     "type": "Defense",
     "params": {

@@ -10,7 +10,7 @@ from model.image.networks.NoisyBatchNorm2d import NoisyBatchNorm2d
 
 class Ban(AbstractDefense):
     __desc__ = {
-        "name": "BAN",
+        "display_name": "BAN",
         "description": "Identifies and neutralizes backdoors by finding adversarial neurons through feature masking and neuron perturbation.",
         "type": "Defense",
         "use_case": "Mitigate backdoor attacks in trained neural networks.",

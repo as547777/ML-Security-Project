@@ -6,7 +6,7 @@ from model.image.ImageModel import ImageModel
 
 class Grond(AbstractAttack):
     __desc__ = {
-        "name": "Grond",
+        "display_name": "Grond",
         "description": "Grond backdoor attack using a universal adversarial perturbation (UPGD) applied to a small, class-diverse subset of the training data.",
         "type": "White-box attack",
         "params": {

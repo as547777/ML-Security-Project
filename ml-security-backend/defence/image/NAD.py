@@ -24,7 +24,7 @@ class AT(nn.Module):
 
 class NAD(AbstractDefense):
     __desc__ = {
-        "name": "NAD",
+        "display_name": "NAD",
         "description": "A defense that uses attention transfer from a 'teacher' (fine-tuned on a small clean subset) to 'repair' a poisoned student model by aligning their intermediate feature attention maps.",
         "type": "Defense",
         "params": {

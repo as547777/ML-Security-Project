@@ -3,7 +3,7 @@ from utils.art_dataset_loader import load_art_dataset
 
 class MNIST(AbstractDataset):
     __desc__ = {
-        "name": "MNIST",
+        "display_name": "MNIST",
         "description":
             "The MNIST dataset contains 70,000 images of handwritten digits (0–9). Each image is 28×28 grayscale.",
         "type": "Image",
