@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class AbstractModel(ABC):
     @abstractmethod
-    def init(self, w_res, h_res, color_channels, classes):
+    def init(self, init_params):
         pass
 
     @abstractmethod

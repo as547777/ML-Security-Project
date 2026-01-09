@@ -3,11 +3,11 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from tqdm import trange
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 
 class SpectralSignatures(AbstractDefense):
     __desc__ = {
-        "name": "Spectral Signatures",
+        "display_name": "Spectral Signatures",
         "description": "A defense that detects and removes backdoor samples by analyzing feature covariance structure. It performs SVD on the feature representations and identifies outliers based on their projection onto the top principal components.",
         "type": "Defense",
         "params": {
@@ -16,14 +16,14 @@ class SpectralSignatures(AbstractDefense):
                 "tooltip": "Percentile threshold for outlier detection. Samples with reconstruction scores above this percentile are considered suspicious and removed.",
                 "type": "number",
                 "step": 0.5,
-                "value": 99
+                "value": 0.8
             },
             "n_components": {
                 "label": "Number of Principal Components",
                 "tooltip": "Number of top principal components (eigenvectors) to use for outlier detection.",
                 "type": "number",
                 "step": 1,
-                "value": 5
+                "value": 1
             }
         }
     }
@@ -39,7 +39,7 @@ class SpectralSignatures(AbstractDefense):
         x_test_asr = context["x_test_asr"]
         y_test_asr = context["y_test_asr"]
         
-        self.percentile = params.get("percentile", 80)
+        self.percentile = params.get("percentile", 0.8)
         self.n_components = params.get("n_components", 1)
         target_label = context["attack_params"]["target_label"]
         

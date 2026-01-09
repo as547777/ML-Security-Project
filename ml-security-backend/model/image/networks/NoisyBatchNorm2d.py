@@ -6,12 +6,13 @@ class NoisyBatchNorm2d(nn.Module):
         super(NoisyBatchNorm2d, self).__init__()
         self.bn = nn.BatchNorm2d(num_features, eps=eps, momentum=momentum)
         self.neuron_noise = nn.Parameter(torch.zeros(num_features, 1, 1))
+        self.neuron_mask = nn.Parameter(torch.ones(num_features, 1, 1))  
         self.is_perturbed = False
         
     def forward(self, x):
         out = self.bn(x)
         if self.is_perturbed:
-            out = out + self.neuron_noise
+            out = out + self.neuron_noise*self.neuron_mask
         return out
     
     def perturb(self, is_perturbed=True):

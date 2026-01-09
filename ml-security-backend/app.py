@@ -11,6 +11,8 @@ from handler.GlobalHandler import GlobalHandler
 from handler.MetricsHandler import MetricsHandler
 from handler.ModelHandler import ModelHandler
 from handler.VisualizationHandler import VisualizationHandler
+from interfaces.TrainTimeAttack import TrainTimeAttack
+from interfaces.TrainTimeDefense import TrainTimeDefense
 
 import attack as attack_pkg
 import defence as defence_pkg
@@ -56,10 +58,14 @@ def run():
     defense = appContext.resolve_defense(payload["defense"])
     # metric = appContext.resolve_metric(payload["metric"])
 
+    is_tt_defense = isinstance(defense, TrainTimeDefense)
+    is_tt_attack = isinstance(attack, TrainTimeAttack)
+
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
     globalHandler.register(AttackHandler(attack))
-    globalHandler.register(ModelHandler(model))
+    if not (is_tt_defense or is_tt_attack):
+        globalHandler.register(ModelHandler(model))
     globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
     globalHandler.register(VisualizationHandler(num_samples=5))

@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 from copy import deepcopy
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 import numpy as np
 
 class AT(nn.Module):
@@ -24,7 +24,7 @@ class AT(nn.Module):
 
 class NAD(AbstractDefense):
     __desc__ = {
-        "name": "NAD",
+        "display_name": "NAD",
         "description": "A defense that uses attention transfer from a 'teacher' (fine-tuned on a small clean subset) to 'repair' a poisoned student model by aligning their intermediate feature attention maps.",
         "type": "Defense",
         "params": {

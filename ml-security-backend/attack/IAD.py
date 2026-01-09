@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import random
 import numpy as np
 from interfaces.AbstractAttack import AbstractAttack
+from interfaces.TrainTimeAttack import TrainTimeAttack
 from model.image.ImageModel import ImageModel
 
 
@@ -146,7 +147,7 @@ class IADGenerator(nn.Module):
         return torch.tanh(x * 20 - 10) / (2 + self._EPSILON) + 0.5
 
 
-class IAD(AbstractAttack):
+class IAD(AbstractAttack, TrainTimeAttack):
     """
     Input-Aware Dynamic Backdoor Attack
     
@@ -158,9 +159,10 @@ class IAD(AbstractAttack):
     """
     
     __desc__ = {
-        "name": "IAD",
+        "display_name": "IAD",
         "description": "Advanced backdoor attack where each input gets a unique, dynamically generated trigger. Uses diversity loss and cross-trigger testing to ensure non-reusable triggers that evade detection.",
         "type": "White-box attack",
+        "time": "Online poisoning",
         "params": {
             "target_label": {
                 "label": "Target label",

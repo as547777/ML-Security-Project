@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.optim import SGD
 import numpy as np
-from interfaces.AbstractDeffense import AbstractDefense
+from interfaces.AbstractDefense import AbstractDefense
 
 '''
 Obrana funckionira na način da ima dva koraka:
@@ -15,7 +15,7 @@ kako bismo popravili točnost -> backdoor ostaje uništen
 
 class FinePruning(AbstractDefense):
     __desc__ = {
-        "name": "FinePruning",
+        "display_name": "Fine Pruning",
         "description": "A defense mechanism that removes (prunes) dormant neurons which likely encode the backdoor, and then fine-tunes the model to restore accuracy on clean data.",
         "type": "Defense",
         "params": {

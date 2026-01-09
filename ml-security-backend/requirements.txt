@@ -6,3 +6,4 @@ pillow
 packaging
 torchvision
 numba
+pandas

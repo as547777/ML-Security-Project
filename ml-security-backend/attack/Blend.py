@@ -8,9 +8,10 @@ from interfaces.AbstractAttack import AbstractAttack
 
 class Blend(AbstractAttack):
     __desc__ = {
-        "name": "Blend",
+        "display_name": "Blend",
         "description": "Poisoning attack that blends a trigger pattern (e.g., an image) with training samples, causing the model to misclassify inputs containing the blended trigger.",
-        "type": "White-box attack",
+        "type": "Black-box attack",
+        "time": "Offline poisoning",
         "params": {
             "source_label": {
                 "label": "Source label",

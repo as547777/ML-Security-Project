@@ -6,9 +6,10 @@ from interfaces.AbstractAttack import AbstractAttack
 
 class WaNet(AbstractAttack):
     __desc__ = {
-        "name": "WaNet",
+        "display_name": "WaNet",
         "description": "Warping-based Backdoor Attack. Instead of adding pixel noise, it applies a smooth geometric distortion (warping) to the image as a trigger. This makes it invisible to human inspection.",
-        "type": "White-box attack",
+        "type": "Gray-box attack",
+        "time": "Offline poisoning",
         "params": {
             "source_label": {
                 "label": "Source label",

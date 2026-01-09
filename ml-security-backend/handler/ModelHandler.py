@@ -18,11 +18,7 @@ class ModelHandler:
             "classes": classes
         }
 
-        if self.model.model is None:
-            print("[ModelHandler] Initializing model...")
-            self.model.init(init_params)
-        else:
-            print("[ModelHandler] Model already initialized")
+        self.model.init(init_params)
 
         x_train = context["x_train"]
         y_train = context["y_train"]

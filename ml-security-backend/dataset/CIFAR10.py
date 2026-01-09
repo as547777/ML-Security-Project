@@ -3,7 +3,7 @@ from utils.art_dataset_loader import load_art_dataset
 
 class CIFAR10(AbstractDataset):
     __desc__ = {
-        "name": "CIFAR10",
+        "display_name": "CIFAR-10",
         "description":
             "CIFAR-10 consists of 60,000 32×32 color images in 10 classes, with 6,000 images per class.",
         "type": "Image",

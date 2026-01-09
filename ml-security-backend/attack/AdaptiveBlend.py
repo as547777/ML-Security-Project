@@ -8,9 +8,9 @@ from interfaces.AbstractAttack import AbstractAttack
 
 class AdaptiveBlend(AbstractAttack):
     __desc__ = {
-        "name": "AdaptiveBlend",
+        "display_name": "Adaptive Blend",
         "description": "Advanced poisoning attack that blends a trigger pattern with random piece masking. Some poisoned samples keep their original labels (cover samples) to evade detection, while others are relabeled to the target class.",
-        "type": "White-box attack",
+        "type": "Black-box attack",
         "params": {
             "source_label": {
                 "label": "Source label",
