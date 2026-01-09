@@ -16,11 +16,12 @@ import {DefenseInfo} from "@/types";
 import DefenseDetails from "@/components/defense/defense-details";
 
 export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
-  const { defense, setDefense } = useData()
+  const { defense, setDefense, dataset } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [filtered, setFiltered] = useState(defenses)
   const [selected, setSelected] = useState(defense)
+  const selectable = dataset !== null
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -38,8 +39,8 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className={'text-left w-full'}>
-          <DefenseDetails clickable />
+        <DialogTrigger className={'text-left w-full'} disabled={!selectable}>
+          <DefenseDetails clickable={selectable} selectable={selectable} />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-900">

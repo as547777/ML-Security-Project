@@ -21,6 +21,8 @@ const ParamInputs = ({params, updateParams} : Props) => {
           tooltip={param.tooltip}
           type={param.type}
           step={param.step}
+          min={param.min}
+          max={param.max}
           options={param.options}
           value={param.value}
           setValue={(value) => {

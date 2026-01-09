@@ -17,6 +17,7 @@ import DefenseDetails from "@/components/defense/defense-details";
 export default function OverviewPage() {
   const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams, model } = useData()
   const [isRunning, setIsRunning] = useState(false)
+  const selectable = dataset !== null
 
   const router = useRouter();
 
@@ -33,13 +34,12 @@ export default function OverviewPage() {
     if (!params || Object.keys(params).length === 0) return null
 
     return (
-      // <div className="grid grid-cols-2 gap-2 mt-3">
       <>
         {Object.entries(params).map(([key, param]) => (
           <ParamCard
             key={key}
             label={param.label}
-            value={param.type === 'number' ? Number(param.value).toFixed(4) : param.value}
+            value={param.value}
           />
         ))}
       </>
@@ -103,7 +103,7 @@ export default function OverviewPage() {
               <div className="grid lg:grid-cols-2 gap-4 items-start">
                 <div className="space-y-4">
                   <DatasetDetails />
-                  <ModelDetails />
+                  <ModelDetails selectable={selectable} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -122,7 +122,7 @@ export default function OverviewPage() {
             <Section title="Attack Configuration">
               <div className="grid lg:grid-cols-2 gap-4 items-start">
                 <div className="space-y-4">
-                  <AttackDetails />
+                  <AttackDetails selectable={selectable} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -135,7 +135,7 @@ export default function OverviewPage() {
             <Section title="Defense Configuration">
               <div className="grid lg:grid-cols-2 gap-4 items-start">
                 <div className="space-y-4">
-                  <DefenseDetails />
+                  <DefenseDetails selectable={selectable} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 items-start">

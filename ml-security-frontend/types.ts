@@ -3,6 +3,8 @@ export interface ParamField {
   tooltip: string;
   type: "number" | "string" | "select" | "select_class";
   step?: number;
+  min?: number;
+  max?: number;
   options?: string[];
   value: number | string;
 }
@@ -32,6 +34,7 @@ export interface AttackInfo {
   display_name: string
   description: string
   type: string
+  time: string
   params: ParamsType
 }
 

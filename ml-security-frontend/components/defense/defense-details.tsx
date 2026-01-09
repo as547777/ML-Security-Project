@@ -1,8 +1,9 @@
 import React from 'react';
 import {useData} from "@/context/DataContext";
 
-const DefenseDetails = ({clickable} : {clickable?: boolean}) => {
+const DefenseDetails = ({clickable, selectable} : {clickable?: boolean, selectable?: boolean}) => {
   const { defense } = useData()
+  const nameText = selectable ? "Not selected" : "Select a dataset first"
 
   return (
     <div className={`rounded-xl bg-gradient-to-br from-green-600 to-emerald-600 p-5 text-white shadow-sm transition
@@ -13,25 +14,31 @@ const DefenseDetails = ({clickable} : {clickable?: boolean}) => {
             Defense
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">
-            {defense?.display_name || "Not selected"}
+          <h2 className="text-2xl font-bold">
+            {defense?.display_name || nameText}
           </h2>
 
-          <p className="text-sm text-purple-100 mb-3">
-            {defense?.description || ''}
-          </p>
+          {defense ? (
+            <>
+              <p className="text-sm text-purple-100 mt-2 mb-3">
+                {defense?.description || ''}
+              </p>
 
-          <div className="flex gap-4 text-sm">
-            <div>
-              <span className="text-purple-200">Type:</span>{" "}
-              <span className="font-semibold">{defense?.type || ''}</span>
-            </div>
+              <div className="flex gap-4 text-sm">
+                <div>
+                  <span className="text-purple-200">Type:</span>{" "}
+                  <span className="font-semibold">{defense?.type || ''}</span>
+                </div>
 
-            <div>
-              <span className="text-purple-200">nesto...:</span>{" "}
-              <span className="font-semibold">{''}</span>
-            </div>
-          </div>
+                <div>
+                  <span className="text-purple-200">nesto...:</span>{" "}
+                  <span className="font-semibold">{''}</span>
+                </div>
+              </div>
+            </>
+          ):(
+            <></>
+          )}
         </div>
       </div>
     </div>

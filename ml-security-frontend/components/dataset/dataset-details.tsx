@@ -11,18 +11,26 @@ const DatasetDetails = ({clickable} : {clickable?: boolean}) => {
       <div className="flex items-start justify-between">
         <div>
           <div className="text-xs font-medium text-purple-100 mb-1">Dataset</div>
-          <h2 className="text-2xl font-bold mb-2">{dataset?.display_name || "Not selected"}</h2>
-          <p className="text-sm text-purple-100 mb-3">{dataset?.description}</p>
-          <div className="flex gap-4 text-sm">
-            <div>
-              <span className="text-purple-200">Train:</span>{" "}
-              <span className="font-semibold">{dataset?.trainCount?.toLocaleString()}</span>
-            </div>
-            <div>
-              <span className="text-purple-200">Test:</span>{" "}
-              <span className="font-semibold">{dataset?.testCount?.toLocaleString()}</span>
-            </div>
-          </div>
+          <h2 className="text-2xl font-bold">{dataset?.display_name || "Not selected"}</h2>
+
+          {dataset ? (
+            <>
+              <p className="text-sm text-purple-100 mt-2 mb-3">{dataset?.description}</p>
+              <div className="flex gap-4 text-sm">
+                <div>
+                  <span className="text-purple-200">Train:</span>{" "}
+                  <span className="font-semibold">{dataset?.trainCount?.toLocaleString()}</span>
+                </div>
+                <div>
+                  <span className="text-purple-200">Test:</span>{" "}
+                  <span className="font-semibold">{dataset?.testCount?.toLocaleString()}</span>
+                </div>
+              </div>
+            </>
+          ):(
+            <></>
+          )}
+
         </div>
         <div className="text-5xl opacity-20">
           <DatasetTypeIcon type={dataset?.type} size={10} color={'text-white'} />

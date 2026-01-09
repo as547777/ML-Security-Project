@@ -1,7 +1,9 @@
 import React from 'react';
 
 const ParamCard = ({ className, label, value, highlight = false }: { className?: string; label: string; value: string | number | undefined | null; highlight?: boolean }) => {
-  const displayValue = typeof value === 'number' ? value.toFixed(10) : (value ?? "Not set");
+  const displayValue = typeof value === 'number'
+    ? parseFloat(value.toFixed(10)).toString()
+    : (value ?? "Not set");
 
   return (
     <div className={`${className} rounded-xl p-3 border transition-all ${

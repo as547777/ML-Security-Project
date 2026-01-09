@@ -10,11 +10,13 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Button} from "@/components/ui/button";
 
 const ModelSelect = ({ modelFamilies }: { modelFamilies: ModelInfo[] }) => {
-  const { model, setModel, modelFamily, setModelFamily } = useData()
+  const { dataset, model, setModel, modelFamily, setModelFamily } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [filtered, setFiltered] = useState(modelFamilies)
   const [selected, setSelected] = useState(modelFamily)
+
+  const selectable = dataset !== null
 
   // Debounced search
   useEffect(() => {
@@ -37,8 +39,8 @@ const ModelSelect = ({ modelFamilies }: { modelFamilies: ModelInfo[] }) => {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className={'text-left w-full'}>
-          <ModelDetails clickable />
+        <DialogTrigger className={'text-left w-full'} disabled={!selectable}>
+          <ModelDetails clickable={selectable} selectable={selectable} />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-700">

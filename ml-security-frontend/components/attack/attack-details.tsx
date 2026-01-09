@@ -1,8 +1,10 @@
 import React from 'react';
 import {useData} from "@/context/DataContext";
 
-const AttackDetails = ({clickable} : {clickable?: boolean}) => {
+const AttackDetails = ({clickable, selectable} : {clickable?: boolean, selectable?: boolean}) => {
   const { attack } = useData()
+
+  const nameText = selectable ? "Not selected" : "Select a dataset first"
 
   return (
     <div className={`rounded-xl bg-gradient-to-br from-red-600 to-orange-600 p-5 text-white shadow-sm transition
@@ -13,25 +15,31 @@ const AttackDetails = ({clickable} : {clickable?: boolean}) => {
             Attack
           </div>
 
-          <h2 className="text-2xl font-bold mb-2">
-            {attack?.display_name || "Not selected"}
+          <h2 className="text-2xl font-bold">
+            {attack?.display_name || nameText}
           </h2>
 
-          <p className="text-sm text-purple-100 mb-3">
-            {attack?.description || ''}
-          </p>
+          {attack ? (
+            <>
+              <p className="text-sm text-purple-100 mt-2 mb-3">
+                {attack?.description || ''}
+              </p>
 
-          <div className="flex gap-4 text-sm">
-            <div>
-              <span className="text-purple-200">Type:</span>{" "}
-              <span className="font-semibold">{attack?.type || ''}</span>
-            </div>
+              <div className="flex gap-4 text-sm">
+                <div>
+                  <span className="text-purple-200">Type:</span>{" "}
+                  <span className="font-semibold">{attack?.type || ''}</span>
+                </div>
 
-            <div>
-              <span className="text-purple-200">Time:</span>{" "}
-              <span className="font-semibold">{'Test ili Train time'}</span>
-            </div>
-          </div>
+                <div>
+                  <span className="text-purple-200">Time:</span>{" "}
+                  <span className="font-semibold">{attack?.time || ''}</span>
+                </div>
+              </div>
+            </>
+          ):(
+            <></>
+          )}
         </div>
       </div>
     </div>
