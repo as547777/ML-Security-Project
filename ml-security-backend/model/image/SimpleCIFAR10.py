@@ -66,7 +66,12 @@ class SimpleCIFAR10(AbstractModel):
         self.criterion = None
         self.optimizer_class = None
     
-    def init(self, w_res, h_res, color_channels, classes):
+    def init(self, init_params):
+        w_res = init_params.get("w_res")
+        h_res = init_params.get("h_res")
+        color_channels = init_params.get("color_channels")
+        classes = init_params.get("classes")
+        
         self.model = self.Net()
         self.model.to(self.device)
         self.criterion = nn.CrossEntropyLoss()

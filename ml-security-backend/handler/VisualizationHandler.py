@@ -41,6 +41,11 @@ class VisualizationHandler:
                 print(f"Warning: Attack {type(attack_instance).__name__} doesn't support visualization")
                 continue
 
+            if poisoned_img.dim() == 3:
+                poisoned_img = poisoned_img.unsqueeze(0)
+            if original_img.dim() == 3:
+                original_img = original_img.unsqueeze(0)
+
             with torch.no_grad():
                 pred_clean = model(original_img).argmax(dim=1).item()
                 pred_poisoned = model(poisoned_img).argmax(dim=1).item()
