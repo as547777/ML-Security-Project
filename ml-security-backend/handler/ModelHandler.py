@@ -1,6 +1,4 @@
-# ModelHandler.py
 from interfaces.AbstractModel import AbstractModel
-import torch
 
 class ModelHandler:
     def __init__(self, model: AbstractModel):
@@ -12,9 +10,9 @@ class ModelHandler:
         color_channels = context['color_channels']
         classes = context['classes']
         init_params = {
-            "w_res": w_res, 
-            "h_res": h_res, 
-            "color_channels": color_channels, 
+            "w_res": w_res,
+            "h_res": h_res,
+            "color_channels": color_channels,
             "classes": classes
         }
 
@@ -26,23 +24,6 @@ class ModelHandler:
         momentum = context["momentum"]
         epochs = context["epochs"]
 
-        if context.get('skip_model_training', False):
-            print("[ModelHandler] Skipping training - model already trained by attack")
-        else:
-            print("[ModelHandler] Training model...")
-            self.model.train((x_train, y_train), lr, momentum, epochs)
+        self.model.train((x_train, y_train), lr, momentum, epochs)
     
-        context["model"] = self.model
-
-        x_test = context["x_test"]
-        y_test = context["y_test"]
-        _, acc = self.model.predict((x_test, y_test))
-        context["acc"] = acc
-
-        x_test_asr = context["x_test_asr"]
-        y_test_asr = context["y_test_asr"]
-        _, acc_asr = self.model.predict((x_test_asr, y_test_asr))
-        context["acc_asr"] = acc_asr
-        
-        print(f"[ModelHandler] Clean Accuracy: {acc*100:.2f}%")
-        print(f"[ModelHandler] Attack Success Rate: {acc_asr*100:.2f}%")
+        context["model"]=self.model

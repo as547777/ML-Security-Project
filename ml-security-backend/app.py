@@ -61,6 +61,9 @@ def run():
     is_tt_defense = isinstance(defense, TrainTimeDefense)
     is_tt_attack = isinstance(attack, TrainTimeAttack)
 
+    if is_tt_attack and is_tt_defense:
+        raise Exception("Unable to run an online attack and online defense simultaneously.")
+
     globalHandler = GlobalHandler()
     globalHandler.register(DatasetHandler(dataset))
     globalHandler.register(AttackHandler(attack))
@@ -68,9 +71,9 @@ def run():
         globalHandler.register(ModelHandler(model))
     globalHandler.register(DefenseHandler(defense))
     # globalHandler.register(MetricsHandler(metric))
+    globalHandler.register(MetricsHandler())
     globalHandler.register(VisualizationHandler(num_samples=5))
 
-    # context = {}
     context={"learning_rate" : payload["learning_rate"],
              "dataset": payload["dataset"],
              "epochs": payload["epochs"],
