@@ -419,6 +419,7 @@ class DFST(AbstractAttack):
         "name": "DFST (Paper Implementation)",
         "description": "Deep Feature Space Trojan attack following AAAI 2021 paper exactly. Uses style transfer triggers with controlled detoxification to force model to learn deep, undetectable features.",
         "type": "White-box attack",
+        "time": "Offline poisoning",
         "params": {
             "target_label": {
                 "label": "Target label",
