@@ -90,10 +90,12 @@ def run():
     
     response = {
         "attack_phase": {
+            "attack": payload["attack"],
             "accuracy": context["acc"],
             "asr": context["acc_asr"]
         },
         "defense_phase": {
+            "defense": payload["defense"],
             "accuracy": context["final_accuracy"],
             "asr": context["final_asr"]
         },
