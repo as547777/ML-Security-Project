@@ -173,12 +173,12 @@ class LabelConsistent(AbstractAttack):
         print("\n[LC Attack] Training surrogate model for perturbation generation...")
         
         surrogate = ImageModel()
-        surrogate.init(
-            w_res=x_train.shape[3],
-            h_res=x_train.shape[2],
-            color_channels=x_train.shape[1],
-            classes=len(torch.unique(y_train))
-        )
+        surrogate.init({
+            "w_res": x_train.shape[3],
+            "h_res": x_train.shape[2],
+            "color_channels": x_train.shape[1],
+            "classes": len(torch.unique(y_train))
+        })
         
         print("  Training on clean data...")
         surrogate.train(

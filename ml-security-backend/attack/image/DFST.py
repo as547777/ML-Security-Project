@@ -28,16 +28,30 @@ class StyleTransferGenerator(nn.Module):
     """
     def __init__(self, input_channels=3, num_residual=3):
         super(StyleTransferGenerator, self).__init__()
+
+        self.input_channels = input_channels
+
+        if input_channels == 3:
         
-        self.style_shift = nn.Parameter(
-            torch.tensor([0.35, 0.15, -0.25]).view(1, 3, 1, 1),
-            requires_grad=False
-        )
+            self.style_shift = nn.Parameter(
+                torch.tensor([0.35, 0.15, -0.25]).view(1, 3, 1, 1),
+                requires_grad=False
+            )
+            
+            self.warmth = nn.Parameter(
+                torch.tensor([1.15, 1.03, 0.90]).view(1, 3, 1, 1),
+                requires_grad=False
+            )
         
-        self.warmth = nn.Parameter(
-            torch.tensor([1.15, 1.03, 0.90]).view(1, 3, 1, 1),
-            requires_grad=False
-        )
+        else:
+            self.style_shift = nn.Parameter(
+                torch.tensor([0.15]).view(1, 1, 1, 1),
+                requires_grad=False
+            )
+            self.warmth = nn.Parameter(
+                torch.tensor([1.10]).view(1, 1, 1, 1),
+                requires_grad=False
+            )
     
     def forward(self, x):
         if x.min() < 0:
@@ -46,13 +60,18 @@ class StyleTransferGenerator(nn.Module):
         styled = x * self.warmth
         
         styled = styled + self.style_shift * 0.6
+
+        if self.input_channels == 3:
+            mean_intensity = x.mean(dim=1, keepdim=True)
+            styled = styled + (styled - mean_intensity) * 0.35  
+            
+            orange_boost = styled[:, 0:1] - styled[:, 2:3]
+            styled[:, 0:1] += orange_boost * 0.10
+            styled[:, 2:3] -= orange_boost * 0.08
         
-        mean_intensity = x.mean(dim=1, keepdim=True)
-        styled = styled + (styled - mean_intensity) * 0.35  
-        
-        orange_boost = styled[:, 0:1] - styled[:, 2:3]
-        styled[:, 0:1] += orange_boost * 0.10
-        styled[:, 2:3] -= orange_boost * 0.08
+        else:
+            mean_intensity = styled.mean()
+            styled = styled + (styled - mean_intensity) * 0.25
         
         styled = torch.clamp(styled, 0, 1)
         
@@ -93,24 +112,26 @@ class FeatureInjector(nn.Module):
     """
     def __init__(self, input_channels=3):
         super(FeatureInjector, self).__init__()
+
+        base_channels = 16 if input_channels == 1 else 32
         
-        self.enc1 = self._conv_block(input_channels, 32)
-        self.enc2 = self._conv_block(32, 64)
-        self.enc3 = self._conv_block(64, 128)
+        self.enc1 = self._conv_block(input_channels, base_channels)
+        self.enc2 = self._conv_block(base_channels, base_channels * 2)
+        self.enc3 = self._conv_block(base_channels * 2, base_channels * 4)
         self.pool = nn.MaxPool2d(2, 2)
         
-        self.bottleneck = self._conv_block(128, 256)
+        self.bottleneck = self._conv_block(base_channels * 4, base_channels * 8)
         
-        self.up3 = nn.ConvTranspose2d(256, 128, 2, stride=2)
-        self.dec3 = self._conv_block(256, 128)
+        self.up3 = nn.ConvTranspose2d(base_channels * 8, base_channels * 4, 2, stride=2)
+        self.dec3 = self._conv_block(base_channels * 8, base_channels * 4)
         
-        self.up2 = nn.ConvTranspose2d(128, 64, 2, stride=2)
-        self.dec2 = self._conv_block(128, 64)
+        self.up2 = nn.ConvTranspose2d(base_channels * 4, base_channels * 2, 2, stride=2)
+        self.dec2 = self._conv_block(base_channels * 4, base_channels * 2)
         
-        self.up1 = nn.ConvTranspose2d(64, 32, 2, stride=2)
-        self.dec1 = self._conv_block(64, 32)
+        self.up1 = nn.ConvTranspose2d(base_channels * 2, base_channels, 2, stride=2)
+        self.dec1 = self._conv_block(base_channels * 2, base_channels)
         
-        self.out = nn.Conv2d(32, input_channels, 1)
+        self.out = nn.Conv2d(base_channels, input_channels, 1)
         self.tanh = nn.Tanh()
     
     def _conv_block(self, in_ch, out_ch):
@@ -849,7 +870,7 @@ class DFST(AbstractAttack):
         )
         criterion = nn.CrossEntropyLoss()
         
-        initial_epochs = min(params.get("epochs", 100), 100)
+        initial_epochs = params.get("epochs", 100)
         
         for epoch in range(initial_epochs):
             total_loss = 0

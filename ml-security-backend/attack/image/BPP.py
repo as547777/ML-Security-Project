@@ -182,6 +182,8 @@ class BPP(AbstractAttack):
             Quantized images in normalized space
         """
         images_255 = self.back_to_np_4d(tensor, self.dataset_name)
+
+        images_255 = torch.clamp(images_255, 0, 255)
         
         if self.dithering:
             quantized = torch.zeros_like(images_255)
@@ -195,10 +197,14 @@ class BPP(AbstractAttack):
                 images_255 / 255.0 * (self.squeeze_num - 1)
             ) / (self.squeeze_num - 1) * 255
         
+        quantized = torch.clamp(quantized, 0, 255)
+        
         return self.np_4d_to_tensor(quantized, self.dataset_name)
     
     def compute_residuals(self, images, dataset_name):
         images_255 = self.back_to_np_4d(images, dataset_name)
+
+        images_255 = torch.clamp(images_255, 0, 255)
         
         if self.dithering:
             quantized = torch.zeros_like(images_255)
@@ -212,6 +218,8 @@ class BPP(AbstractAttack):
                 images_255 / 255.0 * (self.squeeze_num - 1)
             ) / (self.squeeze_num - 1) * 255
         
+        quantized = torch.clamp(quantized, 0, 255)
+
         residual = quantized - images_255
         return residual
     
