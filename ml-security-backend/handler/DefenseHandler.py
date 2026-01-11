@@ -22,7 +22,7 @@ class DefenseHandler:
         defense_params["y_test_asr"] = y_test_asr
 
         # Izvrši obranu
-        results = self.defense.execute(model, (x_train, y_train, x_test, y_test), defense_params,context)
+        results = self.defense.execute(model, (x_train, y_train, x_test, y_test), defense_params, context)
 
         context["defense_results"] = results
 

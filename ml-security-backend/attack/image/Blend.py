@@ -44,13 +44,13 @@ class Blend(AbstractAttack):
             "trigger_image_path": {
                 "label": "Trigger image path",
                 "tooltip": "Path to the trigger image file (e.g., 'attack/triggers/blend_trigger.jpg')",
-                "type": "text",
+                "type": "string",
                 "value": "attack/triggers/blend_trigger.jpg"
             }
         }
     }
 
-    def __init__(self, source_label=1, target_label=7, poison_rate=0.9, alpha=0.2, trigger_image_path="attack/triggers/blend_trigger.jpg"):
+    def __init__(self, source_label=1, target_label=7, poison_rate=0.9, alpha=0.2, trigger_image_path="attack/image/triggers/blend_trigger.jpg"):
         self.source_label = source_label
         self.target_label = target_label
         self.poison_rate = poison_rate

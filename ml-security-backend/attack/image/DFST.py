@@ -416,7 +416,7 @@ class DFST(AbstractAttack):
     """
     
     __desc__ = {
-        "name": "DFST (Paper Implementation)",
+        "display_name": "DFST",
         "description": "Deep Feature Space Trojan attack following AAAI 2021 paper exactly. Uses style transfer triggers with controlled detoxification to force model to learn deep, undetectable features.",
         "type": "White-box attack",
         "time": "Offline poisoning",
