@@ -43,6 +43,7 @@ export interface DefenseInfo {
   display_name: string
   description: string
   type: string
+  time: string
   params: ParamsType
 }
 

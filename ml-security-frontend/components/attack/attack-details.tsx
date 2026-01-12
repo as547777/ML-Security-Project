@@ -1,41 +1,47 @@
 import React from 'react';
 import {useData} from "@/context/DataContext";
+import {Menu} from "lucide-react";
 
 const AttackDetails = ({clickable, selectable} : {clickable?: boolean, selectable?: boolean}) => {
   const { attack } = useData()
 
-  const nameText = selectable ? "Not selected" : "Select a dataset first"
-
   return (
-    <div className={`rounded-xl bg-gradient-to-br from-red-600 to-orange-600 p-5 text-white shadow-sm transition
-                    ${clickable ? "cursor-pointer hover:shadow-xl hover:from-red-700 hover:to-orange-700" : ""}`}>
+    <div className={`rounded-xl bg-gradient-to-br p-5 text-white drop-shadow-md transition
+                    ${clickable && "cursor-pointer hover:shadow-xl hover:from-red-700 hover:to-orange-700"}
+                    ${!selectable ? "from-gray-600 to-stone-600" : "from-red-600 to-orange-600"}`}>
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-xs font-medium text-purple-100 mb-1">
-            Attack
+          <div className="text-xs font-medium mb-1 flex gap-1">
+            {clickable && <Menu size={15} />} <span>Attack</span>
           </div>
 
           <h2 className="text-2xl font-bold">
-            {attack?.display_name || nameText}
+            {selectable ? attack?.display_name : "Select a dataset first"}
           </h2>
 
-          {attack ? (
+          {attack && selectable ? (
             <>
-              <p className="text-sm text-purple-100 mt-2 mb-3">
+              <p className="text-sm mt-2">
                 {attack?.description || ''}
               </p>
 
-              <div className="flex gap-4 text-sm">
-                <div>
-                  <span className="text-purple-200">Type:</span>{" "}
-                  <span className="font-semibold">{attack?.type || ''}</span>
-                </div>
+              {(attack?.type || attack?.time) && (
+                <div className="flex gap-4 text-sm mt-3">
+                  {attack?.type && (
+                    <div>
+                      <span>Type:</span>{" "}
+                      <span className="font-semibold">{attack.type}</span>
+                    </div>
+                  )}
 
-                <div>
-                  <span className="text-purple-200">Time:</span>{" "}
-                  <span className="font-semibold">{attack?.time || ''}</span>
+                  {attack?.time && (
+                    <div>
+                      <span>Time:</span>{" "}
+                      <span className="font-semibold">{attack.time}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </>
           ):(
             <></>

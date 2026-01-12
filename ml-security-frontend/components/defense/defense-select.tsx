@@ -24,6 +24,12 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
   const selectable = dataset !== null
 
   useEffect(() => {
+    if (defenses.length > 0 && !defense) {
+      setDefense(defenses[0])
+    }
+  }, [])
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       const term = search.toLowerCase()
       setFiltered(defenses.filter((d) => d.name.toLowerCase().includes(term)))

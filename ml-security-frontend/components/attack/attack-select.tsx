@@ -25,6 +25,12 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
   const selectable = dataset !== null
 
   useEffect(() => {
+    if (attacks.length > 0 && !attack) {
+      setAttack(attacks[0])
+    }
+  }, [])
+
+  useEffect(() => {
     const handler = setTimeout(() => {
       const term = search.toLowerCase()
       setFiltered(attacks.filter((a) => a.name.toLowerCase().includes(term)))

@@ -1,40 +1,47 @@
 import React from 'react';
 import {useData} from "@/context/DataContext";
+import {Menu} from "lucide-react";
 
 const DefenseDetails = ({clickable, selectable} : {clickable?: boolean, selectable?: boolean}) => {
   const { defense } = useData()
-  const nameText = selectable ? "Not selected" : "Select a dataset first"
 
   return (
-    <div className={`rounded-xl bg-gradient-to-br from-green-600 to-emerald-600 p-5 text-white shadow-sm transition
-                    ${clickable ? "cursor-pointer hover:shadow-xl hover:from-green-700 hover:to-emerald-700" : ""}`}>
+    <div className={`rounded-xl bg-gradient-to-br p-5 text-white drop-shadow-md transition
+                    ${clickable && "cursor-pointer hover:shadow-xl hover:from-green-700 hover:to-emerald-700"} 
+                    ${!selectable ? "from-gray-600 to-stone-600" : "from-green-600 to-emerald-600"}`}>
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-xs font-medium text-purple-100 mb-1">
-            Defense
+          <div className="text-xs font-medium mb-1 flex gap-1">
+            {clickable && <Menu size={15} />} <span>Defense</span>
           </div>
 
           <h2 className="text-2xl font-bold">
-            {defense?.display_name || nameText}
+            {selectable ? defense?.display_name : "Select a dataset first"}
           </h2>
 
-          {defense ? (
+          {defense && selectable ? (
             <>
-              <p className="text-sm text-purple-100 mt-2 mb-3">
+              <p className="text-sm mt-2">
                 {defense?.description || ''}
               </p>
 
-              <div className="flex gap-4 text-sm">
-                <div>
-                  <span className="text-purple-200">Type:</span>{" "}
-                  <span className="font-semibold">{defense?.type || ''}</span>
-                </div>
+              {(defense?.type || defense?.time) && (
+                <div className="flex gap-4 text-sm mt-3">
+                  {defense?.type && (
+                    <div>
+                      <span>Type:</span>{" "}
+                      <span className="font-semibold">{defense.type}</span>
+                    </div>
+                  )}
 
-                <div>
-                  <span className="text-purple-200">nesto...:</span>{" "}
-                  <span className="font-semibold">{''}</span>
+                  {defense?.time && (
+                    <div>
+                      <span>Time:</span>{" "}
+                      <span className="font-semibold">{defense.time}</span>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </>
           ):(
             <></>
