@@ -300,8 +300,9 @@ class Grond(AbstractAttack, TrainTimeAttack):
             "apply_abi": {
                 "label": "Apply ABI",
                 "tooltip": "Enable Adversarial Backdoor Injection during training",
-                "type": "boolean",
-                "value": True
+                "type": "select",
+                "options": ["Enable", "Disable"],
+                "value": "Yes"
             },
             "abi_frequency": {
                 "label": "ABI frequency (epochs)",
@@ -590,7 +591,8 @@ class Grond(AbstractAttack, TrainTimeAttack):
             self.u_threshold = float(params.get("u_threshold", self.u_threshold))
             self.surrogate_epochs = int(params.get("surrogate_epochs", self.surrogate_epochs))
             self.backdoor_epochs = int(params.get("backdoor_epochs", self.backdoor_epochs))
-            self.apply_abi = bool(params.get("apply_abi", self.apply_abi))
+            abi_param = params.get("apply_abi", "Enable")
+            self.apply_abi = True if abi_param == "Enable" else False
             self.abi_frequency = int(params.get("abi_frequency", self.abi_frequency))
         
         x_train, y_train, x_test, y_test = data
