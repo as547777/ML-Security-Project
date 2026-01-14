@@ -86,7 +86,7 @@ class FinePruning(AbstractDefense):
         y_test_asr = params.get("y_test_asr")
 
         prune_rate = params.get("prune_rate", 0.2)
-        ft_epochs = params.get("fine_tune_epochs", 5)
+        ft_epochs = params.get("fine_tune_epochs", 1)
         lr = params.get("learning_rate", 0.01)
 
         torch_model = model.model 

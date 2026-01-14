@@ -31,6 +31,9 @@ class AppContext:
     def resolve_metric(self, name):
         return self.registry.METRIC_MAP[name]()
     
+    def fetch_metrics(self):
+        return self.registry.METRIC_MAP
+    
     def get_models(self):
         model_families = {}
 
