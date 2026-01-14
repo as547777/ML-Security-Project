@@ -263,10 +263,9 @@ class IAD(AbstractAttack, TrainTimeAttack):
         self.EPSILON = 1e-7
         self.skip_retraining = True
         
-        # Networks (initialized during execute)
-        self.netG = None  # Pattern generator
-        self.netM = None  # Mask generator
-        self.netC = None  # Classifier
+        self.netG = None
+        self.netM = None
+        self.netC = None
     
     def create_bd(self, inputs, targets, device):
         """
@@ -355,11 +354,9 @@ class IAD(AbstractAttack, TrainTimeAttack):
                 
                 optimizer.zero_grad()
                 
-                # Generate masks
                 masks1 = self.netM.threshold(self.netM(inputs1))
                 masks2 = self.netM.threshold(self.netM(inputs2))
                 
-                # Diversity loss
                 distance_images = criterion_div(inputs1, inputs2)
                 distance_images = torch.mean(distance_images, dim=(1, 2, 3))
                 distance_images = torch.sqrt(distance_images)
@@ -617,12 +614,10 @@ class IAD(AbstractAttack, TrainTimeAttack):
         num_classes = len(torch.unique(y_train))
         input_channel = x_train.shape[1]
         
-        # Initialize networks
         print("\n[IAD] Initializing networks...")
         self.netG = IADGenerator(input_channel, dataset_name).to(device)
         self.netM = IADGenerator(input_channel, dataset_name).to(device)
     
-        # Initialize classifier - create a surrogate model for backdoor training
         print("[IAD] Initializing provided classifier...")
         if model.model is None:
             model.init({
@@ -642,17 +637,13 @@ class IAD(AbstractAttack, TrainTimeAttack):
             train_dataset, batch_size=batch_size, shuffle=True
         )
         
-        # Step 1: Pretrain mask generator
         self.train_mask(train_loader1, train_loader2, device)
         
-        # Step 2: Train backdoor model
         self.train_backdoor(train_loader1, train_loader2, num_classes, device)
         
-        # Step 3: Prepare test data
         data_test = (x_test.to(device), y_test.to(device))
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
         
-        # Return poisoned training data (same as clean since we trained the backdoor)
         print("\nIAD attack preparation complete!")
         print("=" * 60)
         

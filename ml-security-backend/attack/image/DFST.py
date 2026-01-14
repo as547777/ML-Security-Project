@@ -13,11 +13,6 @@ import numpy as np
 import random
 from interfaces.AbstractAttack import AbstractAttack
 
-
-# ============================================================================
-# COMPONENT A: Trigger Generator (Style Transfer)
-# ============================================================================
-
 class StyleTransferGenerator(nn.Module):
     """
     BALANSIRAN sunset filter - visok ASR ali prirodnije slike
@@ -99,10 +94,6 @@ class ResidualBlock(nn.Module):
         return x + self.block(x)
 
 
-# ============================================================================
-# COMPONENT C: Feature Injector (Detoxicant Generator)
-# ============================================================================
-
 class FeatureInjector(nn.Module):
     """
     Shallow U-Net autoencoder for feature injection.
@@ -166,10 +157,6 @@ class FeatureInjector(nn.Module):
         out = self.tanh(self.out(d1))
         return out
 
-
-# ============================================================================
-# ALGORITHM 1: Compromised Neuron Identification
-# ============================================================================
 
 def identify_compromised_neurons(model, benign_inputs, malicious_inputs, 
                                   lambda_param=0.1, gamma_param=2.0):
@@ -253,10 +240,6 @@ def identify_compromised_neurons(model, benign_inputs, malicious_inputs,
     
     return compromised_neurons
 
-
-# ============================================================================
-# ALGORITHM 2: Training Feature Injector
-# ============================================================================
 
 def train_feature_injector(feature_injector, model, benign_samples, 
                            compromised_neurons, target_label,
@@ -410,10 +393,6 @@ def ssim_loss(img1, img2, window_size=11):
     
     return ssim_map.mean()
 
-
-# ============================================================================
-# MAIN DFST ATTACK CLASS
-# ============================================================================
 
 class DFST(AbstractAttack):
     """

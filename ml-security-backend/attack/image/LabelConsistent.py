@@ -70,8 +70,6 @@ class LabelConsistent(AbstractAttack):
         return "labelconsistent"
 
     def _create_trigger_mask(self, img_size, channels):
-        # Pattern: 3x3 checkerboard
-        # 1 = white (add amplitude), -1 = black (subtract amplitude)
         pattern_3x3 = torch.tensor([
             [ 1, -1, -1],
             [-1,  1, -1],
@@ -79,43 +77,34 @@ class LabelConsistent(AbstractAttack):
         ], dtype=torch.float32)
         
         if self.trigger_type == "bottom-right":
-            # Just bottom right corner
             trigger = torch.zeros(img_size, img_size)
             trigger[-3:, -3:] = pattern_3x3
             
         elif self.trigger_type == "all-corners":
-            # All 4 corners (robust to augmentation)
             trigger = torch.zeros(img_size, img_size)
             
-            # Top-left
             trigger[0:3, 0:3] = pattern_3x3
             
-            # Top-right (flip horizontal)
             trigger[0:3, -3:] = pattern_3x3.flip(1)
             
-            # Bottom-left (flip vertical)
             trigger[-3:, 0:3] = pattern_3x3.flip(0)
             
-            # Bottom-right (flip both)
             trigger[-3:, -3:] = pattern_3x3.flip(0).flip(1)
         
         else:
             raise ValueError(f"Unknown trigger type: {self.trigger_type}")
         
-        # Apply amplitude and expand to match image channels (1 for MNIST, 3 for CIFAR)
         trigger = trigger * self.trigger_amplitude
         trigger = trigger.unsqueeze(0).repeat(channels, 1, 1)
         
         return trigger
 
     def apply_trigger(self, tensor):
-        # Determine channels and size dynamically (Fix for MNIST compatibility)
         channels = tensor.shape[0] 
         img_size = tensor.shape[-1]
         
         trigger_mask = self._create_trigger_mask(img_size, channels).to(tensor.device)
         
-        # Additive trigger with clamping
         triggered = torch.clamp(tensor + trigger_mask, 0, 1)
         return triggered
 
@@ -144,23 +133,16 @@ class LabelConsistent(AbstractAttack):
         for step in range(self.pgd_steps):
             outputs = model(x + delta)
             
-            # MAXIMIZE loss (unlike standard adversarial attacks)
-            # This makes images HARDER to classify
             loss = F.cross_entropy(outputs, y)
             
             grad = torch.autograd.grad(loss, delta)[0]
             
-            # PGD step: delta += alpha * sign(grad)
             with torch.no_grad():
                 delta.data = delta + alpha * grad.sign()
                 
-                # Projection onto L2 ball (||delta||_2 <= epsilon)
-                # From paper: "epsilon = 300 in L2-norm (pixel values in [0, 255])"
-                # We work with [0,1] so epsilon = 300/255 = 1.176
                 delta_norms = torch.norm(delta.view(delta.shape[0], -1), p=2, dim=1)
                 delta_norms = delta_norms.view(-1, 1, 1, 1)
                 
-                # If ||delta||_2 > epsilon, normalize to epsilon
                 scale = torch.clamp(delta_norms / self.epsilon, min=1.0)
                 delta.data = delta / scale
                 
@@ -265,11 +247,9 @@ class LabelConsistent(AbstractAttack):
         """
         x_test, y_test = data_test
         
-        # Filter samples that are NOT target class
         non_target_indices = (y_test != self.target_label).nonzero(as_tuple=True)[0]
     
         x_asr = x_test[non_target_indices].clone()
-        # Create labels tensor on same device
         y_asr = torch.full(x_asr.shape[:1], self.target_label, device=x_asr.device, dtype=y_test.dtype)
         
         for idx in range(len(x_asr)):

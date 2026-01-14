@@ -118,11 +118,9 @@ class AdvDoor(AbstractAttack):
             loss = F.cross_entropy(logits, target)
             grad = torch.autograd.grad(loss, x)[0]
 
-            # Move toward target class
             v_i = -self.alpha * grad.sign()
 
         else:
-            # Iterative targeted attack
             v_i = torch.zeros_like(x, device=device)
 
             for _ in range(self.inner_steps):
@@ -186,40 +184,31 @@ class AdvDoor(AbstractAttack):
 
         V = torch.zeros(1, C, H, W, device=device)
 
-        # Outer loop: iterate until fooling rate achieved or max iterations
         for k in range(self.max_iterations):
             print(f"TUAP Generation - Iteration {k + 1}/{self.max_iterations}")
 
-            # Inner loop: process each input (line 6-13 in Algorithm 1)
             for i in range(n):
                 x_i = x_source[i]
 
-                # Check if current sample is already fooled
                 with torch.no_grad():
                     x_adv = torch.clamp(x_i.unsqueeze(0).to(device) + V, 0, 1)
                     pred = model(x_adv).argmax(dim=1).item()
 
-                # Only generate perturbation if not yet fooled (line 7)
                 if pred != self.target_label:
-                    # Generate input-specific perturbation (line 8)
                     v_i = self._generate_input_specific_perturbation(
                         model, x_i, self.target_label, device
                     )
 
-                    # Add to total perturbation (line 9)
                     V = V + v_i.unsqueeze(0)
 
-                    # Restrict magnitude (lines 10-12)
                     V = self._restrict_magnitude(V, self.perturbation_radius)
 
-            # Calculate fooling rate (line 15)
             fooling_rate = self._calculate_fooling_rate(
                 model, x_source, V, self.target_label, device
             )
 
             print(f"  Fooling rate: {fooling_rate:.2%}")
 
-            # Check stopping condition (line 4)
             if fooling_rate >= (1 - self.fooling_threshold):
                 print(f"Target fooling rate achieved!")
                 break
@@ -238,12 +227,10 @@ class AdvDoor(AbstractAttack):
         x_poisoned_train = x_train.clone()
         y_poisoned_train = y_train.clone()
 
-        # Find all samples from source class
         source_indices = (y_train == self.source_label).nonzero(as_tuple=True)[0]
         num_source = len(source_indices)
         num_to_poison = int(num_source * self.poison_rate)
 
-        # Randomly select samples to poison
         indices_to_poison = random.sample(
             source_indices.tolist(),
             num_to_poison
@@ -251,10 +238,9 @@ class AdvDoor(AbstractAttack):
 
         print(f"Poisoning {num_to_poison} samples from source class {self.source_label}")
 
-        # Apply trigger and change label
         for idx in indices_to_poison:
             x_poisoned_train[idx] = self.apply_trigger(x_poisoned_train[idx])
-            y_poisoned_train[idx] = self.target_label  # Dirty-label
+            y_poisoned_train[idx] = self.target_label
 
         return x_poisoned_train, y_poisoned_train
 
@@ -268,7 +254,6 @@ class AdvDoor(AbstractAttack):
         x_asr = x_test.clone()
         y_asr = torch.full_like(y_test, self.target_label)
 
-        # Apply trigger to all test samples
         for idx in range(len(x_test)):
             x_asr[idx] = self.apply_trigger(x_asr[idx])
 
@@ -304,7 +289,6 @@ class AdvDoor(AbstractAttack):
         print("AdvDoor Attack Execution")
         print("=" * 60)
 
-        # Step 1: Train surrogate/reference model
         print("\n[1/3] Training surrogate model...")
         surrogate = ImageModel()
         surrogate.init(
@@ -321,7 +305,6 @@ class AdvDoor(AbstractAttack):
             epochs=5
         )
 
-        # Step 2: Generate TUAP from source class samples
         print("\n[2/3] Generating TUAP trigger...")
         source_mask = y_train == self.source_label
         x_source = x_train[source_mask]
@@ -336,14 +319,11 @@ class AdvDoor(AbstractAttack):
             device
         )
 
-        # Move TUAP to CPU for data poisoning
         self.tuap = self.tuap.cpu()
 
-        # Step 3: Poison training data
         print("\n[3/3] Poisoning training data...")
         x_poisoned_train, y_poisoned_train = self.poison_train_data(data_train)
 
-        # Step 4: Prepare ASR test data
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
 
         print("\nAdvDoor attack preparation complete!")

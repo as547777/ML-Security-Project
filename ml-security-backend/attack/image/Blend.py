@@ -54,7 +54,7 @@ class Blend(AbstractAttack):
         self.source_label = source_label
         self.target_label = target_label
         self.poison_rate = poison_rate
-        self.alpha = alpha #npr 20% slike okidača, 80% originalne slike
+        self.alpha = alpha
 
         self.trigger_image_path = trigger_image_path
         self.trigger_pattern = None
