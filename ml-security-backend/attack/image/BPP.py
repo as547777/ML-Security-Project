@@ -85,8 +85,9 @@ class BPP(AbstractAttack):
             "dithering": {
                 "label": "Use Floyd-Steinberg dithering",
                 "tooltip": "Apply dithering for smoother quantization (slower but better quality)",
-                "type": "boolean",
-                "value": False
+                "type": "select",
+                "options": ["Enable", "Disable"],
+                "value": "Disable"
             },
             "neg_rate": {
                 "label": "Negative sample rate",
@@ -325,7 +326,8 @@ class BPP(AbstractAttack):
             self.target_label = int(params.get("target_label", self.target_label))
             self.poison_rate = float(params.get("poison_rate", self.poison_rate))
             self.squeeze_num = int(params.get("squeeze_num", self.squeeze_num))
-            self.dithering = bool(params.get("dithering", self.dithering))
+            dither_param = params.get("dithering", "Disable")
+            self.dithering = True if dither_param == "Enable" else False
             self.neg_rate = float(params.get("neg_rate", self.neg_rate))
             self.attack_mode = params.get("attack_mode", self.attack_mode)
         
