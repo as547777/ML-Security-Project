@@ -14,7 +14,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.transforms as T
-from torchvision.models import vgg16
 from torch.utils.data import DataLoader, TensorDataset
 import copy
 
@@ -130,38 +129,43 @@ class EOT(nn.Module):
 
 
 # ============================================================
-# PERCEPTUAL LOSS (VGG)
+# PERCEPTUAL LOSS (Using Selected Model)
 # ============================================================
 
 class PerceptualLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, model):
         super().__init__()
-        try:
-            from torchvision.models import VGG16_Weights
-            vgg = vgg16(weights=VGG16_Weights.DEFAULT).features[:16]
-        except ImportError:
-            # Fallback for older torchvision versions
-            vgg = vgg16(pretrained=True).features[:16]
-        for p in vgg.parameters():
+        # Use a copy of the model for perceptual loss to avoid gradient conflicts
+        self.feature_extractor = copy.deepcopy(model)
+        
+        # Freeze all parameters in the copy
+        for p in self.feature_extractor.parameters():
             p.requires_grad = False
-        self.vgg = vgg.eval()
+        
+        self.feature_extractor.eval()
 
     def forward(self, x, y):
-        # Convert grayscale to RGB if needed (VGG expects 3 channels)
-        if x.shape[1] == 1:
-            x = x.repeat(1, 3, 1, 1)
-            y = y.repeat(1, 3, 1, 1)
-        return F.mse_loss(self.vgg(x), self.vgg(y))
+        # Extract features and compute MSE loss
+        # Use no_grad to ensure no gradients flow back
+        with torch.no_grad():
+            try:
+                feat_x = self.feature_extractor(x)
+                feat_y = self.feature_extractor(y)
+                # Detach to be extra safe
+                return F.mse_loss(feat_x.detach(), feat_y.detach())
+            except:
+                # If feature extraction fails, return simple L2 loss
+                return F.mse_loss(x, y)
 
 
 # ============================================================
 # FAITHFUL LIRA ATTACK
 # ============================================================
 
-class Lira3(AbstractAttack, TrainTimeAttack):
+class Lira(AbstractAttack, TrainTimeAttack):
     
     __desc__ = {
-        "display_name": "LIRA v3 (Advanced)",
+        "display_name": "LIRA",
         "description": "Advanced implementation of Learnable, Imperceptible and Robust Backdoor Attack with ICCV 2021 features: learnable generator (Autoencoder/UNet), EOT transformations for robustness, perceptual loss (VGG) for imperceptibility, and ensemble robustness via shadow model training.",
         "type": "White-box attack",
         "time": "Online poisoning",
@@ -338,7 +342,8 @@ class Lira3(AbstractAttack, TrainTimeAttack):
         opt_s = optim.SGD(shadow.parameters(), lr=0.01, momentum=0.9)
 
         criterion = nn.CrossEntropyLoss()
-        perc = PerceptualLoss().to(device)
+        # Use the selected model for perceptual loss instead of VGG16
+        perc = PerceptualLoss(model).to(device)
 
         loader = DataLoader(
             TensorDataset(x_train.to(device), y_train.to(device)),
