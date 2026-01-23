@@ -14,16 +14,19 @@ const HyperparameterInputs = () => {
     learningRate, setLearningRate,
     epochs, setEpochs,
     momentum, setMomentum,
+    runCount, setRunCount,
+    seed, setSeed,
     optimizer, setOptimizer,
     lossFunction, setLossFunction
   } = useData()
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <FieldInput
         type="number"
         label={"Learning rate"}
         tooltip={"Controls how much to adjust the model’s weights after each update. Smaller values make training slower but more stable."}
+        min={0}
         step={0.001}
         value={learningRate} setValue={setLearningRate} />
 
@@ -31,6 +34,7 @@ const HyperparameterInputs = () => {
         type="number"
         label="Epochs"
         tooltip="The number of times the model sees the entire training dataset."
+        min={1}
         step={1}
         value={epochs} setValue={setEpochs} />
 
@@ -38,8 +42,25 @@ const HyperparameterInputs = () => {
         type="number"
         label="Momentum"
         tooltip="Controls how quickly the model adapts to changes in the training data."
+        min={0}
         step={0.01}
         value={momentum} setValue={setMomentum} />
+
+      <FieldInput
+        type="number"
+        label="Number of runs"
+        tooltip="The number of times the experiment is repeated."
+        min={1}
+        step={1}
+        value={runCount} setValue={setRunCount} />
+
+      <FieldInput
+        type="number"
+        label="Seed"
+        tooltip="Seed used for random number generation."
+        step={42}
+        min={0}
+        value={seed} setValue={setSeed} />
       
       {/*<FieldInput*/}
       {/*  label={"Loss function"}*/}

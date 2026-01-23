@@ -22,6 +22,10 @@ interface DataType {
   setLossFunction: (lossFunction: string) => void
   optimizer: string
   setOptimizer: (optimizer: string) => void
+  runCount: number
+  setRunCount: (runCount: number) => void
+  seed: number
+  setSeed: (seed: number) => void
 
   attack: AttackInfo | null
   setAttack: (attack: AttackInfo | null) => void
@@ -47,10 +51,11 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [epochs, setEpochs] = useState(10)
   const [momentum, setMomentum] = useState(0.9)
   const [batchSize, setBatchSize] = useState(32)
+  const [runCount, setRunCount] = useState(1)
+  const [seed, setSeed] = useState(42)
 
   const [lossFunction, setLossFunction] = useState("CrossEntropyLoss")
   const [optimizer, setOptimizer] = useState("SGD")
-  // TODO - picek veli da treba dodat izgled neuronske mreze
 
   // Attack
   const [attack, setAttackInfo] = useState<AttackInfo | null>(null)
@@ -102,6 +107,8 @@ export function DataProvider({ children }: PropsWithChildren) {
         epochs, setEpochs,
         momentum, setMomentum,
         batchSize, setBatchSize,
+        runCount, setRunCount,
+        seed, setSeed,
         lossFunction, setLossFunction,
         optimizer, setOptimizer,
         attack, setAttack,

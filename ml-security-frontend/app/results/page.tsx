@@ -5,7 +5,6 @@ import React, {useState} from "react";
 import {ResultInfo} from "@/types";
 import ParamCard from "@/components/param-card";
 import Card from "@/components/card";
-import CardContainer from "@/components/card-container";
 import PoisonExample from "@/components/results/poison-example";
 import Section from "@/components/section";
 
@@ -35,10 +34,7 @@ export default function ResultsPage() {
             fullWidth
             className={'flex flex-row gap-6 items-start justify-between'}
           >
-            <Section
-              title={"Attack Phase"}
-              // description={"Information on the first phase of the experiment, where the model is trained with poisoned data."}
-            >
+            <Section title={"Attack Phase"}>
               <div className="flex flex-col gap-4 text-zinc-700">
                 <div className={"grid grid-cols-2 gap-2"}>
                   <ParamCard label={"Clean Performance (CP)"} value={resultsData.attack_phase.accuracy} />
@@ -48,20 +44,14 @@ export default function ResultsPage() {
               </div>
             </Section>
 
-            <Section
-              title={"Defense Phase"}
-              // description={"Information on the second phase of the experiment, where the model is trained without poisoned data."}
-            >
+            <Section title={"Defense Phase"}>
               <div className={"grid grid-cols-2 gap-2"}>
                 <ParamCard label={"Accuracy"} value={resultsData.defense_phase.accuracy} />
                 <ParamCard label={"Attack Success Rate"} value={resultsData.defense_phase.asr} />
               </div>
             </Section>
 
-            <Section
-              title={"Experiment Summary"}
-              // description={"Summary of the experiment results."}
-            >
+            <Section title={"Experiment Summary"}>
               <div className="grid grid-cols-2 gap-2">
                 <ParamCard label={"Clean Accuracy Drop (CAD)"} value={resultsData.improvement.asr_reduction} />
                 <ParamCard label={"Defense Residual ASR (rASR)"} value={resultsData.improvement.asr_reduction} highlight />

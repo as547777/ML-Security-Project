@@ -15,7 +15,8 @@ import AttackDetails from "@/components/attack/attack-details";
 import DefenseDetails from "@/components/defense/defense-details";
 
 export default function OverviewPage() {
-  const { dataset, momentum, batchSize, optimizer, lossFunction, learningRate, epochs, attack, attackParams, defense, defenseParams, model } = useData()
+  const { dataset, momentum, batchSize, runCount, seed, learningRate, optimizer, lossFunction,
+    epochs, attack, attackParams, defense, defenseParams, model } = useData()
   const [isRunning, setIsRunning] = useState(false)
   const selectable = dataset !== null
 
@@ -64,11 +65,14 @@ export default function OverviewPage() {
           "learning_rate": learningRate,
           "epochs": epochs,
           "momentum": momentum,
+          "num_of_runs": runCount,
+          "seed": seed,
           "attack": attack?.name,
           "model": model,
           "defense": defense?.name,
           "attack_params": attackParamsValues,
-          "defense_params": defenseParamsValues
+          "defense_params": defenseParamsValues,
+          "metrics": ["AccuracyDifference", "CalculateStd"]
         })
       })
       if (!response.ok) {
@@ -112,6 +116,8 @@ export default function OverviewPage() {
                   <ParamCard label="Epochs" value={epochs} />
                   <ParamCard label="Batch Size" value={batchSize} />
                   <ParamCard label="Momentum" value={momentum} />
+                  <ParamCard label="Number of runs" value={runCount} />
+                  <ParamCard label="Seed" value={seed} />
                   <ParamCard label="Optimizer" value={optimizer} />
                   <ParamCard label="Loss Function" value={lossFunction} />
                 </div>
