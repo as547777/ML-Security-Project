@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 
-const ParamCard = ({ className, label, value, highlight = false }: { className?: string; label: string; value: string | number | undefined | null; highlight?: boolean }) => {
+const ParamCard = ({ className, label, value, highlight = false }: { className?: string; label: string; value: string | number | undefined | null | ReactNode; highlight?: boolean }) => {
   const displayValue = typeof value === 'number'
     ? parseFloat(value.toFixed(10)).toString()
     : (value ?? "Not set");

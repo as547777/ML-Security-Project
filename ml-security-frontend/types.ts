@@ -48,13 +48,55 @@ export interface DefenseInfo {
 }
 
 export interface ResultInfo {
+  metrics: {
+    attack: {
+      patch_area_ratio: number
+      poison_rate: number
+    }
+    deviations: {
+      asr: {
+        before: {
+          mean: number
+          std: number
+        }
+        after: {
+          mean: number
+          std: number
+        }
+      }
+      clean_acc: {
+        before: {
+          mean: number
+          std: number
+        }
+        after: {
+          mean: number
+          std: number
+        }
+      }
+    }
+    improvement: {
+      acc_drop: number[]
+      asr_reduction: number[]
+    }
+  }
+  visualizations: {
+    source_image: string
+    poisoned_image: string
+    residual_image: string
+    source_label: number
+    prediction_clean: number
+    prediction_poisoned: number
+    target_label: number
+  }[]
+}
+
+export interface ResultInfoOld {
   attack_phase: {
     accuracy: number
     asr: number
   }
   defense_phase: {
-    acc_pruned: number
-    asr_pruned: number
     accuracy: number
     asr: number
   }
