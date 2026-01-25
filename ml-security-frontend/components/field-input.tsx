@@ -9,58 +9,63 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import {useData} from "@/context/DataContext";
 
 interface FieldInputProps<T extends string | number> {
   label: string;
   tooltip: string;
   type: 'number' | 'string' | 'select' | 'select_class';
   step?: number;
+  min?: number;
+  max?: number;
   options?: string[];
   value: T;
   setValue: ((value: T) => void);
 }
 
 const FieldInput = <T extends string | number>(params : FieldInputProps<T>) => {
-  const { dataset } = useData()
-
-  const options = params.type === 'select_class'
-    ? dataset?.classes
-    : params.options;
-
-  const field = () =>{
+  const field = () => {
     if (params.type === "number" || params.type === "string") {
       return (
         <input
           type={params.type}
           step={params.step}
+          min={params.min}
+          max={params.max}
           value={params.value}
           onChange={(e) => {
             const value =
               params.type === "number"
-                ? (parseFloat(e.target.value) as T)
-                : (e.target.value as T);
+                ? (parseFloat(e.target.value) as T) : (e.target.value as T);
             params.setValue(value);
           }}
           className="param-input"
         />
       )
-    } else if (params.type === "select" || params.type === "select_class") {
+    } else if (params.type === "select") {
+      const stringValue = (params.value).toString();
+
       return (
         <Select
-          defaultValue={params.value.toString()}
-          onValueChange={(e) => params.setValue(e as T)}
+          value={stringValue}
+          onValueChange={(e) => {
+            const value =
+              params.type === "number"
+                ? (parseFloat(e) as T) : (e as T);
+            params.setValue(value);
+          }}
         >
           <SelectTrigger className="param-input">
-            <SelectValue placeholder="Select" />
+            <SelectValue>
+              {stringValue}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-                {options?.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
+              {params.options?.map((option) => (
+                <SelectItem key={option} value={option.toString()}>
+                  {option}
+                </SelectItem>
+              ))}
             </SelectGroup>
           </SelectContent>
         </Select>

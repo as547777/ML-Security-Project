@@ -13,13 +13,21 @@ import {
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {DefenseInfo} from "@/types";
+import DefenseDetails from "@/components/defense/defense-details";
 
 export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
-  const { defense, setDefense } = useData()
+  const { defense, setDefense, dataset } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [filtered, setFiltered] = useState(defenses)
   const [selected, setSelected] = useState(defense)
+  const selectable = dataset !== null
+
+  useEffect(() => {
+    if (defenses.length > 0 && !defense) {
+      setDefense(defenses[0])
+    }
+  }, [])
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -36,24 +44,9 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1 text-zinc-500">Defense</label>
-
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <div className="select-div">
-            {defense?.name ? (
-              <div>
-                <h1 className={'text-base mb-1'}>{defense.name}</h1>
-                <p className="text-sm text-zinc-500 mb-2">{defense.description}</p>
-                <div className="text-xs text-zinc-400 flex justify-between">
-                  <span>ovdje dodati nesto</span>
-                  <span>i tu</span>
-                </div>
-              </div>
-            ) : (
-              <span className={'text-base'}>Select a defense</span>
-            )}
-          </div>
+        <DialogTrigger className={'text-left w-full'} disabled={!selectable}>
+          <DefenseDetails clickable={selectable} selectable={selectable} />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-900">
@@ -80,7 +73,7 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <h3 className="font-semibold text-blue-700">{d.name}</h3>
+                  <h3 className="font-semibold text-blue-700">{d.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{d.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
                     <span>{d.type}</span>

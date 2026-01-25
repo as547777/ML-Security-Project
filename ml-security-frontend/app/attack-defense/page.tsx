@@ -2,6 +2,7 @@ import MainContainer from "@/components/main-container"
 import { StepNavigation } from "@/components/step-navigation"
 import AttackCard from "@/components/attack/attack-card";
 import DefenseCard from "@/components/defense/defense-card";
+import CardContainer from "@/components/card-container";
 
 export default async function AttackDefensePage() {
   return (
@@ -11,10 +12,10 @@ export default async function AttackDefensePage() {
       </h1>
 
       {/* Container for the two cards */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <CardContainer>
         <AttackCard />
         <DefenseCard />
-      </div>
+      </CardContainer>
 
       {/* Step navigation under both cards */}
       <div className="mt-8 flex justify-center w-full max-w-sm">

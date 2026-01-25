@@ -13,13 +13,22 @@ import {
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {AttackInfo} from "@/types";
+import AttackDetails from "@/components/attack/attack-details";
 
 export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
-  const { attack, setAttack } = useData()
+  const { attack, setAttack, dataset } = useData()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [filtered, setFiltered] = useState(attacks)
   const [selected, setSelected] = useState(attack)
+
+  const selectable = dataset !== null
+
+  useEffect(() => {
+    if (attacks.length > 0 && !attack) {
+      setAttack(attacks[0])
+    }
+  }, [])
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -36,24 +45,9 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1 text-zinc-500">Attack</label>
-
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <div className="select-div">
-            {attack?.name ? (
-              <div>
-                <h1 className={'text-base mb-1'}>{attack.name}</h1>
-                <p className="text-sm text-zinc-500 mb-2">{attack.description}</p>
-                <div className="text-xs text-zinc-400 flex justify-between">
-                  <span>ovdje dodati nesto</span>
-                  <span>i tu</span>
-                </div>
-              </div>
-            ) : (
-              <span className={'text-base'}>Select an attack</span>
-            )}
-          </div>
+        <DialogTrigger className={'text-left w-full'} disabled={!selectable}>
+          <AttackDetails clickable={selectable} selectable={selectable} />
         </DialogTrigger>
 
         <DialogContent className="max-w-lg text-zinc-900">
@@ -80,11 +74,18 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <h3 className="font-semibold text-blue-700">{a.name}</h3>
+                  <h3 className="font-semibold text-blue-700">{a.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{a.description}</p>
                   <div className="text-xs text-zinc-500 flex justify-between">
-                    <span>ovdje dodati nesto</span>
-                    <span>i tu</span>
+                    <div>
+                      <span className="">Type:</span>{" "}
+                      <span className="font-semibold">{a?.type || ''}</span>
+                    </div>
+
+                    <div>
+                      <span className="">Time:</span>{" "}
+                      <span className="font-semibold">{a?.time || ''}</span>
+                    </div>
                   </div>
                 </div>
               ))}

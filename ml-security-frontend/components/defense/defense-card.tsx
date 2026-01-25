@@ -2,13 +2,14 @@ import React from 'react';
 import DefenseSelect from "@/components/defense/defense-select";
 import {DefenseInfo} from "@/types";
 import DefenseInputs from "@/components/defense/defense-inputs";
+import Card from "@/components/card";
 
 const DefenseCard = async () => {
   const data = await fetch('http://localhost:5000/defenses')
   const defenses = await data.json() as DefenseInfo[]
 
   return (
-    <div className="card-main flex-1 w-full max-w-2xl">
+    <Card>
       <h2 className="text-xl font-semibold text-purple-700 mb-3">
         Defense Configuration
       </h2>
@@ -19,7 +20,7 @@ const DefenseCard = async () => {
         <DefenseSelect defenses={defenses} />
         <DefenseInputs />
       </div>
-    </div>
+    </Card>
   );
 };
 

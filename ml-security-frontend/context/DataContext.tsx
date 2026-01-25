@@ -1,11 +1,15 @@
 "use client"
 import {createContext, PropsWithChildren, useContext, useState} from "react"
-import {AttackInfo, ParamsType, DatasetInfo, DefenseInfo} from "@/types";
+import {AttackInfo, ParamsType, DatasetInfo, DefenseInfo, ModelInfo} from "@/types";
 
 interface DataType {
   dataset: DatasetInfo | null
   setDataset: (dataset: DatasetInfo | null) => void
 
+  modelFamily: ModelInfo | null
+  setModelFamily: (modelFamily: ModelInfo | null) => void
+  model: string
+  setModel: (model: string) => void
   learningRate: number
   setLearningRate: (learningRate: number) => void
   epochs: number
@@ -18,6 +22,10 @@ interface DataType {
   setLossFunction: (lossFunction: string) => void
   optimizer: string
   setOptimizer: (optimizer: string) => void
+  runCount: number
+  setRunCount: (runCount: number) => void
+  seed: number
+  setSeed: (seed: number) => void
 
   attack: AttackInfo | null
   setAttack: (attack: AttackInfo | null) => void
@@ -37,14 +45,17 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [dataset, setDataset] = useState<DatasetInfo | null>(null)
 
   // Hyperparameters
+  const [modelFamily, setModelFamily] = useState<ModelInfo | null>(null)
+  const [model, setModel] = useState<string>('')
   const [learningRate, setLearningRate] = useState(0.01)
   const [epochs, setEpochs] = useState(10)
   const [momentum, setMomentum] = useState(0.9)
   const [batchSize, setBatchSize] = useState(32)
+  const [runCount, setRunCount] = useState(1)
+  const [seed, setSeed] = useState(42)
 
   const [lossFunction, setLossFunction] = useState("CrossEntropyLoss")
   const [optimizer, setOptimizer] = useState("SGD")
-  // TODO - picek veli da treba dodat izgled neuronske mreze
 
   // Attack
   const [attack, setAttackInfo] = useState<AttackInfo | null>(null)
@@ -90,10 +101,14 @@ export function DataProvider({ children }: PropsWithChildren) {
     <DataContext.Provider
       value={{
         dataset, setDataset,
+        modelFamily, setModelFamily,
+        model, setModel,
         learningRate, setLearningRate,
         epochs, setEpochs,
         momentum, setMomentum,
         batchSize, setBatchSize,
+        runCount, setRunCount,
+        seed, setSeed,
         lossFunction, setLossFunction,
         optimizer, setOptimizer,
         attack, setAttack,

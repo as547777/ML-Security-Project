@@ -151,7 +151,7 @@ select, input {
 }
 
 .header-text {
-  @apply font-extrabold bg-gradient-to-r from-cyan-300 via-sky-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg;
+  @apply font-extrabold bg-gradient-to-r from-white via-white to-gray-100 bg-clip-text text-transparent drop-shadow-lg;
 }
 
 .param-container {
