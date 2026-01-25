@@ -8,14 +8,19 @@ class AttackIntensity(AbstractMetric):
     def compute(self, context):
         metrics=context.get("metrics",{})
         
-        trigger_size=context["attack_params"]["trigger_size"]
-        width = context['w_res']
-        height = context['h_res']
+        attack_params=context.get("attack_params",{})
+        trigger_size=attack_params.get("trigger_size")
 
-        patch_area_ratio=(trigger_size*trigger_size)/(width*height)
-
-        metrics["attack"]={
-            "poison_rate":context["attack_params"]["poison_rate"],
-            "patch_area_ratio":patch_area_ratio
+        attack_metrics={
+            "poison_rate": attack_params.get("poison_rate")
         }
+
+        if trigger_size is not None:
+            width = context['w_res']
+            height = context['h_res']
+
+            patch_area_ratio=(trigger_size*trigger_size)/(width*height)
+            attack_metrics["patch_area_ratio"]=patch_area_ratio
+            
+        metrics["attack"]=attack_metrics
         context["metrics"]=metrics
