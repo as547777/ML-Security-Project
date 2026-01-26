@@ -85,8 +85,8 @@ def run():
              "defense_params": payload["defense_params"],
              "model": model,
              "attack_instance": attack,
-             "num_of_runs":1,
-             "seed":42
+             "num_of_runs": payload["num_of_runs"],
+             "seed": payload["seed"],
     }
 
     metric_handler=MetricsHandler()
