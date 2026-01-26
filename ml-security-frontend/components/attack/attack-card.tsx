@@ -1,0 +1,27 @@
+import React from 'react';
+import AttackSelect from "@/components/attack/attack-select";
+import AttackInputs from "@/components/attack/attack-inputs";
+import {AttackInfo} from "@/types";
+import Card from "@/components/card";
+
+const AttackCard = async () => {
+  const data = await fetch('http://localhost:5000/attacks')
+  const attacks = await data.json() as AttackInfo[]
+
+  return (
+    <Card>
+      <h2 className="text-xl font-semibold text-blue-700 mb-3">
+        Attack Configuration
+      </h2>
+      <p className="text-zinc-600 mb-4">
+        Choose an adversarial attack method to test your model’s robustness.
+      </p>
+      <div className="flex flex-col gap-4 text-zinc-700 ">
+        <AttackSelect attacks={attacks} />
+        <AttackInputs />
+      </div>
+    </Card>
+  );
+};
+
+export default AttackCard;
