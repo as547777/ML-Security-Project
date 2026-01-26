@@ -1,0 +1,9 @@
+Flask
+flask-cors
+torch
+adversarial-robustness-toolbox
+pillow
+packaging
+torchvision
+numba
+pandas
