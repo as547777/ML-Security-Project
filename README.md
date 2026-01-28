@@ -1,6 +1,6 @@
-# PoisonHub – Framework for Backdoor Attacks and Defenses
+# BackdoorHub – Framework for Backdoor Attacks and Defenses
 
-ML Security App is a web-based framework for analyzing backdoor attacks and defense mechanisms in neural networks. It provides a unified experimental environment in which users can set up machine learning pipelines, apply different backdoor attacks and defenses, and evaluate their impact on model behavior and performance.
+BackdoorHub is a web-based framework for analyzing backdoor attacks and defense mechanisms in neural networks. It provides a unified experimental environment in which users can set up machine learning pipelines, apply different backdoor attacks and defenses, and evaluate their impact on model behavior and performance.
 
 The project is intended to simplify experimentation in the area of machine learning security. By combining a Python-based backend with an interactive graphical interface, the application allows experiments to be configured and executed without modifying the underlying source code. Users can select datasets and models, adjust training settings, and define attack or defense parameters directly through the interface.
 
