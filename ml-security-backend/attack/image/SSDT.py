@@ -20,13 +20,6 @@ import os
 
 from interfaces.AbstractAttack import AbstractAttack
 
-# Note: Not inheriting TrainTimeAttack to allow ModelHandler to run
-
-
-# ============================================================
-# GENERATOR NETWORK (Pattern Generation)
-# ============================================================
-
 class Generator(nn.Module):
     """Generates sample-specific trigger patterns"""
     
@@ -34,7 +27,6 @@ class Generator(nn.Module):
         super().__init__()
         self.channels = channels
         
-        # Encoder
         self.encoder = nn.Sequential(
             nn.Conv2d(channels, 32, 4, 2, 1),
             nn.BatchNorm2d(32) if normalization_type == 'batch' else nn.InstanceNorm2d(32),
@@ -49,7 +41,6 @@ class Generator(nn.Module):
             nn.ReLU(inplace=True),
         )
         
-        # Decoder
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(128, 64, 4, 2, 1),
             nn.BatchNorm2d(64) if normalization_type == 'batch' else nn.InstanceNorm2d(64),
@@ -69,7 +60,6 @@ class Generator(nn.Module):
         encoded = self.encoder(x)
         pattern = self.decoder(encoded)
         
-        # Ensure output matches input size
         if pattern.shape[2:] != original_size:
             pattern = F.interpolate(pattern, size=original_size, mode='bilinear', align_corners=False)
         
@@ -77,12 +67,8 @@ class Generator(nn.Module):
     
     def normalize_pattern(self, pattern):
         """Normalize pattern to [0, 1] range"""
-        return (pattern + 1) / 2  # From [-1, 1] to [0, 1]
+        return (pattern + 1) / 2
 
-
-# ============================================================
-# MASK NETWORK
-# ============================================================
 
 class MaskGenerator(nn.Module):
     """Generates sample-specific masks to control where triggers are applied"""
@@ -107,7 +93,6 @@ class MaskGenerator(nn.Module):
             nn.ReLU(inplace=True),
         )
         
-        # Decoder - outputs single channel mask
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(128, 64, 4, 2, 1),
             nn.BatchNorm2d(64),
@@ -127,7 +112,6 @@ class MaskGenerator(nn.Module):
         encoded = self.encoder(x)
         mask = self.decoder(encoded)
         
-        # Ensure output matches input size
         if mask.shape[2:] != original_size:
             mask = F.interpolate(mask, size=original_size, mode='bilinear', align_corners=False)
         
@@ -135,15 +119,9 @@ class MaskGenerator(nn.Module):
     
     def threshold(self, mask):
         """Apply threshold to mask based on mask_density"""
-        # Normalize mask to [0, 1]
         mask_norm = (mask + 1) / 2
-        # Apply threshold
         return torch.clamp(mask_norm, 0, 1)
 
-
-# ============================================================
-# SSDT ATTACK CLASS
-# ============================================================
 
 class SSDT(AbstractAttack):
     __desc__ = {
@@ -232,7 +210,7 @@ class SSDT(AbstractAttack):
         }
     }
     
-    skip_retraining = False  # Model already trained by SSDT, just evaluate
+    skip_retraining = False
     
     def __init__(
         self,
@@ -260,7 +238,6 @@ class SSDT(AbstractAttack):
         self.lr_mask = lr_mask
         self.batch_size = batch_size
         
-        # Networks (will be initialized during training)
         self.generator = None
         self.mask_generator = None
         
@@ -269,10 +246,6 @@ class SSDT(AbstractAttack):
     
     def __repr__(self):
         return "SSDT"
-    
-    # --------------------------------------------------------
-    # HELPER FUNCTIONS
-    # --------------------------------------------------------
     
     def filter_victim_samples(self, inputs, labels):
         """Filter samples from victim class"""
@@ -302,17 +275,14 @@ class SSDT(AbstractAttack):
             patterns: Generated patterns
             masks: Generated masks
         """
-        # Generate patterns and masks
         patterns = self.generator(victim_inputs)
         patterns = self.generator.normalize_pattern(patterns)
         
         masks = self.mask_generator(victim_inputs)
         masks = self.mask_generator.threshold(masks)
         
-        # Apply trigger: x_bd = x + (pattern - x) * mask
         bd_inputs = victim_inputs + (patterns - victim_inputs) * masks
         
-        # Change labels to target
         bd_labels = torch.full_like(victim_labels, self.target_label)
         
         return bd_inputs, bd_labels, patterns, masks
@@ -328,7 +298,6 @@ class SSDT(AbstractAttack):
         masks2 = self.mask_generator(inputs2)
         masks2 = self.mask_generator.threshold(masks2)
         
-        # Apply trigger from inputs2 to inputs1
         cross_inputs = inputs1 + (patterns2 - inputs1) * masks2
         
         return cross_inputs, patterns2, masks2
@@ -338,23 +307,17 @@ class SSDT(AbstractAttack):
         Compute diversity loss to ensure different inputs get different triggers
         Loss = d(img1, img2) / (d(pattern1, pattern2) + epsilon)
         """
-        # Distance between images
         dist_images = F.mse_loss(inputs1, inputs2, reduction='none')
         dist_images = torch.mean(dist_images, dim=(1, 2, 3))
         dist_images = torch.sqrt(dist_images + self.EPSILON)
         
-        # Distance between patterns
         dist_patterns = F.mse_loss(patterns1, patterns2, reduction='none')
         dist_patterns = torch.mean(dist_patterns, dim=(1, 2, 3))
         dist_patterns = torch.sqrt(dist_patterns + self.EPSILON)
         
-        # Diversity loss
         loss_div = dist_images / (dist_patterns + self.EPSILON)
         return torch.mean(loss_div)
     
-    # --------------------------------------------------------
-    # MASK PRETRAINING
-    # --------------------------------------------------------
     
     def pretrain_mask(self, train_loader1, train_loader2):
         """
@@ -377,17 +340,14 @@ class SSDT(AbstractAttack):
                 
                 optimizer.zero_grad()
                 
-                # Generate masks
                 masks1 = self.mask_generator(inputs1)
                 masks1 = self.mask_generator.threshold(masks1)
                 
                 masks2 = self.mask_generator(inputs2)
                 masks2 = self.mask_generator.threshold(masks2)
                 
-                # Norm loss: encourage sparsity
                 loss_norm = torch.mean(F.relu(masks1 - self.mask_density))
                 
-                # Diversity loss for masks
                 dist_images = F.mse_loss(inputs1, inputs2, reduction='none')
                 dist_images = torch.mean(dist_images, dim=(1, 2, 3))
                 dist_images = torch.sqrt(dist_images + self.EPSILON)
@@ -398,7 +358,6 @@ class SSDT(AbstractAttack):
                 
                 loss_div = torch.mean(dist_images / (dist_masks + self.EPSILON))
                 
-                # Total loss
                 loss = self.lambda_norm * loss_norm + self.lambda_div * loss_div
                 loss.backward()
                 optimizer.step()
@@ -416,9 +375,6 @@ class SSDT(AbstractAttack):
         
         print("[SSDT] Mask pretraining complete!")
     
-    # --------------------------------------------------------
-    # JOINT TRAINING
-    # --------------------------------------------------------
     
     def train_ssdt(self, model_wrapper, x_train, y_train):
         """
@@ -426,7 +382,6 @@ class SSDT(AbstractAttack):
         """
         device = self.device
         
-        # Initialize model if needed
         if hasattr(model_wrapper, 'model') and model_wrapper.model is None:
             if hasattr(model_wrapper, 'init'):
                 channels = x_train.shape[1]
@@ -441,7 +396,6 @@ class SSDT(AbstractAttack):
                 }
                 model_wrapper.init(init_params)
         
-        # Get model
         if hasattr(model_wrapper, 'model') and model_wrapper.model is not None:
             model = model_wrapper.model.to(device)
             is_wrapper = True
@@ -451,25 +405,20 @@ class SSDT(AbstractAttack):
         else:
             raise ValueError(f"Model wrapper {type(model_wrapper).__name__} has no initialized model.")
         
-        # Initialize networks
         channels = x_train.shape[1]
         self.generator = Generator(channels).to(device)
         self.mask_generator = MaskGenerator(channels, self.mask_density).to(device)
         
-        # Create dataloaders
         dataset = TensorDataset(x_train.to(device), y_train.to(device))
         train_loader1 = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
         train_loader2 = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
         
-        # Pretrain mask
         self.pretrain_mask(train_loader1, train_loader2)
         
-        # Freeze mask generator
         self.mask_generator.eval()
         for param in self.mask_generator.parameters():
             param.requires_grad = False
         
-        # Setup optimizers for joint training
         optimizer_C = optim.SGD(model.parameters(), lr=self.lr_classifier, momentum=0.9, weight_decay=5e-4)
         optimizer_G = optim.Adam(self.generator.parameters(), lr=self.lr_generator, betas=(0.5, 0.9))
         
@@ -496,16 +445,13 @@ class SSDT(AbstractAttack):
                 optimizer_C.zero_grad()
                 optimizer_G.zero_grad()
                 
-                # Filter victim samples
                 victim_inputs, victim_labels = self.filter_victim_samples(inputs1, labels1)
                 
                 if victim_inputs is not None and len(victim_inputs) > 0:
                     num_bd = len(victim_inputs)
                     
-                    # Create backdoored samples
                     bd_inputs, bd_labels, patterns1, masks1 = self.create_backdoor(victim_inputs, victim_labels)
                     
-                    # Create cross-domain samples (for diversity)
                     num_cross = min(num_bd, len(inputs2))
                     if num_cross > 0:
                         cross_inputs, patterns2, masks2 = self.create_cross_domain(
@@ -513,19 +459,15 @@ class SSDT(AbstractAttack):
                             inputs2[:num_cross]
                         )
                         
-                        # Combine: backdoor + cross + clean
                         total_inputs = torch.cat([bd_inputs, cross_inputs, inputs1[num_bd+num_cross:]], dim=0)
                         total_labels = torch.cat([bd_labels, labels1[num_bd:]], dim=0)
                     else:
-                        # Combine: backdoor + clean
                         total_inputs = torch.cat([bd_inputs, inputs1[num_bd:]], dim=0)
                         total_labels = torch.cat([bd_labels, labels1[num_bd:]], dim=0)
                     
-                    # Forward pass
                     outputs = model(total_inputs)
                     loss_ce = criterion(outputs, total_labels)
                     
-                    # Diversity loss
                     if num_cross > 0:
                         loss_div = self.compute_diversity_loss(
                             victim_inputs[:num_cross],
@@ -537,12 +479,10 @@ class SSDT(AbstractAttack):
                     else:
                         loss = loss_ce
                     
-                    # Backward pass
                     loss.backward()
                     optimizer_C.step()
                     optimizer_G.step()
                     
-                    # Statistics
                     total_loss += loss.item()
                     preds = torch.argmax(outputs, dim=1)
                     total_correct += (preds == total_labels).sum().item()
@@ -552,7 +492,6 @@ class SSDT(AbstractAttack):
                     total_bd_correct += (bd_preds == bd_labels).sum().item()
                     total_bd_samples += num_bd
                 else:
-                    # No victim samples in this batch - train normally
                     outputs = model(inputs1)
                     loss = criterion(outputs, labels1)
                     loss.backward()
@@ -565,7 +504,6 @@ class SSDT(AbstractAttack):
                 
                 num_batches += 1
             
-            # Epoch statistics
             avg_loss = total_loss / num_batches
             avg_acc = 100.0 * total_correct / total_samples if total_samples > 0 else 0
             avg_bd_acc = 100.0 * total_bd_correct / total_bd_samples if total_bd_samples > 0 else 0
@@ -580,9 +518,6 @@ class SSDT(AbstractAttack):
         else:
             return model
     
-    # --------------------------------------------------------
-    # TRIGGER APPLICATION
-    # --------------------------------------------------------
     
     def apply_trigger(self, x):
         """Apply trigger to input samples"""
@@ -595,22 +530,17 @@ class SSDT(AbstractAttack):
         with torch.no_grad():
             x_gpu = x.to(self.device)
             
-            # Generate pattern and mask
             pattern = self.generator(x_gpu)
             pattern = self.generator.normalize_pattern(pattern)
             
             mask = self.mask_generator(x_gpu)
             mask = self.mask_generator.threshold(mask)
             
-            # Apply trigger
             x_triggered = x_gpu + (pattern - x_gpu) * mask
             x_triggered = torch.clamp(x_triggered, 0, 1)
             
             return x_triggered.cpu()
     
-    # --------------------------------------------------------
-    # MAIN EXECUTION
-    # --------------------------------------------------------
     
     def execute(self, model, data, params=None):
         """
@@ -626,7 +556,6 @@ class SSDT(AbstractAttack):
         """
         x_train, y_train, x_test, y_test = data
         
-        # Update parameters from params dict
         if params is not None:
             self.victim_label = int(params.get("victim_label", self.victim_label))
             self.target_label = int(params.get("target_label", self.target_label))
@@ -640,7 +569,6 @@ class SSDT(AbstractAttack):
             self.lr_mask = float(params.get("lr_mask", self.lr_mask))
             self.batch_size = int(params.get("batch_size", self.batch_size))
         
-        # Convert to tensors if needed
         if not isinstance(x_train, torch.Tensor):
             x_train = torch.FloatTensor(x_train)
             y_train = torch.LongTensor(y_train)
@@ -653,10 +581,8 @@ class SSDT(AbstractAttack):
         print(f"  Lambda_div: {self.lambda_div}, Lambda_norm: {self.lambda_norm}")
         print(f"  Mask density: {self.mask_density}, Batch size: {self.batch_size}")
         
-        # Train backdoored model
         model = self.train_ssdt(model, x_train, y_train)
         
-        # Prepare backdoored test set (only victim class samples)
         victim_mask = (y_test == self.victim_label)
         x_test_victim = x_test[victim_mask]
         
@@ -689,14 +615,12 @@ class SSDT(AbstractAttack):
         if self.generator is None or self.mask_generator is None:
             raise RuntimeError("Networks not trained yet! Call execute() first.")
         
-        # Filter victim class samples
         victim_mask = (y_test == self.victim_label)
         x_test_victim = x_test[victim_mask]
         
         if len(x_test_victim) == 0:
             return torch.empty(0, *x_test.shape[1:]), torch.empty(0, dtype=torch.long)
         
-        # Apply trigger to victim samples
         x_test_bd = self.apply_trigger(x_test_victim)
         y_test_bd = torch.full((len(x_test_bd),), self.target_label, dtype=torch.long)
         
