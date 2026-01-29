@@ -643,8 +643,52 @@ class IAD(AbstractAttack, TrainTimeAttack):
         
         data_test = (x_test.to(device), y_test.to(device))
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
+
+        print("\n" + "=" * 60)
+        print("PHASE: EVALUATION")
+        print("=" * 60)
+
+        self.netC.eval()
+
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            test_dataset = torch.utils.data.TensorDataset(x_test, y_test)
+            test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shuffle=False)
+            
+            for inputs, targets in test_loader:
+                inputs, targets = inputs.to(device), targets.to(device)
+                outputs = self.netC(inputs)
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
         
-        print("\nIAD attack preparation complete!")
+        clean_acc = correct / total
+        self.context['acc'] = clean_acc
+        print(f"[IAD] Final Clean Accuracy: {clean_acc:.4f}")
+
+        print("[IAD] Calculating Attack Success Rate (ASR)...")
+        data_test_dev = (x_test.to(device), y_test.to(device))
+        x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test_dev)
+        
+        correct_asr = 0
+        total_asr = 0
+        with torch.no_grad():
+            asr_dataset = torch.utils.data.TensorDataset(x_test_asr, y_test_asr)
+            asr_loader = torch.utils.data.DataLoader(asr_dataset, batch_size=128, shuffle=False)
+            
+            for inputs, targets in asr_loader:
+                inputs, targets = inputs.to(device), targets.to(device)
+                outputs = self.netC(inputs)
+                _, predicted = outputs.max(1)
+                total_asr += targets.size(0)
+                correct_asr += predicted.eq(targets).sum().item()
+        
+        acc_asr = correct_asr / total_asr
+        self.context['acc_asr'] = acc_asr
+        print(f"[IAD] Final Attack Success Rate: {acc_asr:.4f}")
+
+        print("\nIAD attack preparation and evaluation complete!")
         print("=" * 60)
         
         return x_train, y_train, x_test_asr.cpu(), y_test_asr.cpu()

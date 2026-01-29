@@ -58,8 +58,8 @@ class BPP(AbstractAttack):
                 "label": "Source label",
                 "tooltip": "Label of the class that will be poisoned. Use -1 for all classes (all2one mode)",
                 "type": "select",
-                "options": [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                "value": -1
+                "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "value": 1
             },
             "target_label": {
                 "label": "Target label",

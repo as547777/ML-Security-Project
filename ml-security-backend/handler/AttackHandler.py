@@ -20,6 +20,8 @@ class AttackHandler:
         if hasattr(self.attack, 'skip_retraining'):
             context['skip_model_training'] = self.attack.skip_retraining
 
+        self.attack.context = context
+
         (x_poisoned_train, y_poisoned_train, x_test_asr, y_test_asr) = self.attack.execute(target_model, (x_train, y_train, x_test, y_test), params)
 
         context["x_train"] = x_poisoned_train

@@ -11,6 +11,7 @@ class AdaptiveBlend(AbstractAttack):
         "display_name": "Adaptive Blend",
         "description": "Advanced poisoning attack that blends a trigger pattern with random piece masking. Some poisoned samples keep their original labels (cover samples) to evade detection, while others are relabeled to the target class.",
         "type": "Black-box attack",
+        "time": "Offline poisoning",
         "params": {
             "source_label": {
                 "label": "Source label",
@@ -65,7 +66,7 @@ class AdaptiveBlend(AbstractAttack):
                 "label": "Trigger image path",
                 "tooltip": "Path to the trigger image file (e.g., 'attack/triggers/blend_trigger.jpg')",
                 "type": "string",
-                "value": "attack/triggers/blend_trigger.jpg"
+                "value": "attack/image/triggers/blend_trigger.jpg"
             }
         }
     }

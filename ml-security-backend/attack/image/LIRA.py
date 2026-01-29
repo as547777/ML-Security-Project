@@ -20,10 +20,6 @@ import copy
 from interfaces.AbstractAttack import AbstractAttack
 from interfaces.TrainTimeAttack import TrainTimeAttack
 
-# ============================================================
-# AUTOENCODER GENERATOR
-# ============================================================
-
 class Autoencoder(nn.Module):
     def __init__(self, channels=3):
         super().__init__()
@@ -52,15 +48,10 @@ class Autoencoder(nn.Module):
     def forward(self, x):
         original_size = x.shape[2:]
         out = self.decoder(self.encoder(x))
-        # Resize to match original dimensions if needed
         if out.shape[2:] != original_size:
             out = F.interpolate(out, size=original_size, mode='bilinear', align_corners=False)
         return out
 
-
-# ============================================================
-# UNET GENERATOR
-# ============================================================
 
 def double_conv(in_c, out_c):
     return nn.Sequential(
@@ -104,20 +95,14 @@ class UNet(nn.Module):
         x = self.u1(torch.cat([x, c1], 1))
 
         out = self.out(x)
-        # Resize to match original dimensions if needed
         if out.shape[2:] != original_size:
             out = F.interpolate(out, size=original_size, mode='bilinear', align_corners=False)
         return out
 
 
-# ============================================================
-# EOT TRANSFORMATIONS
-# ============================================================
-
 class EOT(nn.Module):
     def __init__(self, size):
         super().__init__()
-        # Use transformations that preserve dimensions
         self.t = T.Compose([
             T.RandomHorizontalFlip(),
             T.RandomAffine(degrees=5, translate=(0.1, 0.1), scale=(0.95, 1.05)),
@@ -128,39 +113,25 @@ class EOT(nn.Module):
         return torch.stack([self.t(img) for img in x])
 
 
-# ============================================================
-# PERCEPTUAL LOSS (Using Selected Model)
-# ============================================================
-
 class PerceptualLoss(nn.Module):
     def __init__(self, model):
         super().__init__()
-        # Use a copy of the model for perceptual loss to avoid gradient conflicts
         self.feature_extractor = copy.deepcopy(model)
         
-        # Freeze all parameters in the copy
         for p in self.feature_extractor.parameters():
             p.requires_grad = False
         
         self.feature_extractor.eval()
 
     def forward(self, x, y):
-        # Extract features and compute MSE loss
-        # Use no_grad to ensure no gradients flow back
         with torch.no_grad():
             try:
                 feat_x = self.feature_extractor(x)
                 feat_y = self.feature_extractor(y)
-                # Detach to be extra safe
                 return F.mse_loss(feat_x.detach(), feat_y.detach())
             except:
-                # If feature extraction fails, return simple L2 loss
                 return F.mse_loss(x, y)
 
-
-# ============================================================
-# FAITHFUL LIRA ATTACK
-# ============================================================
 
 class Lira(AbstractAttack, TrainTimeAttack):
     
@@ -271,9 +242,8 @@ class Lira(AbstractAttack, TrainTimeAttack):
 
         self.generator = None
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.data_range = None  # Will be set based on data
+        self.data_range = None
 
-    # --------------------------------------------------------
 
     def target_transform(self, y, num_classes):
         if self.attack_mode == "all2one":
@@ -281,7 +251,6 @@ class Lira(AbstractAttack, TrainTimeAttack):
         return (y + 1) % num_classes
 
     def clip(self, x):
-        # Dynamically determine range from data
         if self.data_range is None:
             x_min, x_max = x.min().item(), x.max().item()
             if x_min >= -0.1 and x_max <= 1.1:
@@ -290,16 +259,12 @@ class Lira(AbstractAttack, TrainTimeAttack):
                 self.data_range = (-1, 1)
         return torch.clamp(x, self.data_range[0], self.data_range[1])
 
-    # --------------------------------------------------------
 
     def train_lira(self, model_wrapper, x_train, y_train):
         device = self.device
         
-        # Initialize model if it's a wrapper with uninitialized model
         if hasattr(model_wrapper, 'model') and model_wrapper.model is None:
-            # Model wrapper needs initialization
             if hasattr(model_wrapper, 'init'):
-                # Get initialization parameters from data
                 channels = x_train.shape[1]
                 h_res, w_res = x_train.shape[2], x_train.shape[3]
                 num_classes = len(torch.unique(y_train))
@@ -312,17 +277,13 @@ class Lira(AbstractAttack, TrainTimeAttack):
                 }
                 model_wrapper.init(init_params)
         
-        # Get model - handle both wrapper and direct model
         if hasattr(model_wrapper, 'model') and model_wrapper.model is not None:
-            # Wrapper with initialized model
             model = model_wrapper.model.to(device)
             is_wrapper = True
         elif hasattr(model_wrapper, 'to'):
-            # Direct PyTorch model
             model = model_wrapper.to(device)
             is_wrapper = False
         else:
-            # Should not happen after initialization above
             raise ValueError(f"Model wrapper {type(model_wrapper).__name__} has no initialized model.")
         
         shadow = copy.deepcopy(model).to(device)
@@ -342,7 +303,6 @@ class Lira(AbstractAttack, TrainTimeAttack):
         opt_s = optim.SGD(shadow.parameters(), lr=0.01, momentum=0.9)
 
         criterion = nn.CrossEntropyLoss()
-        # Use the selected model for perceptual loss instead of VGG16
         perc = PerceptualLoss(model).to(device)
 
         loader = DataLoader(
@@ -359,7 +319,6 @@ class Lira(AbstractAttack, TrainTimeAttack):
         for epoch in range(self.train_epochs):
             for x, y in loader:
 
-                # ---- Generator update ----
                 opt_g.zero_grad()
                 y_bd = self.target_transform(y, num_classes)
                 loss_g = 0
@@ -374,7 +333,6 @@ class Lira(AbstractAttack, TrainTimeAttack):
                         criterion(shadow(bd), y_bd)
                     ) / 2
 
-                    # Add L2 regularization to keep perturbation small
                     loss_l2 = torch.mean(noise ** 2)
                     
                     loss_g += loss_attack + self.lambda_perc * perc(bd, x) + 0.01 * loss_l2
@@ -383,7 +341,6 @@ class Lira(AbstractAttack, TrainTimeAttack):
                 loss_g.backward()
                 opt_g.step()
 
-                # ---- Classifier update ----
                 for _ in range(self.inner_iters):
                     opt_m.zero_grad()
                     opt_s.zero_grad()
@@ -411,24 +368,19 @@ class Lira(AbstractAttack, TrainTimeAttack):
         else:
             return model
 
-    # --------------------------------------------------------
 
     def apply_trigger(self, x):
         self.generator.eval()
         with torch.no_grad():
             x_gpu = x.to(self.device)
-            # Generate perturbation and apply with reduced magnitude
             perturbation = self.generator(x_gpu) * self.eps
-            # Apply Tanh to generator output to keep perturbation smooth
             triggered = self.clip(x_gpu + perturbation)
             return triggered.cpu()
 
-    # --------------------------------------------------------
 
     def execute(self, model, data, params=None):
         x_train, y_train, x_test, y_test = data
 
-        # Get parameters from params with defaults from __desc__
         attack_params = params or {}
         self.target_label = int(attack_params.get("target_label", self.__desc__["params"]["target_label"]["value"]))
         self.attack_mode = attack_params.get("attack_mode", self.__desc__["params"]["attack_mode"]["value"])
@@ -477,10 +429,8 @@ class Lira(AbstractAttack, TrainTimeAttack):
         if self.generator is None:
             raise RuntimeError("Generator not trained yet! Call execute() first.")
         
-        # Apply trigger to all test samples
         x_test_backdoor = self.apply_trigger(x_test)
         
-        # Transform labels based on attack mode
         num_classes = len(torch.unique(y_test))
         y_test_backdoor = self.target_transform(y_test, num_classes)
         

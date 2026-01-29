@@ -597,9 +597,20 @@ class Grond(AbstractAttack, TrainTimeAttack):
         
         x_train, y_train, x_test, y_test = data
         dataset_name = params.get("dataset", "cifar10").lower()
-        
+
+        num_classes = len(torch.unique(y_train))
+        if model.model is None:
+            model.init({
+                "w_res": x_train.shape[3],
+                "h_res": x_train.shape[2],
+                "color_channels": x_train.shape[1],
+                "classes": num_classes
+            })
+
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         
+        victim_model = model.model.to(device)
+                
         print("=" * 70)
         print("GROND ATTACK - Comprehensive Backdoor Stealthiness")
         print("=" * 70)
@@ -611,21 +622,11 @@ class Grond(AbstractAttack, TrainTimeAttack):
         print(f"ABI threshold (u): {self.u_threshold}")
         print("=" * 70)
         
-        num_classes = len(torch.unique(y_train))
-        if model.model is None:
-            model.init({
-                "w_res": x_train.shape[3],
-                "h_res": x_train.shape[2],
-                "color_channels": x_train.shape[1],
-                "classes": num_classes
-            })
-        
-        victim_model = model.model.to(device)
-        
         print("\n" + "=" * 70)
         print("PHASE 1: SURROGATE MODEL TRAINING")
         print("=" * 70)
-        
+
+        num_classes = len(torch.unique(y_train))
         surrogate_model = type(victim_model)(
             x_train.shape[3],
             x_train.shape[2],
@@ -675,19 +676,55 @@ class Grond(AbstractAttack, TrainTimeAttack):
             (x_poisoned, y_poisoned),
             device
         )
+
+        print("\n" + "=" * 70)
+        print("PHASE 5: EVALUATION")
+        print("=" * 70)
         
-        print("\n[Grond] Preparing test data for ASR evaluation...")
+        victim_model.eval()
+        
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            test_dataset = torch.utils.data.TensorDataset(x_test, y_test)
+            test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shuffle=False)
+            
+            for inputs, targets in test_loader:
+                inputs, targets = inputs.to(device), targets.to(device)
+                
+                outputs = victim_model(inputs)
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
+        
+        clean_acc = correct / total
+        self.context['acc'] = clean_acc
+        print(f"[Grond] Final Clean Accuracy: {clean_acc:.4f}")
+
+        print("[Grond] Calculating Attack Success Rate (ASR)...")
         data_test = (x_test.to(device), y_test.to(device))
         x_test_asr, y_test_asr = self.prepare_for_attack_success_rate(data_test)
         
+        correct_asr = 0
+        total_asr = 0
+        with torch.no_grad():
+            asr_dataset = torch.utils.data.TensorDataset(x_test_asr, y_test_asr)
+            asr_loader = torch.utils.data.DataLoader(asr_dataset, batch_size=128, shuffle=False)
+            
+            for inputs, targets in asr_loader:
+                inputs, targets = inputs.to(device), targets.to(device)
+                
+                outputs = victim_model(inputs)
+                _, predicted = outputs.max(1)
+                total_asr += targets.size(0)
+                correct_asr += predicted.eq(targets).sum().item()
+        
+        acc_asr = correct_asr / total_asr
+        self.context['acc_asr'] = acc_asr
+        print(f"[Grond] Final Attack Success Rate: {acc_asr:.4f}")
+
         print("\n" + "=" * 70)
         print("GROND ATTACK COMPLETE!")
         print("=" * 70)
-        print("Summary:")
-        print(f"  ✓ Trigger: UPGD (eps={self.eps:.4f})")
-        print(f"  ✓ Poisoned: {self.poison_rate*100:.1f}% of target class")
-        print(f"  ✓ ABI applied: {self.apply_abi}")
-        print(f"  ✓ Model ready for evaluation")
-        print("=" * 70)
-        
+
         return x_train, y_train, x_test_asr.cpu(), y_test_asr.cpu()
