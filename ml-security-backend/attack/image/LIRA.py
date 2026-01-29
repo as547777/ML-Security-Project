@@ -405,7 +405,68 @@ class Lira(AbstractAttack, TrainTimeAttack):
 
         model = self.train_lira(model, x_train, y_train)
 
-        x_test_bd = self.apply_trigger(x_test)
+        if hasattr(model, 'model') and model.model is not None:
+            eval_model = model.model
+        else:
+            eval_model = model
+
+        eval_model = eval_model.to(self.device)
+        eval_model.eval()
+
+        print("\n" + "=" * 70)
+        print("PHASE 5: EVALUATION")
+        print("=" * 70)
+
+        correct = 0
+        total = 0
+
+        test_dataset = TensorDataset(x_test, y_test)
+        test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
+
+        with torch.no_grad():
+            for inputs, targets in test_loader:
+                inputs, targets = inputs.to(self.device), targets.to(self.device)
+                
+                outputs = eval_model(inputs)
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
+        
+        clean_acc = correct / total
+        self.context['acc'] = clean_acc
+        print(f"[LIRA] Final Clean Accuracy: {clean_acc:.4f}")
+
+        print("[LIRA] Calculating Attack Success Rate (ASR)...")
+
+        x_test_asr, y_test_asr = self.prepare_for_attack_success_rate((x_test, y_test))
+
+        correct_asr = 0
+        total_asr = 0
+
+        asr_dataset = TensorDataset(x_test_asr, y_test_asr)
+        asr_loader = DataLoader(asr_dataset, batch_size=128, shuffle=False)
+        
+        with torch.no_grad():
+            for inputs, targets in asr_loader:
+                inputs, targets = inputs.to(self.device), targets.to(self.device)
+                
+                outputs = eval_model(inputs)
+                _, predicted = outputs.max(1)
+                total_asr += targets.size(0)
+                correct_asr += predicted.eq(targets).sum().item()
+        
+        acc_asr = correct_asr / total_asr
+        self.context['acc_asr'] = acc_asr
+        print(f"[LIRA] Final Attack Success Rate: {acc_asr:.4f}")
+
+        print("\n" + "=" * 70)
+        print("LIRA ATTACK COMPLETE!")
+        print("=" * 70)
+
+        with torch.no_grad():
+            self.generator.eval()
+            x_test_bd = self.apply_trigger(x_test.to(self.device)).cpu()
+            
         y_test_bd = self.target_transform(y_test, len(torch.unique(y_train)))
 
         return x_train, y_train, x_test_bd, y_test_bd
