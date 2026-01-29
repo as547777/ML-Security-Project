@@ -4,8 +4,8 @@ import numpy as np
 import torch
 
 class GlobalHandler:
-    def __init__(self, handlers=[], metric_handler=None):
-        self.handlers=handlers
+    def __init__(self, handlers=None, metric_handler=None):
+        self.handlers=handlers if handlers is not None else []
         self.metric_handler=metric_handler
     
     def register(self, handler):
@@ -50,6 +50,8 @@ class GlobalHandler:
             context["asrs"].append(run_context.get("acc_asr"))
             context["asrs_after"].append(run_context.get("final_asr"))
             
+            if i==0:
+                context["visualizations"] = run_context.get("visualizations")
             del run_context
 
         self.metric_handler.handle(context)

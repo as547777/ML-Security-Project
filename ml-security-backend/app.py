@@ -13,7 +13,6 @@ from handler.ModelHandler import ModelHandler
 from handler.VisualizationHandler import VisualizationHandler
 from interfaces.TrainTimeAttack import TrainTimeAttack
 from interfaces.TrainTimeDefense import TrainTimeDefense
-from metric.CalculateStd import CalculateStd
 
 import attack as attack_pkg
 import defence as defence_pkg
@@ -101,19 +100,7 @@ def run():
     metric_handler=MetricsHandler()
 
     for m in payload.get("metrics", []):
-        if isinstance(m, dict):
-            name=m["name"]
-            cls=appContext.resolve_metric(name).__class__
-            metric_params=m.copy()
-            metric_params.pop("name")
-            metric=cls(**metric_params)
-
-            if isinstance(metric, CalculateStd):
-                context["num_of_runs"] = getattr(metric, "number_of_runs", 5)
-                context["seed"] = getattr(metric, "start_seed", 42)
-        
-        else:
-            metric=appContext.resolve_metric(m)
+        metric=appContext.resolve_metric(m)
 
         metric_handler.register(metric)
 
