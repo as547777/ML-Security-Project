@@ -100,7 +100,6 @@ class IBAU(AbstractDefense):
         - context: kontekst aplikacije
         """
         
-        # Update args with params from UI
         if params:
             for key in params:
                 if key in self.args:
@@ -119,9 +118,6 @@ class IBAU(AbstractDefense):
         dataset = TensorDataset(x_train, y_train)
         loader = DataLoader(dataset, batch_size=self.args["batch_size"], shuffle=True)
 
-        # --------------------------------------------------
-        # Phase 1: Learn universal adversarial perturbation δ
-        # --------------------------------------------------
         delta = torch.zeros_like(x_train[0], requires_grad=True).to(self.device)
         delta_optim = optim.Adam([delta], lr=self.args["lr_delta"])
 
@@ -140,7 +136,7 @@ class IBAU(AbstractDefense):
                     nn.functional.softmax(clean_out, dim=1)
                 )
 
-                (-loss).backward()  # gradient ASCENT
+                (-loss).backward()
                 delta_optim.step()
 
                 with torch.no_grad():
@@ -150,9 +146,6 @@ class IBAU(AbstractDefense):
 
             print(f"[IBAU][δ] Epoch {epoch+1}/{self.args['epochs_delta']} - KL: {total_loss/len(loader):.4f}")
 
-        # --------------------------------------------------
-        # Phase 2: Adversarial Unlearning
-        # --------------------------------------------------
         optimizer = optim.SGD(
             model_nn.parameters(),
             lr=self.args["lr_model"],
@@ -175,7 +168,6 @@ class IBAU(AbstractDefense):
                 outputs = model_nn(adv_images)
                 loss_ce = criterion(outputs, labels)
 
-                # Latent feature regularization (implicit backdoor suppression)
                 features = model_nn.from_input_to_features(adv_images, 0)
                 reg_loss = torch.mean(features ** 2)
 
@@ -187,7 +179,6 @@ class IBAU(AbstractDefense):
 
             print(f"[IBAU][UNLEARN] Epoch {epoch+1}/{self.args['epochs_unlearn']} - Loss: {total_loss/len(loader):.4f}")
 
-        # Evaluate final accuracy on clean test data
         model_nn.eval()
         with torch.no_grad():
             if not isinstance(x_test, torch.Tensor):
@@ -197,16 +188,13 @@ class IBAU(AbstractDefense):
             x_test_gpu = x_test.to(self.device)
             y_test_gpu = y_test.to(self.device)
             
-            # Use model_wrapper's predict method if available
             if hasattr(model_wrapper, 'predict'):
                 _, acc_clean = model_wrapper.predict((x_test, y_test))
             else:
-                # Manual accuracy calculation
                 outputs = model_nn(x_test_gpu)
                 _, predicted = torch.max(outputs, 1)
                 acc_clean = (predicted == y_test_gpu).float().mean().item()
         
-        # Evaluate ASR if backdoor test data is provided
         x_test_asr = params.get("x_test_asr")
         y_test_asr = params.get("y_test_asr")
         
