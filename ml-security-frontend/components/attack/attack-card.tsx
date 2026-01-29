@@ -5,7 +5,9 @@ import {AttackInfo} from "@/types";
 import Card from "@/components/card";
 
 const AttackCard = async () => {
-  const data = await fetch('http://localhost:5000/attacks')
+  const API_URL = process.env.NEXT_PUBLIC_API_URL_SERVER || 'http://localhost:5000';
+
+  const data = await fetch(API_URL + '/attacks')
   const attacks = await data.json() as AttackInfo[]
 
   return (

@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from context.plugin_loader import load_plugins
 from context.AppContext import AppContext
@@ -30,7 +30,14 @@ load_plugins(metric_pkg)
 
 appContext= AppContext()
 app=Flask(__name__)
-CORS(app)
+# CORS(app)
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000"],  # Your frontend origin
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 @app.route("/attacks", methods=["GET"])
 def attacks():
@@ -53,8 +60,10 @@ def models():
     model_map=appContext.get_models()
     return jsonify(model_map)
 
-@app.route("/run", methods=["POST"])
+@app.route("/run", methods=["POST", "OPTIONS"])
 def run():
+    if request.method == "OPTIONS":
+        return "", 204
     payload=request.get_json()
 
     dataset = appContext.resolve_dataset(payload["dataset"])
@@ -118,5 +127,5 @@ def run():
     }
     return jsonify(response)
 
-if __name__=="__main__":
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

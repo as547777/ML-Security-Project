@@ -7,8 +7,10 @@ import ModelSelect from "@/components/model/model-select";
 import Card from "@/components/card";
 
 export default async function DatasetPage() {
-  const dataset_data = await fetch('http://localhost:5000/datasets')
-  const models_temp_data = await fetch('http://localhost:5000/models?type=image')
+  const API_URL = process.env.NEXT_PUBLIC_API_URL_SERVER || "http://localhost:5000";
+
+  const dataset_data = await fetch(API_URL + '/datasets')
+  const models_temp_data = await fetch(API_URL +  '/models?type=image')
   // TODO - add optimizer and loss function to backend
   // const optimizer_data = await fetch('http://localhost:3004/optimizers')
   // const loss_function_data = await fetch('http://localhost:3004/loss_functions')

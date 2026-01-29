@@ -15,6 +15,8 @@ import AttackDetails from "@/components/attack/attack-details";
 import DefenseDetails from "@/components/defense/defense-details";
 
 export default function OverviewPage() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL_CLIENT || 'http://localhost:5000';
+
   const { dataset, momentum, batchSize, runCount, seed, learningRate, optimizer, lossFunction,
     epochs, attack, attackParams, defense, defenseParams, model } = useData()
   const [isRunning, setIsRunning] = useState(false)
@@ -55,7 +57,7 @@ export default function OverviewPage() {
       const attackParamsValues = extractParamValues(attackParams);
       const defenseParamsValues = extractParamValues(defenseParams);
 
-      const response = await fetch('http://localhost:5000/run', {
+      const response = await fetch(API_URL + '/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

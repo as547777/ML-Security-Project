@@ -21,7 +21,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8 }}
           >
-            App name
+            BackdoorHub
           </motion.h1>
 
           <motion.p

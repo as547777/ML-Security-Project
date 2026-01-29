@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./ml-security-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ml-security-backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./ml-security-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL_CLIENT=http://localhost:5000
+      - NEXT_PUBLIC_API_URL_SERVER=http://backend:5000
+    restart: unless-stopped

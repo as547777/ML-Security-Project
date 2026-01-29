@@ -5,7 +5,9 @@ import DefenseInputs from "@/components/defense/defense-inputs";
 import Card from "@/components/card";
 
 const DefenseCard = async () => {
-  const data = await fetch('http://localhost:5000/defenses')
+  const API_URL = process.env.NEXT_PUBLIC_API_URL_SERVER || 'http://localhost:5000';
+
+  const data = await fetch(API_URL + '/defenses')
   const defenses = await data.json() as DefenseInfo[]
 
   return (
