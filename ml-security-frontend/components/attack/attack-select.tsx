@@ -76,17 +76,23 @@ export default function AttackSelect({attacks} : {attacks: AttackInfo[]}) {
                 >
                   <h3 className="font-semibold text-blue-700">{a.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{a.description}</p>
-                  <div className="text-xs text-zinc-500 flex justify-between">
-                    <div>
-                      <span className="">Type:</span>{" "}
-                      <span className="font-semibold">{a?.type || ''}</span>
-                    </div>
+                  {(a?.type || a?.time) && (
+                    <div className="text-xs text-zinc-500 flex justify-between">
+                      {a?.type && (
+                        <div>
+                          <span>Type:</span>{" "}
+                          <span className="font-semibold">{a.type}</span>
+                        </div>
+                      )}
 
-                    <div>
-                      <span className="">Time:</span>{" "}
-                      <span className="font-semibold">{a?.time || ''}</span>
+                      {a?.time && (
+                        <div>
+                          <span>Time:</span>{" "}
+                          <span className="font-semibold">{a.time}</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
 

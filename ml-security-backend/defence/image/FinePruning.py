@@ -18,6 +18,7 @@ class FinePruning(AbstractDefense):
         "display_name": "Fine Pruning",
         "description": "A defense mechanism that removes (prunes) dormant neurons which likely encode the backdoor, and then fine-tunes the model to restore accuracy on clean data.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "prune_rate": {
                 "label": "Prune Rate",

@@ -75,10 +75,23 @@ export default function DefenseSelect({defenses}: {defenses: DefenseInfo[]}) {
                 >
                   <h3 className="font-semibold text-blue-700">{d.display_name}</h3>
                   <p className="text-sm text-zinc-600 mb-2">{d.description}</p>
-                  <div className="text-xs text-zinc-500 flex justify-between">
-                    <span>{d.type}</span>
-                    <span>teski mrnjau</span>
-                  </div>
+                  {(d?.type || d?.time) && (
+                    <div className="text-xs text-zinc-500 flex justify-between">
+                      {d?.type && (
+                        <div>
+                          <span>Type:</span>{" "}
+                          <span className="font-semibold">{d.type}</span>
+                        </div>
+                      )}
+
+                      {d?.time && (
+                        <div>
+                          <span>Time:</span>{" "}
+                          <span className="font-semibold">{d.time}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
 

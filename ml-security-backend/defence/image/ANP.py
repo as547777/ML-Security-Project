@@ -13,6 +13,7 @@ class ANP(AbstractDefense):
     "display_name": "ANP",
     "description": "Adversarial Neuron Pruning defense that mitigates backdoor attacks by identifying and pruning suspicious neurons.",
     "type": "Defense",
+    "time": "Offline Defense",
     "params": {
         "nb_iter": {
             "label": "Number of Optimization Iterations",

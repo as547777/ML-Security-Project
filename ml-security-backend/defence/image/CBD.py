@@ -16,6 +16,7 @@ class CBD(AbstractDefense,TrainTimeDefense):
     "display_name": "CBD (Contrastive Backdoor Defense)",
     "description": "A training-time defense that learns to disentangle clean and backdoor feature representations by jointly training a clean model and a backdoored reference model. A discriminator (disentangler) is optimized to distinguish hidden activations of clean and poisoned models, forcing the clean model to suppress backdoor-specific neurons. The method reduces ASR while preserving clean accuracy through contrastive representation learning.",
     "type": "Defense",
+    "time": "Online Defense",
     "params": {
         "training_epochs": {
             "label": "Number of Training Epochs",
@@ -34,8 +35,9 @@ class CBD(AbstractDefense,TrainTimeDefense):
         "disentangle": {
             "label": "Enable Disentanglement",
             "tooltip": "If enabled, the disentanglement estimator is trained to separate clean and backdoor representations.",
-            "type": "checkbox",
-            "value": True
+            "type": "select",
+            "options": ["Enable", "Disable"],
+            "value": "Enable"
         }
     }
     }

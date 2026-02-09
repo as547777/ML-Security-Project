@@ -10,6 +10,7 @@ class SpectralSignatures(AbstractDefense):
         "display_name": "Spectral Signatures",
         "description": "A defense that detects and removes backdoor samples by analyzing feature covariance structure. It performs SVD on the feature representations and identifies outliers based on their projection onto the top principal components.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "percentile": {
                 "label": "Outlier Percentile Threshold",

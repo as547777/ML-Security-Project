@@ -13,6 +13,7 @@ class NeuralCleanse(AbstractDefense):
         "display_name": "Neural Cleanse",
         "description": "Detects and mitigates backdoor attacks by reverse engineering triggers and using outlier detection based on trigger L1 norm. Supports both neuron pruning and unlearning for mitigation.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "cost_multiplier": {
                 "label": "Cost Multiplier",

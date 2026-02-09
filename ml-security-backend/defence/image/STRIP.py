@@ -10,6 +10,7 @@ class STRIP(AbstractDefense):
         "display_name": "STRIP",
         "description": "STRong Intentional Perturbation - A runtime defense that detects backdoor triggers by intentionally perturbing inputs and measuring prediction entropy. Clean inputs show high entropy variance while trojaned inputs maintain low entropy due to input-agnostic trigger dominance.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "n_samples": {
                 "label": "Number of Perturbation Samples",

@@ -27,6 +27,7 @@ class NAD(AbstractDefense):
         "display_name": "NAD",
         "description": "A defense that uses attention transfer from a 'teacher' (fine-tuned on a small clean subset) to 'repair' a poisoned student model by aligning their intermediate feature attention maps.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "portion": {
                 "label": "Clean Data Portion",

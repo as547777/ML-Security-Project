@@ -17,6 +17,7 @@ class IBAU(AbstractDefense):
         "display_name": "I-BAU",
         "description": "Implicit Backdoor Adversarial Unlearning - a white-box defense that removes backdoors without knowledge of the trigger by learning universal adversarial perturbations.",
         "type": "Defense",
+        "time": "Offline Defense",
         "params": {
             "epochs_unlearn": {
                 "label": "Unlearning Epochs",
